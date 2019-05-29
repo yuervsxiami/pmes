@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="GBK" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:yaoqiang="http://bpmn.sourceforge.net" exporter="Yaoqiang BPMN Editor" exporterVersion="5.3" expressionLanguage="http://www.w3.org/1999/XPath" id="_1528787369281" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
+  <process id="patentBasicIndex" isClosed="false" isExecutable="true" name="专利基础标引流程" processType="None">
+    <extensionElements>
+      <yaoqiang:description/>
+      <yaoqiang:pageFormat height="841.8897637795276" imageableHeight="831.8897637795276" imageableWidth="588.1102362204724" imageableX="5.0" imageableY="5.0" orientation="0" width="598.1102362204724"/>
+      <yaoqiang:page background="#FFFFFF" horizontalCount="2" verticalCount="1"/>
+    </extensionElements>
+    <startEvent id="startevent2" isInterrupting="true" name="Start" parallelMultiple="false">
+      <outgoing>flow1</outgoing>
+      <outputSet/>
+    </startEvent>
+    <userTask completionQuantity="1" id="sendOrder1" implementation="##unspecified" isForCompensation="false" name="派单" startQuantity="1">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${distributeCandidateListener.notify(task)}"/>
+      </extensionElements>
+      <incoming>flow1</incoming>
+      <outgoing>flow2</outgoing>
+    </userTask>
+    <userTask completionQuantity="1" id="autoIndex" implementation="##unspecified" isForCompensation="false" name="自动标引" startQuantity="1">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${distributeCandidateListener.notify(task)}"/>
+        <activiti:taskListener class="com.cnuip.pmes2.listener.EndListenter" event="complete"/>
+      </extensionElements>
+      <incoming>flow2</incoming>
+      <outgoing>flow11</outgoing>
+    </userTask>
+    <endEvent id="endevent1" name="End">
+      <incoming>flow7</incoming>
+      <inputSet/>
+    </endEvent>
+    <sequenceFlow id="flow1" sourceRef="startevent2" targetRef="sendOrder1"/>
+    <sequenceFlow id="flow2" sourceRef="sendOrder1" targetRef="autoIndex"/>
+    <userTask completionQuantity="1" id="sendOrder3" implementation="##unspecified" isForCompensation="false" name="派单" startQuantity="1">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${distributeCandidateListener.notify(task)}"/>
+        <activiti:taskListener class="com.cnuip.pmes2.listener.EndListenter" event="complete"/>
+      </extensionElements>
+      <incoming>flow18</incoming>
+      <outgoing>flow14</outgoing>
+    </userTask>
+    <userTask completionQuantity="1" id="humanIndexAudit" implementation="##unspecified" isForCompensation="false" name="人工标引审核" startQuantity="1">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${distributeCandidateListener.notify(task)}"/>
+        <activiti:taskListener class="com.cnuip.pmes2.listener.EndListenter" event="complete"/>
+        <activiti:taskListener event="complete" expression="${finishListener.notify(task)}"/>
+      </extensionElements>
+      <incoming>flow10</incoming>
+      <outgoing>flow6</outgoing>
+    </userTask>
+    <exclusiveGateway gatewayDirection="Unspecified" id="exclusivegateway1" name="Exclusive Gateway">
+      <incoming>flow6</incoming>
+      <outgoing>flow7</outgoing>
+      <outgoing>flow8</outgoing>
+    </exclusiveGateway>
+    <userTask completionQuantity="1" id="humanIndex" implementation="##unspecified" isForCompensation="false" name="人工标引" startQuantity="1">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${distributeCandidateListener.notify(task)}"/>
+        <activiti:taskListener class="com.cnuip.pmes2.listener.EndListenter" event="complete"/>
+      </extensionElements>
+      <incoming>flow8</incoming>
+      <incoming>flow14</incoming>
+      <outgoing>flow9</outgoing>
+    </userTask>
+    <sequenceFlow id="flow6" sourceRef="humanIndexAudit" targetRef="exclusivegateway1"/>
+    <sequenceFlow id="flow7" name="审核通过" sourceRef="exclusivegateway1" targetRef="endevent1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${pass==true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow8" name="审核未通过" sourceRef="exclusivegateway1" targetRef="humanIndex">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${pass==false}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask completionQuantity="1" id="sendOrder4" implementation="##unspecified" isForCompensation="false" name="派单" startQuantity="1">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${distributeCandidateListener.notify(task)}"/>
+        <activiti:taskListener class="com.cnuip.pmes2.listener.EndListenter" event="complete"/>
+      </extensionElements>
+      <incoming>flow9</incoming>
+      <outgoing>flow10</outgoing>
+    </userTask>
+    <sequenceFlow id="flow9" sourceRef="humanIndex" targetRef="sendOrder4"/>
+    <sequenceFlow id="flow10" sourceRef="sendOrder4" targetRef="humanIndexAudit"/>
+    <userTask completionQuantity="1" id="semiAutoIndex" implementation="##unspecified" isForCompensation="false" name="半自动标引" startQuantity="1">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${distributeCandidateListener.notify(task)}"/>
+        <activiti:taskListener class="com.cnuip.pmes2.listener.EndListenter" event="complete"/>
+      </extensionElements>
+      <incoming>flow12</incoming>
+      <incoming>flow19</incoming>
+      <outgoing>flow15</outgoing>
+    </userTask>
+    <userTask completionQuantity="1" id="sendOrder2" implementation="##unspecified" isForCompensation="false" name="派单" startQuantity="1">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${distributeCandidateListener.notify(task)}"/>
+        <activiti:taskListener class="com.cnuip.pmes2.listener.EndListenter" event="complete"/>
+      </extensionElements>
+      <incoming>flow11</incoming>
+      <outgoing>flow12</outgoing>
+    </userTask>
+    <sequenceFlow id="flow11" sourceRef="autoIndex" targetRef="sendOrder2"/>
+    <sequenceFlow id="flow12" sourceRef="sendOrder2" targetRef="semiAutoIndex"/>
+    <sequenceFlow id="flow14" sourceRef="sendOrder3" targetRef="humanIndex"/>
+    <userTask completionQuantity="1" id="sendOrder26" implementation="##unspecified" isForCompensation="false" name="派单" startQuantity="1">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${distributeCandidateListener.notify(task)}"/>
+        <activiti:taskListener class="com.cnuip.pmes2.listener.EndListenter" event="complete"/>
+      </extensionElements>
+      <incoming>flow15</incoming>
+      <outgoing>flow16</outgoing>
+    </userTask>
+    <userTask completionQuantity="1" id="semiAutoIndexAudit" implementation="##unspecified" isForCompensation="false" name="半自动标引审核" startQuantity="1">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${distributeCandidateListener.notify(task)}"/>
+        <activiti:taskListener class="com.cnuip.pmes2.listener.EndListenter" event="complete"/>
+      </extensionElements>
+      <incoming>flow16</incoming>
+      <outgoing>flow17</outgoing>
+    </userTask>
+    <sequenceFlow id="flow15" sourceRef="semiAutoIndex" targetRef="sendOrder26"/>
+    <sequenceFlow id="flow16" sourceRef="sendOrder26" targetRef="semiAutoIndexAudit"/>
+    <exclusiveGateway gatewayDirection="Unspecified" id="exclusivegateway2" name="Exclusive Gateway">
+      <incoming>flow17</incoming>
+      <outgoing>flow18</outgoing>
+      <outgoing>flow19</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="flow17" sourceRef="semiAutoIndexAudit" targetRef="exclusivegateway2"/>
+    <sequenceFlow id="flow18" name="审核通过" sourceRef="exclusivegateway2" targetRef="sendOrder3">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passSemi==true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow19" name="审核未通过" sourceRef="exclusivegateway2" targetRef="semiAutoIndex">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passSemi==false}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="Yaoqiang_Diagram-patentBasicIndex" name="Untitled Diagram" resolution="96.0">
+    <bpmndi:BPMNPlane bpmnElement="patentBasicIndex">
+      <bpmndi:BPMNShape bpmnElement="startevent2" id="Yaoqiang-startevent2">
+        <omgdc:Bounds height="32.0" width="32.0" x="91.0" y="130.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="29.0" x="92.5" y="169.47"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendOrder1" id="Yaoqiang-sendOrder1">
+        <omgdc:Bounds height="55.0" width="105.0" x="161.0" y="120.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="28.0" x="199.5" y="138.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="autoIndex" id="Yaoqiang-autoIndex">
+        <omgdc:Bounds height="55.0" width="105.0" x="291.0" y="120.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="50.0" x="318.5" y="138.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="Yaoqiang-endevent1">
+        <omgdc:Bounds height="32.0" width="32.0" x="1641.0" y="131.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="24.0" x="1645.0" y="170.47"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendOrder3" id="Yaoqiang-sendOrder3">
+        <omgdc:Bounds height="55.0" width="105.0" x="1020.0" y="120.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="28.0" x="1058.5" y="138.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="humanIndexAudit" id="Yaoqiang-humanIndexAudit">
+        <omgdc:Bounds height="55.0" width="105.0" x="1411.0" y="121.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="72.0" x="1427.5" y="139.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="Yaoqiang-exclusivegateway1" isMarkerVisible="true">
+        <omgdc:Bounds height="42.0" width="42.0" x="1551.0" y="128.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="100.0" x="1522.0" y="172.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="humanIndex" id="Yaoqiang-humanIndex">
+        <omgdc:Bounds height="55.0" width="105.0" x="1141.0" y="121.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="50.0" x="1168.5" y="139.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendOrder4" id="Yaoqiang-sendOrder4">
+        <omgdc:Bounds height="58.0" width="112.0" x="1271.0" y="121.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="28.0" x="1313.0" y="141.49"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="semiAutoIndex" id="Yaoqiang-semiAutoIndex">
+        <omgdc:Bounds height="55.0" width="105.0" x="550.0" y="120.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="61.0" x="572.0" y="138.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendOrder2" id="Yaoqiang-sendOrder2">
+        <omgdc:Bounds height="55.0" width="105.0" x="420.0" y="120.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="28.0" x="458.5" y="138.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendOrder26" id="Yaoqiang-sendOrder26">
+        <omgdc:Bounds height="55.0" width="105.0" x="670.0" y="120.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="28.0" x="708.5" y="138.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="semiAutoIndexAudit" id="Yaoqiang-semiAutoIndexAudit">
+        <omgdc:Bounds height="55.0" width="105.0" x="800.0" y="120.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="83.0" x="811.0" y="138.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="Yaoqiang-exclusivegateway2" isMarkerVisible="true">
+        <omgdc:Bounds height="42.0" width="42.0" x="930.0" y="129.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="100.0" x="901.0" y="173.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="Yaoqiang-flow15">
+        <omgdi:waypoint x="655.5" y="147.5"/>
+        <omgdi:waypoint x="670.5" y="147.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="6.0" x="660.0" y="136.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="Yaoqiang-flow14">
+        <omgdi:waypoint x="1125.5" y="147.5"/>
+        <omgdi:waypoint x="1141.5" y="148.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="6.0" x="1130.0" y="137.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="Yaoqiang-flow12">
+        <omgdi:waypoint x="525.5" y="147.5"/>
+        <omgdi:waypoint x="550.5" y="147.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="6.0" x="535.0" y="136.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="Yaoqiang-flow11">
+        <omgdi:waypoint x="396.5" y="147.5"/>
+        <omgdi:waypoint x="420.5" y="147.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="6.0" x="405.5" y="136.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="Yaoqiang-flow10">
+        <omgdi:waypoint x="1383.5" y="150.0"/>
+        <omgdi:waypoint x="1411.5" y="148.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="6.0" x="1394.0" y="138.24"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="Yaoqiang-flow9">
+        <omgdi:waypoint x="1246.5" y="148.5"/>
+        <omgdi:waypoint x="1271.5" y="150.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="6.0" x="1255.5" y="139.24"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="Yaoqiang-flow8">
+        <omgdi:waypoint x="1571.0" y="129.66666666666652"/>
+        <omgdi:waypoint x="1571.0" y="77.0"/>
+        <omgdi:waypoint x="1374.0" y="77.0"/>
+        <omgdi:waypoint x="1193.0" y="77.0"/>
+        <omgdi:waypoint x="1193.5" y="121.16666666666652"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="37.02" width="80.0" x="1346.5" y="58.49"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="Yaoqiang-flow7">
+        <omgdi:waypoint x="1593.3333333333335" y="149.0"/>
+        <omgdi:waypoint x="1641.5008680791043" y="147.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="37.02" width="75.0" x="1579.5" y="129.07"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="Yaoqiang-flow6">
+        <omgdi:waypoint x="1516.5" y="148.5"/>
+        <omgdi:waypoint x="1551.6666666666665" y="149.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="6.0" x="1530.83" y="138.49"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="Yaoqiang-flow2">
+        <omgdi:waypoint x="266.5" y="147.5"/>
+        <omgdi:waypoint x="291.5" y="147.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="6.0" x="276.0" y="136.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="Yaoqiang-flow1">
+        <omgdi:waypoint x="123.49913192089565" y="146.0"/>
+        <omgdi:waypoint x="161.5" y="147.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="6.0" x="139.0" y="136.74"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow19" id="Yaoqiang-flow19">
+        <omgdi:waypoint x="950.0" y="130.66666666666652"/>
+        <omgdi:waypoint x="950.0" y="86.0"/>
+        <omgdi:waypoint x="602.0" y="86.0"/>
+        <omgdi:waypoint x="602.5" y="120.16666666666652"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="37.02" width="103.0" x="730.0" y="67.49"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="Yaoqiang-flow18">
+        <omgdi:waypoint x="972.3333333333335" y="150.0"/>
+        <omgdi:waypoint x="1020.5" y="147.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="37.02" width="98.0" x="947.0" y="129.82"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="Yaoqiang-flow17">
+        <omgdi:waypoint x="905.5" y="147.5"/>
+        <omgdi:waypoint x="930.6666666666665" y="150.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="6.0" x="914.5" y="138.82"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="Yaoqiang-flow16">
+        <omgdi:waypoint x="775.5" y="147.5"/>
+        <omgdi:waypoint x="800.5" y="147.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="21.02" width="6.0" x="785.0" y="136.99"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

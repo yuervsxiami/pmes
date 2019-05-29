@@ -1,0 +1,31 @@
+<div class="box box-default">
+    <div class="box-body" style="min-height: 200px;" id="box_body">
+        <div class="row">
+            <label class="col-md-1 control-label"><span class="pull-left">一级领域</span></label>
+            <div class="col-sm-11">
+                <span style="height: 30px;" class="col-md-2" ng-repeat="item in list">
+                    <button ng-click="changeSon(item)" type="button" class="btn btn-primary pull-left">{{item.name}}</button>
+                </span>
+            </div>
+        </div>
+        <div class="row" ng-show="sonList">
+            <label class="col-md-1 control-label"><span class="pull-left">二级领域</span></label>
+            <div class="col-sm-11">
+                <span style="height: 30px;" class="col-md-2" ng-repeat="item in sonList">
+                    <button ng-click="selectOne(item)" type="button" class="btn btn-primary pull-left">{{item.name}}</button>
+                </span>
+            </div>
+        </div>
+        <div class="row" ng-show="selectedList.length > 0">
+            <label class="col-md-1 control-label"><span class="pull-left">已选领域</span></label>
+            <div class="col-sm-11">
+                <span style="height: 30px;line-height: 30px;text-align: left;max-width: 17%;" class="col-md-2" ng-repeat="item in selectedList">
+                    <p style="padding-left: 5px;max-width: 160px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;" class="pull-left">{{item.name}}</p><div class="box-tools pull-left"><span type="button" class="btn btn-box-tool" ng-click="deleteOne(item)"><i class="fa fa-times"></i></span></div>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="overlay" ng-show="loading">
+        <i class="fa fa-refresh fa-spin"></i>
+    </div>
+</div>

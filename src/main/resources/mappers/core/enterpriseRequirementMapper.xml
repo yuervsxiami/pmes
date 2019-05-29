@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.EnterpriseRequirementMapper">
+
+	<resultMap type="com.cnuip.pmes2.domain.core.EnterpriseRequirement" id="baseMap">
+		<id property="id" column="id"/>
+		<result property="requirement" column="requirement"/>
+		<result property="keywords" column="keywords"/>
+		<result property="userId" column="user_id"/>
+		<result property="enterpriseId" column="enterprise_id"/>
+		<result property="state" column="state"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="hasIndexing" column="has_indexing"></result>
+		<result property="hasPatentMatching" column="has_patent_matching"></result>
+		<result property="hasProfessorMatching" column="has_professor_matching"></result>
+		<association property="user" column="user_id" columnPrefix="er_user_" javaType="com.cnuip.pmes2.domain.core.User">
+			<result property="name" column="name" />
+		</association>
+		<association property="enterprise" column="enterprise_id" columnPrefix="e_" javaType="com.cnuip.pmes2.domain.core.Enterprise">
+			<result property="name" column="name"/>
+			<result property="unifiedSocialCreditCode" column="social_code"/>
+			<result property="nationalEconomyField" column="national_economy_field"/>
+			<result property="provinceId" column="province_id"/>
+			<result property="cityId" column="city_id"/>
+			<result property="districtId" column="district_id"/>
+			<result property="address" column="address"/>
+			<result property="contact" column="contact"/>
+			<result property="phone" column="phone"/>
+			<result property="type" column="type"/>
+			<result property="scaleType" column="scale_type"/>
+			<result property="certification" column="certification"/>
+			<result property="state" column="state"/>
+		</association>
+	</resultMap>
+
+	<sql id="selectAll">
+		SELECT er.id,er.requirement,er.keywords,er.user_id,er.enterprise_id,er.state,er.create_time,er.update_time,
+		e.id e_id,e.name e_name,e.social_code e_social_code,e.national_economy_field e_national_economy_field,
+		e.province_id e_province_id,e.city_id e_city_id,e.district_id e_district_id,e.address e_address,e.contact e_contact,
+		e.phone e_phone,e.type e_type,e.scale_type e_scale_type,e.certification e_certification,e.state e_state,
+		u.name er_user_name, er.has_indexing, er.has_patent_matching, er.has_professor_matching
+		FROM p_enterprise_requirement er
+		LEFT JOIN p_user u on er.user_id = u.id
+		LEFT JOIN p_enterprise e on er.enterprise_id = e.id
+	</sql>
+
+	<select id="findById" parameterType="long" resultMap="baseMap">
+		<include refid="selectAll" />
+		WHERE er.id = #{id}
+	</select>
+
+	<select id="find" parameterType="com.cnuip.pmes2.domain.core.EnterpriseRequirement" resultMap="baseMap">
+		<include refid="selectAll" />
+		<where>
+			<if test="id != null">er.id = #{id}</if>
+			<if test="requirement != null and requirement != ''">er.requirement LIKE '${requirement}'</if>
+			<if test="keywords != null and keywords != ''">er.keywords LIKE '${keywords}'</if>
+			<if test="state != null">AND er.state = #{state}</if>
+			<if test="enterprise != null">
+				<if test="enterprise.name != null and enterprise.name != ''">AND e.name LIKE '%${enterprise.name}%'</if>
+				<if test="enterprise.unifiedSocialCreditCode != null and enterprise.unifiedSocialCreditCode != ''">AND e.social_code LIKE '%${enterprise.unifiedSocialCreditCode}%'</if>
+				<if test="enterprise.nationalEconomyField != null and enterprise.nationalEconomyField != ''">
+					AND IFNULL(e.national_economy_field,'') in
+					(SELECT code FROM p_national_economy WHERE code like CONCAT('%',#{enterprise.nationalEconomyField},'%'))
+				</if>
+				<if test="enterprise.address != null">AND e.address LIKE '%${enterprise.address}%'</if>
+				<if test="enterprise.contact != null">AND e.contact LIKE '%${enterprise.contact}%'</if>
+				<if test="enterprise.phone != null">AND e.phone LIKE '%${enterprise.phone}%'</if>
+				<if test="enterprise.type != null">AND e.type = #{enterprise.type}</if>
+				<if test="enterprise.scaleType != null">AND e.scale_type = #{enterprise.scaleType}</if>
+				<if test="enterprise.state != null">AND e.state = #{enterprise.state}</if>
+				<if test="enterprise.certification != null and certification != ''">AND e.certification = LIKE '%${enterprise.certification}%'</if>
+				<if test="enterprise.provinceId != null">AND e.province_id = #{enterprise.provinceId}</if>
+				<if test="enterprise.cityId != null">AND e.city_id = #{enterprise.cityId}</if>
+				<if test="enterprise.districtId != null">AND e.district_id = #{enterprise.districtId}</if>
+			</if>
+			<if test="optDateFrom != null">AND er.update_time >= #{optDateFrom}</if>
+			<if test="optDateTo != null">AND er.update_time &lt;= #{optDateTo}</if>
+		</where>
+		ORDER BY er.update_time DESC
+	</select>
+
+	<insert id="save" parameterType="com.cnuip.pmes2.domain.core.EnterpriseRequirement" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_enterprise_requirement
+		(enterprise_id,requirement,keywords,user_id)
+		VALUES
+		(#{enterpriseId},#{requirement},#{keywords},#{userId})
+	</insert>
+
+	<delete id="delete" parameterType="com.cnuip.pmes2.domain.core.EnterpriseRequirement">
+		DELETE FROM p_enterprise_requirement
+		<where>
+			<if test="id != null">id = #{id}</if>
+			<if test="enterpriseId != null">enterprise_id = #{enterpriseId}</if>
+			<if test="userId != null">AND user_id = #{userId}</if>
+		</where>
+	</delete>
+
+	<update id="update" parameterType="com.cnuip.pmes2.domain.core.EnterpriseRequirement">
+		UPDATE p_enterprise_requirement
+		<set>
+			<if test="requirement != null and requirement != ''">requirement = #{requirement},</if>
+			<if test="keywords != null and keywords != ''">keywords = #{keywords},</if>
+			<if test="state != null">state = #{state},</if>
+			<if test="userId != null">user_id = #{userId},</if>
+			<if test="enterpriseId != null">enterprise_id = #{enterpriseId},</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="changeState">
+		UPDATE p_enterprise_requirement
+		SET state = #{state}
+		WHERE id = #{id}
+	</update>
+
+	<update id="changeIndexState">
+		UPDATE p_enterprise_requirement
+		<set>
+			<if test="hasIndexing!=null">has_indexing = #{hasIndexing},</if>
+			<if test="hasPatentMatching!=null">has_patent_matching = #{hasPatentMatching},</if>
+			<if test="hasProfessorMatching!=null">has_professor_matching = #{hasProfessorMatching}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+
+</mapper>

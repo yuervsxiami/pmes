@@ -1,0 +1,132 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li><i class="iconfont icon-peizhi"></i> 配置管理</li>
+        <li class="active">标签管理</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box box-default">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label>标签类型：</label>
+                            <select id="type" name="inputType" required ng-model="label.searchCondition.type"
+                                    class="form-control" ng-options="type.id as type.name for type in label.labelType">
+                                <!-- <option value="{{type.id}}" ng-repeat="type in label.labelType">{{type.name}}</option> -->
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>标签名称：</label>
+                            <input type="text" class="form-control" placeholder="请输入标签名称"
+                                   ng-model="label.searchCondition.name">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>标签状态：</label>
+                            <select class="form-control" ng-model="label.searchCondition.state">
+                                <option value="" selected="selected">全部</option>
+                                <option value="1">启用</option>
+                                <option value="0">禁用</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>标引方式：</label>
+                            <select id="type" name="inputType" required ng-model="label.searchCondition.indexModel"
+                                    class="form-control">
+                                <option value="" selected="selected">全部</option>
+                                <option value="{{type.id}}" ng-repeat="type in label.indexTypes">{{type.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label>操作人：</label>
+                            <input type="text" class="form-control" placeholder="请输入操作人名称" ng-model="label.searchCondition.username">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>标签来源：</label>
+                            <select id="type" name="inputType" required ng-model="label.searchCondition.source"
+                                    class="form-control">
+                                <option value="" selected="selected">全部</option>
+                                <option value="{{type.id}}" ng-repeat="type in label.labelSources">{{type.name}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>操作时间：</label>
+                            <input type="text" datetimepicker class="form-control date-picker kbtn" id="dateTimeRange" value=""/>
+							<div id="timeBox" style="display: none;" class="input-group">
+							    <input type="hidden" name="beginTime" id="beginTime" ng-model="label.searchCondition.fromTime"/>
+							    -
+							    <input type="hidden" name="endTime" id="endTime" ng-model="label.searchCondition.toTime"/>
+						    </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="box-footer">
+					<button type="submit" class="btn btn-warning" ng-click="label.search()">查询</button>
+                    <button type="reset" class="btn btn-default" ng-click="label.reset()">重置</button>
+                </div>
+            </div>
+
+            <div class="box box-default">
+                <div class="box-header">
+                    <h3 class="box-title">标签列表</h3>
+                    <div class="box-tools">
+                        <button ng-click="label.add()" class="btn btn-info btn-sm">添加标签</button>
+                    </div>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>标签类型</th>
+                            <th>标签名称</th>
+                            <th>值类型</th>
+                            <th>标引方式</th>
+                            <th>标签状态</th>
+                            <th>标签来源</th>
+                            <th>操作人</th>
+                            <th>操作时间</th>
+                            <th>是否必填</th>
+                            <th>启用/禁用</th>
+                            <th>修改</th>
+                            <th>查看详情</th>
+                        </tr>
+                        <tr ng-repeat="l in label.list">
+                            <td>{{l.type | changeLabelType}}</td>
+                            <td>{{l.name}}</td>
+                            <td>{{l.valueType | changeValueType}}</td>
+                            <td>{{l.indexType | changeIndexType}}</td>
+                            <td>{{l.state==0?'禁用':'启用'}}</td>
+                            <td>{{l.source | changeLabelSource}}</td>
+                            <td>{{l.user.name}}</td>
+                            <td>{{l.updateTime | date:'yyyy-MM-dd HH:mm'}}</td>
+                            <td>{{l.isRequired==0?'否':'是'}}</td>
+                            <td>
+                            	<button class="btn btn-primary btn-sm" ng-if="l.state==0"
+                                  ng-click="label.changeState(l.id,1)">启用</button>
+                                <button class="btn btn-danger btn-sm" ng-if="l.state==1"
+                                  ng-click="label.changeState(l.id,0)">禁用</button>
+                            </td>
+                            <td><button class="btn btn-primary btn-sm" ng-click="label.update(l)">修改</button></td>
+                            <td><button class="btn btn-primary btn-sm" ng-click="label.view(l)">查看详情</button></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="box-footer">
+                    <tm-pagination conf="label.paginationConf" ng-if="!label.searching"></tm-pagination>
+                </div>
+                <div class="overlay" ng-show="label.loading">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+

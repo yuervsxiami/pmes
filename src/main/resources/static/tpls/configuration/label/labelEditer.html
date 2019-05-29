@@ -1,0 +1,139 @@
+<div class="modal-header bg-info">
+    <button type="button" class="close" ng-click="labEdit.cancel();"><span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title" ng-bind="labEdit.title"></h4>
+</div>
+<div class="modal-body">
+	<form class="form-horizontal" name="editForm">
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5" ng-class="{'has-success':editForm.inputName.$valid,'has-error':editForm.inputName.$invalid && editForm.inputName.$dirty}">
+				<label for="inputName" class="col-sm-4 control-label">标签名称</label>
+				<div class="col-sm-8">
+	                <input type="text" required name="inputName" class="form-control" id="inputName" placeholder="标签名称" ng-model="labEdit.currentLabel.name" style="width: 100%;">
+				</div>
+			</div>
+			<div class="col-sm-5" ng-class="{'has-success':editForm.inputKey.$valid,'has-error':editForm.inputKey.$invalid && editForm.inputKey.$dirty}">
+				<label for="inputKey" class="col-sm-4 control-label">标签key</label>
+				<div class="col-sm-8">
+	                <input type="text" required name="inputKey" class="form-control" id="inputKey" placeholder="标签key" ng-model="labEdit.currentLabel.key" style="width: 100%;">
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5" ng-class="{'has-success':labEdit.notEmpty(labEdit.currentLabel.type),'has-error':!labEdit.notEmpty(labEdit.currentLabel.type) && editForm.selectType.$dirty}">
+				<label for="selectType" class="col-sm-4 control-label">标签类型</label>
+                <div class="col-sm-8">
+                	<select id="selectType" name="selectType" required ng-model="labEdit.currentLabel.type" class="form-control select2" style="display:inline-block;width: 100%;"
+                		 ng-options="type.id as type.name for type in labEdit.labelType">
+                	</select>
+                </div>
+			</div>
+			<div class="col-sm-5" ng-class="{'has-success':labEdit.notEmpty(labEdit.currentLabel.valueType),'has-error':!labEdit.notEmpty(labEdit.currentLabel.valueType) && editForm.inputValueType.$dirty}">
+				<label for="inputValueType" class="col-sm-4 control-label">标签值类型</label>
+				<div class="col-sm-8">
+                    <select id="inputValueType" name="inputValueType" required ng-model="labEdit.currentLabel.valueType" class="form-control select2" style="display:inline-block;width: 100%;"
+                    	ng-options="type.id as type.name for type in labEdit.valueType">
+                        <option selected="selected" value="">--请选择标签值类型--</option>
+                        <option value="{{type.id}}" ng-repeat="type in labEdit.valueType">{{type.name}}</option>
+                    </select>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5" ng-class="{'has-success':editForm.inputMax.$valid,'has-error':editForm.inputMax.$invalid && editForm.inputMax.$dirty}">
+				<label for="inputMax" class="col-sm-4 control-label">最大值/长度</label>
+				<div class="col-sm-8">
+	                <input type="text" required name="inputMax" class="form-control" id="inputMax" placeholder="最大值/长度" ng-model="labEdit.currentLabel.maxValue" style="width: 100%;">
+				</div>
+			</div>
+			<div class="col-sm-5" ng-class="{'has-success':editForm.inputMin.$valid,'has-error':editForm.inputMin.$invalid && editForm.inputMin.$dirty}">
+				<label for="inputMin" class="col-sm-4 control-label">最小值/长度</label>
+				<div class="col-sm-8">
+	                <input type="text" required name="inputMin" class="form-control" id="inputKey" placeholder="最小值/长度" ng-model="labEdit.currentLabel.minValue" style="width: 100%;">
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5" ng-class="{'has-success':editForm.inputDefaultValue.$valid,'has-error':editForm.inputDefaultValue.$invalid && editForm.inputDefaultValue.$dirty}">
+				<label for="inputDefaultValue" class="col-sm-4 control-label">默认值</label>
+				<div class="col-sm-8">
+	                <input type="text" required name="inputDefaultValue" class="form-control" id="inputDefaultValue" placeholder="默认值" ng-model="labEdit.currentLabel.defaultValue" style="width: 100%;">
+				</div>
+			</div>
+			<div class="col-sm-5" ng-class="{'has-success':editForm.inputRemark.$valid,'has-error':editForm.inputRemark.$invalid && editForm.inputRemark.$dirty}">
+				<label for="inputRemark" class="col-sm-4 control-label">备注</label>
+				<div class="col-sm-8">
+	                <input type="text" required name="inputRemark" class="form-control" id="inputRemark" placeholder="备注" ng-model="labEdit.currentLabel.remark" style="width: 100%;">
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5" ng-class="{'has-success':labEdit.notEmpty(labEdit.currentLabel.source),'has-error':!labEdit.notEmpty(labEdit.currentLabel.source) && editForm.selectSource.$dirty}">
+				<label for="selectSource" class="col-sm-4 control-label">标签来源</label>
+                <div class="col-sm-8">
+                	<select id="selectSource" name="selectSource" required ng-model="labEdit.currentLabel.source" class="form-control select2" style="display:inline-block;width: 100%;"
+                		 ng-options="type.id as type.name for type in labEdit.labelSources">
+                        <option selected="selected" value="">--请选择标签来源--</option>
+                        <option value="{{type.id}}" ng-repeat="type in labEdit.labelSources">{{type.name}}</option>
+                	</select>
+                </div>
+			</div>
+			<div class="col-sm-5" ng-class="{'has-success':labEdit.notEmpty(labEdit.currentLabel.indexType),'has-error':!labEdit.notEmpty(labEdit.currentLabel.indexType) && editForm.selectIndexType.$dirty}">
+				<label for="selectIndexType" class="col-sm-4 control-label">标引方式</label>
+				<div class="col-sm-8">
+                    <select id="selectIndexType" name="selectIndexType" required ng-model="labEdit.currentLabel.indexType" class="form-control select2" style="display:inline-block;width: 100%;"
+                    	ng-options="type.id as type.name for type in labEdit.indexTypes">
+                        <option selected="selected" value="">--请选择标引方式--</option>
+                        <option value="{{type.id}}" ng-repeat="type in labEdit.indexTypes">{{type.name}}</option>
+                    </select>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label for="checkShowInProcess" class="col-sm-4 control-label">在流程中显示</label>
+                <div class="col-sm-8">
+                	<input type="checkbox" name="checkShowInProcess" ng-model="labEdit.currentLabel.showInProcess">
+                </div>
+			</div>
+			<div class="col-sm-5">
+				<label for="checkIsRequired" class="col-sm-4 control-label">是否必填</label>
+                <div class="col-sm-8">
+                	<input type="checkbox" name="checkIsRequired" ng-model="labEdit.currentLabel.isRequired">
+                </div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label for="checkIsmultiple" class="col-sm-4 control-label">是否多选</label>
+                <div class="col-sm-8">
+                	<input type="checkbox" name="checkIsmultiple" ng-model="labEdit.currentLabel.isMultiple">
+                </div>
+			</div>
+			<div class="col-sm-5" ng-class="{'has-waring':!labEdit.notEmpty(labEdit.currentLabel.metaKey) && editForm.selectMetaKey.$dirty}">
+				<label for="selectMetaKey" class="col-sm-4 control-label">元数据</label>
+				<div class="col-sm-8">
+                    <select id="selectMetaKey" name="selectMetaKey" required ng-model="labEdit.currentLabel.metaKey" class="form-control select2" style="display:inline-block;width: 100%;"
+                    	ng-options="meta.key as meta.name for meta in labEdit.metas">
+                        <option selected="selected" value="">--请选择元数据--</option>
+                    </select>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default"
+            ng-click="labEdit.cancel();">取消
+    </button>
+    <button type="button" class="btn btn-primary" ng-click="labEdit.ok();"
+    ng-disabled="!(labEdit.notEmpty(labEdit.currentLabel.type) && labEdit.notEmpty(labEdit.currentLabel.valueType) && labEdit.notEmpty(labEdit.currentLabel.source)
+     && labEdit.notEmpty(labEdit.currentLabel.indexType) && editForm.inputName.$valid && editForm.inputKey.$valid)">确定</button>
+</div>

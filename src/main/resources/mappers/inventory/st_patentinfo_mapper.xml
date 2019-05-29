@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.inventory.PatentInfoMapper">
+    <resultMap id="patentInfoMap" type="com.cnuip.pmes2.domain.inventory.PatentInfo">
+        <id property="patentId" column="IDPATENT" javaType="long" jdbcType="BIGINT"/>
+        <result property="sectionName" column="SECTIONNAME"/>
+        <result property="sysId" column="SYSID"/>
+        <result property="ti" column="TI"/>
+        <result property="an" column="AN"/>
+        <result property="ad" column="AD"/>
+        <result property="pnm" column="PNM"/>
+        <result property="pd" column="PD"/>
+        <result property="pa" column="PA"/>
+        <result property="ab" column="AB"/>
+        <result property="pin" column="PIN"/>
+        <result property="lastLegalStatus" column="LASTLEGALSTATUS"/>
+        <result property="whereAbouts" column="WHEREABOUTS"/>
+        <result property="isChecked" column="ISCHECKED"/>
+        <result property="createTime" column="CREATTIME" jdbcType="TIMESTAMP"
+                javaType="java.util.Date"/>
+        <result property="updateTime" column="UPDATETIME" jdbcType="TIMESTAMP"
+                javaType="java.util.Date"/>
+    </resultMap>
+
+    <resultMap id="basicInfoMap" type="com.cnuip.pmes2.domain.inventory.PatentInfo">
+        <id property="patentId" column="IDPATENT" javaType="long" jdbcType="BIGINT"/>
+        <result property="sectionName" column="SECTIONNAME"/>
+        <result property="sysId" column="SYSID"/>
+        <result property="ti" column="TI"/>
+        <result property="an" column="AN"/>
+        <result property="ad" column="AD"/>
+        <result property="pd" column="PD"/>
+        <result property="pnm" column="PNM"/>
+        <result property="pa" column="PA"/>
+        <result property="ab" column="AB"/>
+        <result property="pin" column="PIN"/>
+        <result property="lastLegalStatus" column="LASTLEGALSTATUS"/>
+        <result property="whereAbouts" column="WHEREABOUTS"/>
+        <result property="isChecked" column="ISCHECKED"/>
+        <result property="createTime" column="CREATTIME" jdbcType="TIMESTAMP"
+                javaType="java.util.Date"/>
+        <result property="updateTime" column="UPDATETIME" jdbcType="TIMESTAMP"
+                javaType="java.util.Date"/>
+        <association property="extra" column="SYSID" select="selectSub3BySysId"></association>
+    </resultMap>
+
+    <resultMap id="sub3Map" type="com.cnuip.pmes2.domain.inventory.PatentSub3Info">
+        <result property="patType" column="PATTYPE"/>
+        <result property="examinant" column="EXAMINANT"/>
+        <result property="sic" column="SIC"/>
+        <result property="pic" column="PIC"/>
+        <result property="co" column="CO"/>
+        <result property="dan" column="DAN"/>
+        <result property="pr" column="PR"/>
+        <result property="abPicPath" column="ABPICPATH"/>
+        <result property="pdfUrl" column="PDFURL"/>
+        <result property="cl" column="CL"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="basicInfoMap">
+		SELECT s1.IDPATENT,s1.SECTIONNAME,s1.SYSID,s1.TI,
+		s1.AD,s1.AN,s1.PD,s1.PNM,s1.LASTLEGALSTATUS,s1.AB,
+		s1.PA,s1.PIN,s1.CREATTIME,s1.UPDATETIME
+		FROM st_patentinfo_sub1 AS s1
+		ORDER BY s1.IDPATENT
+	</select>
+
+    <select id="findAfterTime" resultMap="basicInfoMap" parameterType="java.util.Date">
+        SELECT s1.IDPATENT,s1.SECTIONNAME,s1.SYSID,s1.TI,
+        s1.AD,s1.AN,s1.PD,s1.PNM,s1.LASTLEGALSTATUS,s1.AB,
+        s1.PA,s1.PIN,s1.CREATTIME,IFNULL(s1.UPDATETIME, s1.CREATTIME) AS UPDATETIME
+        FROM st_patentinfo_sub1 AS s1
+        <where>
+            <if test="lastUpdateTime != null">
+            IFNULL(UPDATETIME,CREATTIME) >= #{lastUpdateTime}
+            </if>
+        </where>
+        ORDER BY UPDATETIME ASC, s1.IDPATENT ASC
+    </select>
+    
+    <select id="findSub1AfterTime" resultType="com.cnuip.pmes2.domain.inventory.PatentInfo" parameterType="java.util.Date">
+        SELECT * FROM st_patentinfo_sub1
+        <where>
+            <if test="lastUpdateTime != null">
+            UPDATETIME >= #{lastUpdateTime} OR CREATTIME >= #{lastUpdateTime} 
+            </if>
+        </where>
+        ORDER BY UPDATETIME ASC, IDPATENT ASC
+       	LIMIT ${start},${limit}
+    </select>
+    
+    <select id="findSub3AfterTime" resultType="com.cnuip.pmes2.domain.inventory.PatentSub3Info" parameterType="java.util.Date">
+        SELECT * FROM st_patentinfo_sub3
+        <where>
+            <if test="lastUpdateTime != null">
+            UPDATETIME >= #{lastUpdateTime} OR CREATTIME >= #{lastUpdateTime} 
+            </if>
+        </where>
+        ORDER BY UPDATETIME ASC
+       	LIMIT ${start},${limit}
+    </select>
+
+    <select id="selectTotalAfterTimeNum" resultType="int" parameterType="java.util.Date">
+        SELECT count(IDPATENT)
+        FROM st_patentinfo_sub1
+        <if test="lastUpdateTime != null">
+        WHERE UPDATETIME >= #{lastUpdateTime} OR CREATTIME >= #{lastUpdateTime} 
+        </if>
+    </select>
+    
+    <select id="selectTotalSub3AfterTimeNum" resultType="int" parameterType="java.util.Date">
+        SELECT count(SYSID)
+        FROM st_patentinfo_sub3
+        <if test="lastUpdateTime != null">
+        WHERE UPDATETIME >= #{lastUpdateTime} OR CREATTIME >= #{lastUpdateTime} 
+        </if>
+    </select>
+
+    <select id="selectSub3BySysId" parameterType="string" resultMap="sub3Map">
+		SELECT s3.PATTYPE,s3.EXAMINANT,s3.SIC,s3.PIC,s3.CO,
+		s3.DAN,s3.PR,s3.ABPICPATH,s3.PDFURL,s3.CL
+		FROM st_patentinfo_sub3 AS s3 
+		WHERE s3.SYSID = #{sysId}
+	</select>
+
+    <select id="selectTotalNum" resultType="int">
+		SELECT count(*)
+		FROM st_patentinfo_sub1 AS s1
+		LEFT JOIN st_patentinfo_sub3 AS s3 ON s1.SYSID = s3.SYSID
+	</select>
+
+    <select id="getLabelValue" parameterType="string" resultType="string">
+		SELECT ${column} FROM ${table} WHERE an = #{an} ORDER BY UPDATETIME DESC LIMIT 1
+	</select>
+
+    <select id="getLabelRowCount" parameterType="string" resultType="int">
+		SELECT count(*) FROM ${table} WHERE an = #{an}
+	</select>
+
+    <select id="getFeeState" parameterType="string" resultType="string">
+		SELECT state FROM st_patfeeinfo WHERE APPLYNUM = #{applyNum} AND FEETYPE LIKE CONCAT('%', #{feeType})
+		ORDER BY RECEIPTIONDATE DESC
+		LIMIT 1
+	</select>
+
+</mapper>

@@ -1,0 +1,44 @@
+<form role="form" name="add_labelset_form">
+    <div class="modal-header bg-info">
+        <button type="button" class="close" ng-click="addLabelset.cancel();"><span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">添加标签体系</h4>
+    </div>
+    <div class="modal-body">
+        <div class="box box-default">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <meta-selector meta-key="labelsetType" model="addLabelset.labelset.type"/>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" ng-class="addLabelset.getCssClasses(add_labelset_form.name)">
+                            <label>标签体系名称：</label>
+                            <input type="text" name="name" class="form-control" required placeholder="请输入标签体系名称"
+                                   ng-model="addLabelset.labelset.name">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <!--<div class="form-group">
+                            <label>标签体系版本：</label>
+                            <input type="text" readonly class="form-control" placeholder="请输入版本号"
+                                   ng-model="addLabelset.labelset.version">
+                        </div>-->
+                        <label>待复制标签体系</label>
+                        <select class="form-control" ng-model="addLabelset.labelset.id" ng-disabled="!!disabled">
+                            <option value="" ng-selected="!addLabelset.labelset.id">--不复制标签体系--</option>
+                            <option ng-repeat="ls in addLabelset.currentLabelsets" value="{{ls.id}}" ng-selected="addLabelset.labelset.id === ls.id" ng-bind="ls.name"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="overlay" ng-show="addLabelset.loading">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="addLabelset.cancel();">取消</button>
+        <button type="button" class="btn btn-primary" ng-click="addLabelset.ok();" ng-disabled="!addLabelset.formCanSave(add_labelset_form)">确定</button>
+    </div>
+</form>

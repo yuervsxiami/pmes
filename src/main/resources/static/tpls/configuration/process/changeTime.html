@@ -1,0 +1,39 @@
+<form role="form" name="change_time_form">
+    <div class="modal-header bg-info">
+        <button type="button" class="close" ng-click="changeTime.cancel();"><span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">配置时间</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="box box-default">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" ng-class="changeTime.getCssClasses(change_time_form.tbAlertTime)">
+                            <label>预警时间(分钟)：</label>
+                            <input type="text" name="tbAlertTime" class="form-control" required placeholder="请输入预警时间"
+                                   ng-model="changeTime.process.alertTime">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" ng-class="changeTime.getCssClasses(change_time_form.tbDueTime)">
+                            <label>超时时间(分钟)：</label>
+                            <input type="text" name="tbDueTime" class="form-control" required placeholder="请输入超时时间"
+                                   ng-model="changeTime.process.dueTime">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overlay" ng-show="changeTime.loading">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="changeTime.cancel();"
+                ng-disabled="changeTime.loading">取消</button>
+        <button type="button" class="btn btn-primary" ng-click="changeTime.ok();"
+                ng-disabled="changeTime.loading ||!changeTime.formCanSave(change_time_form)">确定</button>
+    </div>
+</form>

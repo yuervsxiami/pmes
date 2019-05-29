@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.MessageMapper">
+	<resultMap type="com.cnuip.pmes2.domain.core.Message"
+		id="messageMap">
+		<result column="id" property="id" />
+		<result column="user_id" property="userId" />
+		<result column="type" property="type" />
+		<result column="related_id" property="relatedId" />
+		<result column="content" property="content" />
+		<result column="pic" property="pic" />
+		<result column="has_read" property="hasRead" />
+		<result column="has_deal" property="hasDeal" />
+		<result column="sender_name" property="senderName" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+		<result column="url" property="url" />
+	</resultMap>
+
+	<select id="selectByPK" parameterType="long" resultMap="messageMap">
+		SELECT
+		id,user_id,type,related_id,content,create_time,update_time,url,has_read,has_deal,sender_name FROM p_message
+		WHERE id = #{id}
+	</select>
+
+	<insert id="add" parameterType="com.cnuip.pmes2.domain.core.Message"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_message
+		(user_id,type,related_id,content,pic,url,sender_name)
+		VALUES
+		(#{userId},#{type},#{relatedId},#{content},#{pic},#{url},#{senderName})
+	</insert>
+
+	<update id="update" parameterType="com.cnuip.pmes2.domain.core.Message">
+		UPDATE p_message
+		<set>
+			<if test="userId!=null">user_id=#{userId},</if>
+			<if test="type!=null">type=#{type},</if>
+			<if test="relatedId!=null">related_id=#{relatedId},</if>
+			<if test="content!=null">content=#{content},</if>
+			<if test="url!=null">url=#{url},</if>
+			<if test="pic!=null">pic=#{pic}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		DELETE FROM p_message WHERE id = #{id}
+	</delete>
+
+	<select id="selectByUser" parameterType="long" resultMap="messageMap">
+		SELECT
+		id,user_id,type,related_id,content,pic,create_time,update_time,url,has_read,has_deal,sender_name FROM p_message
+		WHERE user_id = #{userId}
+		ORDER BY update_time DESC
+	</select>
+	
+	<update id="read" parameterType="long">
+		UPDATE p_message SET has_read = 1 WHERE id = #{id}
+	</update>
+
+	<select id="unreadNum" parameterType="long" resultType="int">
+		SELECT count(*) FROM p_message WHERE user_id = #{userId} and has_read = 0
+	</select>
+	
+	<update id="readAll" parameterType="long">
+		UPDATE p_message SET has_read = 1 WHERE user_id = #{userId}
+	</update>
+
+</mapper>

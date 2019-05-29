@@ -1,0 +1,37 @@
+<form role="form" name="set_labelset_form">
+    <div class="modal-header bg-info">
+        <button type="button" class="close" ng-click="setLabelset.cancel();"><span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">设置标签体系</h4>
+    </div>
+    <div class="modal-body">
+        <div class="box box-default">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="form-group" ng-class="setLabelset.getCssClasses(set_labelset_form.labelsetname)">
+                            <label>标签体系:</label>
+                            <select name="labelsetname" required ng-model="setLabelset.process.labelsetId"
+                                    class="form-control select2" style="display:inline-block;width: 100%;"
+                                    ng-options="labelset.id as labelset.name+' - V'+labelset.version for labelset in setLabelset.labelsets">
+                                <option selected="selected" value="">--请选择标签体系--</option>
+                                <option value="{{labelset.id}}" ng-repeat="labelset in setLabelset.labelsets">{{labelset.name+' - V'+labelset.version}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+            </div>
+            <div class="overlay" ng-show="setLabelset.loading">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="setLabelset.cancel();"
+                ng-disabled="setLabelset.loading">取消</button>
+        <button type="button" class="btn btn-primary" ng-click="setLabelset.ok();"
+                ng-disabled="setLabelset.loading || setLabelset.process.labelsetId==null">确定</button>
+    </div>
+</form>

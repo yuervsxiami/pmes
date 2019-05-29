@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.PatentIndexMapper">
+
+	<resultMap id="baseMap" type="com.cnuip.pmes2.domain.core.PatentIndex">
+		<result column="id" property="id"></result>
+		<result column="an" property="an"></result>
+		<result column="has_base_index" property="hasBaseIndex"></result>
+		<result column="has_base_indexing" property="hasBaseIndexing"></result>
+		<result column="has_value_index" property="hasValueIndex"></result>
+		<result column="has_value_indexing" property="hasValueIndexing"></result>
+		<result column="has_price_index" property="hasPriceIndex"></result>
+		<result column="has_price_indexing" property="hasPriceIndexing"></result>
+		<result column="has_deep_index" property="hasDeepIndex"></result>
+		<result column="has_deep_indexing" property="hasDeepIndexing"></result>
+	</resultMap>
+
+	<select id="insert" parameterType="string">
+		INSERT INTO p_patent_index (an) VALUES (#{an})
+	</select>
+
+	<select id="selectByAn" resultMap="baseMap" parameterType="string">
+		SELECT id,
+			an,
+			has_base_index,
+			has_base_indexing,
+			has_value_index,
+			has_value_indexing,
+			has_price_index,
+			has_price_indexing,
+			has_deep_index,
+			has_deep_indexing
+		FROM p_patent_index
+		WHERE an = #{an}
+	</select>
+
+	<select id="update" parameterType="com.cnuip.pmes2.domain.core.PatentIndex">
+		UPDATE p_patent_index
+		<set>
+			<if test="hasBaseIndex!=null">has_base_index = #{hasBaseIndex},</if>
+			<if test="hasBaseIndexing!=null">has_base_indexing = #{hasBaseIndexing},</if>
+			<if test="hasValueIndex!=null">has_value_index = #{hasValueIndex},</if>
+			<if test="hasValueIndexing!=null">has_value_indexing = #{hasValueIndexing},</if>
+			<if test="hasPriceIndex!=null">has_price_index = #{hasPriceIndex},</if>
+			<if test="hasPriceIndexing!=null">has_price_indexing = #{hasPriceIndexing},</if>
+			<if test="hasDeepIndex!=null">has_deep_index = #{hasDeepIndex},</if>
+			<if test="hasDeepIndexing!=null">has_deep_indexing = #{hasDeepIndexing},</if>
+		</set>
+		WHERE an = #{an}
+	</select>
+
+
+</mapper>

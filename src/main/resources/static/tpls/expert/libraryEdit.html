@@ -1,0 +1,293 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <ol class="breadcrumb">
+    <li><a ui-sref="main.console.dashboard"><i class="iconfont icon-zhuanjiaguanli"></i> 专家管理</a></li>
+    <li class="active">{{ExLiEditCtrl.isUpdate?'编辑':'添加'}}专家</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-default">
+        <div class="box-body">
+          <form class="form-horizontal" name="registerForm">
+            <div class="form-group">
+              <label for="inputName" class="col-sm-2 control-label">专家姓名</label>
+              <div class="col-sm-6">
+                <input type="text" required name="inputName" class="form-control" id="inputName" placeholder="专家姓名"
+                       ng-model="ExLiEditCtrl.expert.name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">性别</label>
+              <span class="col-sm-6">
+                                   <span class="col-sm-2"><input type="radio" name="inputGender" placeholder="男"
+                                                                 ng-value="1"
+                                                                 ng-model="ExLiEditCtrl.expert.gender">男</span>
+                                   <span class="col-sm-2"><input type="radio" name="inputGender" placeholder="女"
+                                                                 ng-value="0"
+                                                                 ng-model="ExLiEditCtrl.expert.gender">女</span>
+                               </span>
+            </div>
+            <div class="form-group">
+              <label for="inputName" class="col-sm-2 control-label">头像</label>
+              <img src="" width="60" height="60" class="preImg" alt="" />
+              <button ngf-select="upload($file)"  accept="image/*" class="uploadBtn" >
+                上传
+              </button>
+
+            </div>
+            <div class="form-group">
+              <label for="inputIdNumber" class="col-sm-2 control-label">身份证号</label>
+              <div class="col-sm-6">
+                <input type="text" required name="inputIdNumber" class="form-control" id="inputIdNumber"
+                       placeholder="身份证号" ng-model="ExLiEditCtrl.expert.idNumber">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputPhone" class="col-sm-2 control-label">手机号</label>
+              <div class="col-sm-6">
+                <input type="text" required name="inputPhone" class="form-control" id="inputPhone" placeholder="手机号"
+                       ng-model="ExLiEditCtrl.expert.phone">
+              </div>
+
+            </div>
+            <div class="form-group">
+              <label for="inputEmail" class="col-sm-2 control-label">邮箱</label>
+              <div class="col-sm-6">
+                <input type="text" required name="inputEmail" class="form-control" id="inputEmail" placeholder="邮箱"
+                       ng-model="ExLiEditCtrl.expert.email">
+              </div>
+
+            </div>
+            <div class="form-group">
+              <label for="inputEducation" class="col-sm-2 control-label">省份</label>
+              <div class="col-sm-6">
+                <select class="form-control" ng-model="ExLiEditCtrl.province" ng-change="ExLiEditCtrl.changeProvince()">
+                  <option value="">请选择</option>
+                  <option ng-repeat="v in ExLiEditCtrl.provinceList" value="{{v}}">{{v}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputEducation" class="col-sm-2 control-label">高校</label>
+              <div class="col-sm-6">
+                <select class="form-control" ng-model="ExLiEditCtrl.colleges">
+                  <option value="">请选择</option>
+                  <option ng-repeat="v in ExLiEditCtrl.collegesList" value="{{v.id}}">{{v.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputDepartment" class="col-sm-2 control-label">院系</label>
+              <div class="col-sm-6">
+                <input type="text" required name="inputDepartment" class="form-control" id="inputDepartment"
+                       placeholder="院系" ng-model="ExLiEditCtrl.expert.department">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputProfession" class="col-sm-2 control-label">专业</label>
+              <div class="col-sm-6">
+                <input type="text" required name="inputProfession" class="form-control" id="inputProfession"
+                       placeholder="专业" ng-model="ExLiEditCtrl.expert.profession">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputEducation" class="col-sm-2 control-label">学历</label>
+              <div class="col-sm-6">
+                <select class="form-control" ng-model="ExLiEditCtrl.searchCondition.state">
+                  <option value="0">大专</option>
+                  <option value="1">本科</option>
+                  <option value="0">硕士</option>
+                  <option value="1">博士</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">职称</label>
+              <div class="col-sm-6">
+                <label ng-repeat="postList in ExLiEditCtrl.expertPost" style="margin-left: 10px;">
+                  <input type="checkbox"/>{{postList.name}}
+                </label>
+
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">科研方向</label>
+              <div class="col-sm-6">
+                <textarea style="resize:none;" class="form-control" name="inputScientific "
+                          ng-model="ExLiEditCtrl.expert.scientific "></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">个人荣誉</label>
+              <div class="col-sm-6">
+                <textarea style="resize:none;" class="form-control" name="inputHonor"
+                          ng-model="ExLiEditCtrl.expert.honor"></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">承接课题</label>
+              <div class="col-sm-6">
+                <textarea style="resize:none;" class="form-control" name="inputTask"
+                          ng-model="ExLiEditCtrl.expert.task"></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">其他备注</label>
+              <div class="col-sm-6">
+                <textarea style="resize:none;" class="form-control" name="inputOther"
+                          ng-model="ExLiEditCtrl.expert.other"></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">研究领域(可多选)</label>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">IPC</label>
+              <div class="col-sm-6">
+                <select class="form-control" ng-model="ExLiEditCtrl.selected"
+                        ng-options="s.description for s in ExLiEditCtrl.ipcs"
+                        ng-change="ExLiEditCtrl.changeIpc()" >
+                  <option value="">--请选择--</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label"></label>
+              <div class="col-sm-6">
+                  <label ng-repeat="ipcTwo in ExLiEditCtrl.ipcOne" style="margin-left: 10px;">
+                  <input type="checkbox"
+                         name="{{ipcTwo.description}}"
+                         ng-checked="ExLiEditCtrl.isSelected(ipcTwo.id)"
+                         ng-click="ExLiEditCtrl.updateSelection($event,ipcTwo.id)"/>
+                        {{ipcTwo.description}}
+                  </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">已选</label>
+              <div class="col-sm-6">
+                <ul ng-repeat="currentChangeTag in ExLiEditCtrl.newSelected track by $index">
+                  <li>{{currentChangeTag}}</li>
+                </ul>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">国民经济</label>
+              <div class="col-sm-3">
+                <select class="form-control" ng-model="nationalCtrl.national.t1"
+                        ng-change="nationalCtrl.nationalChange(1, nationalCtrl.national.t1)">
+                  <option value="" selected="selected">全部</option>
+                  <option value="{{item}}"
+                          ng-repeat="item in nationalCtrl.t1s ">{{item.name}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <select class="form-control" ng-model="nationalCtrl.national.t1"
+                        ng-change="nationalCtrl.nationalChange(1, nationalCtrl.national.t1)">
+                  <option value="" selected="selected">全部</option>
+                  <option value="{{item}}"
+                          ng-repeat="item in nationalCtrl.t1s ">{{item.name}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label"></label>
+              <div class="col-sm-6">
+                <label ng-repeat="postList in ExLiEditCtrl.expertPost" style="margin-left: 10px;">
+                  <input type="checkbox"/>{{postList.name}}
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">已选</label>
+              <div class="col-sm-6">
+
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">八大产业</label>
+              <div class="col-sm-3">
+                <select class="form-control" ng-model="nationalCtrl.national.t1"
+                        ng-change="nationalCtrl.nationalChange(1, nationalCtrl.national.t1)">
+                  <option value="" selected="selected">全部</option>
+                  <option value="{{item}}"
+                          ng-repeat="item in nationalCtrl.t1s ">{{item.name}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <select class="form-control" ng-model="nationalCtrl.national.t1"
+                        ng-change="nationalCtrl.nationalChange(1, nationalCtrl.national.t1)">
+                  <option value="" selected="selected">全部</option>
+                  <option value="{{item}}"
+                          ng-repeat="item in nationalCtrl.t1s ">{{item.name}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label"></label>
+              <div class="col-sm-6">
+                <label ng-repeat="postList in ExLiEditCtrl.expertPost" style="margin-left: 10px;">
+                  <input type="checkbox"/>{{postList.name}}
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">已选</label>
+              <div class="col-sm-6">
+
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">论文</label>
+              <div class="col-sm-2">
+                <select class="form-control">
+                  <option value="" selected="selected">全部</option>
+                  <option value="{{item}}">SCI</option>
+                </select>
+              </div>
+              <div class="col-sm-2 ">
+
+                <input type="text" required name="inputPaperName" class="form-control" id="inputPaperName"
+                       placeholder="请输入论文昵称"
+                       ng-model="ExLiEditCtrl.expert.paperName">
+              </div>
+              <div class="col-sm-2">
+                <button>更多</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputKeyword" class="col-sm-2 control-label">关键字</label>
+              <div class="col-sm-6">
+                <input type="text" required name="inputKeyword" class="form-control" id="inputKeyword" placeholder="关键字"
+                       ng-model="ExLiEditCtrl.expert.keyword">
+              </div>
+              <div class="col-sm-2">
+                <button>更多</button>
+              </div>
+            </div>
+            <div class="box-footer">
+              <button type="submit" class="btn btn-primary col-sm-offset-2" ng-click="ExLiEditCtrl.edit()">
+                提交
+              </button>
+
+            </div>
+          </form>
+        </div>
+        <!-- /.box-body -->
+        <!--<div class="overlay" ng-show="ExLiEditCtrl.loading">-->
+        <!--<i class="fa fa-refresh fa-spin"></i>-->
+        <!--</div>-->
+      </div>
+      <!-- /.box -->
+    </div>
+  </div>
+</section>
+<!-- /.content -->

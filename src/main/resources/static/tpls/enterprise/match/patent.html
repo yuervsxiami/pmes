@@ -1,0 +1,205 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li><i class="iconfont icon-pipei"></i> 匹配管理</li>
+        <li>{{taskOrderCtrl.processType.name}}流程</li>
+        <li class="active">{{taskOrderCtrl.taskType.name}}</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box box-default">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>定单号：</label>
+                                <input type="text" class="form-control" placeholder="请输入定单号"
+                                       ng-model="taskOrderCtrl.searchCondition.actInstanceId">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>工单号：</label>
+                                <input type="text" class="form-control" placeholder="请输入工单号"
+                                       ng-model="taskOrderCtrl.searchCondition.acTaskId">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>工单状态：</label>
+                                <select class="form-control" ng-model="taskOrderCtrl.searchCondition.state">
+                                    <option value="" selected="selected">全部</option>
+                                    <option value="{{state.id}}"
+                                            ng-repeat="state in taskOrderCtrl.taskOrderStates">{{state.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>企业名称：</label>
+                                <input type="text" class="form-control" placeholder="请输入企业名称"
+                                       ng-model="taskOrderCtrl.searchCondition.acTaskId">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>统一社会信用代码：</label>
+                                <input type="text" class="form-control" placeholder="请输入统一社会信用代码" ng-model="taskOrderCtrl.searchCondition.unifiedSocialCreditCode">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>国民经济领域：</label>
+                                <button class="btn btn-default form-control" style="background-color: transparent; text-align: left"
+                                        ng-bind="taskOrderCtrl.currentNationalEconomyField ? taskOrderCtrl.currentNationalEconomyField.name: '全部'"
+                                        ng-click="taskOrderCtrl.openNationalDlg()" ></button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <!--企业类型-->
+                            <meta-selector meta-key="enterpriseType" model="taskOrderCtrl.searchCondition.enterpriseType" empty-title="全部"/>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>注册地址：</label>
+                                <button class="btn btn-default form-control" style="background-color: transparent; text-align: left"
+                                        ng-bind="taskOrderCtrl.region | changeSearchRegion"
+                                        ng-click="taskOrderCtrl.openRegionDlg()" ></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>企业需求关键词：</label>
+                                <input type="text" class="form-control" placeholder="请输入企业需求关键词" ng-model="taskOrderCtrl.searchCondition.keywords">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>企业需求：</label>
+                                <textarea type="text" class="form-control" rows="3" placeholder="请输入企业需求" ng-model="taskOrderCtrl.searchCondition.requirement"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>操作时间：</label>
+                                <my-datetime-range on-datetime-range-changed="taskOrderCtrl.onDatetimeRangeChanged('up', start, end)"
+                                                max-date="taskOrderCtrl.maxDate"
+                                                start-date="taskOrderCtrl.searchCondition.fromUpdateTime"
+                                                end-date="taskOrderCtrl.searchCondition.toUpdateTime" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="box-footer">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-warning" style="padding: 3px 12px" ng-click="taskOrderCtrl.search()">查询</button>
+                            <button type="reset" class="btn btn-default" ng-click="taskOrderCtrl.reset()">重置</button>
+                        </div>
+                        <div class="col-md-8 form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-1" style="width: 32px; padding-top: 5px"><input type="checkbox" ng-model="taskOrderCtrl.autoRefresh" ng-change="taskOrderCtrl.onAutoRefreshChanged()"></label>&nbsp;
+                                <select class="col-sm-2 form-control" style="width: 65px" ng-model="taskOrderCtrl.period">
+                                    <option value="{{period.id}}" ng-repeat="period in taskOrderCtrl.periods">{{period.name}}</option>
+                                </select>
+                                <label class="col-sm-9" style="width: 80px; padding-top: 5px; padding-left: 5px">刷新</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box box-default">
+                <div class="box-header">
+                    <h3 class="box-title">工单列表</h3>
+                    <div class="box-tools">
+                        <button class="btn btn-info btn-sm"
+                                ng-if="taskOrderCtrl.taskType.key=='AssignOrder'"
+                                ng-click="taskOrderCtrl.doTask(null)">派单</button>
+                    </div>
+                    <div class="bg-mybtn">
+                        <div class="bg-btn">警告</div>
+                        <div class="bg-btn">预警</div>
+                        <div class="bg-btn">正常</div>
+                    </div>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-striped">
+                        <tr>
+                            <th width="32px;" ng-if="taskOrderCtrl.showCheckBox">
+                                <input type="checkbox"
+                                       ng-model="taskOrderCtrl.allSelected"
+                                       ng-change="taskOrderCtrl.changeAllSelected()">
+                            </th>
+                            <th>定单号</th>
+                            <th>工单号</th>
+                            <th>企业名称</th>
+                            <th>企业需求</th>
+                            <th>需求关键词</th>
+                            <th>国民经济领域</th>
+                            <th>企业类型</th>
+                            <th>注册地址</th>
+                            <th>工单状态</th>
+                            <th>操作时间</th>
+                            <th ng-if="taskOrderCtrl.taskType.key=='AssignOrder'"></th>
+                            <th ng-if="taskOrderCtrl.taskType.key=='ArtificialSelection'"></th>
+                            <th ng-if="taskOrderCtrl.taskType.key=='ArtificialSelection'"></th>
+                        </tr>
+                        <tr ng-repeat="item in taskOrderCtrl.taskOrders"
+                            ng-class="item.data.hasDue && item.data.state==0 ? 'bg-red' : (item.data.hasAlert && item.data.state==0 ? 'bg-warning' : '')">
+                            <td ng-if="taskOrderCtrl.showCheckBox">
+                                <input type="checkbox"
+                                       ng-disabled="item.data.state!=0"
+                                       ng-model="item.selected"
+                                       ng-change="taskOrderCtrl.changeSelected()">
+                            </td>
+                            <td><span ng-bind="item.data.processOrder.actInstanceId"></span></td>
+                            <td><span ng-bind="item.data.actTaskId"></span></td>
+                            <td><span ng-bind="item.data.match.enterpriseRequirement.enterprise.name"></span></td>
+                            <td><span ng-bind="item.data.match.enterpriseRequirement.requirement"></span></td>
+                            <td><span ng-bind="item.data.match.enterpriseRequirement.keywords"></span></td>
+                            <td><span ng-bind="item.data.match.enterpriseRequirement.enterprise.nationalEconomy.name || '-'"></span></td>
+                            <td><span ng-bind="item.data.match.enterpriseRequirement.enterprise.type"></span></td>
+                            <td><span ng-bind="item.data.match.enterpriseRequirement.enterprise | changeRegionWithAddress"></span></td>
+                            <td><span ng-bind="item.data.state | changeTaskOrderState"></span></td>
+                            <td><span ng-bind="item.data.updateTime | date: 'yyyy-MM-dd HH:mm'"></span></td>
+                            <td ng-if="taskOrderCtrl.taskType.key=='AssignOrder'">
+                                <button class="btn btn-primary btn-sm"
+                                        ng-disabled="item.data.state!=0"
+                                        ng-click='taskOrderCtrl.doTask(item.data)'
+                                        ng-bind="item.data.processTask.taskType | changeTaskType"></button>
+                            </td>
+                            <td ng-if="taskOrderCtrl.taskType.key=='ArtificialSelection'">
+                                <button class="btn btn-primary btn-sm"
+                                        ng-disabled="item.data.state==1"
+                                        ng-click="taskOrderCtrl.doTask(item.data)">匹配详情</button>
+                            </td>
+                            <td ng-if="taskOrderCtrl.taskType.key=='ArtificialSelection'">
+                                <a class="btn btn-primary btn-sm" ui-sref="">推送结果</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="box-footer">
+                    <tm-pagination conf="taskOrderCtrl.paginationConf" ng-if="!taskOrderCtrl.searching"></tm-pagination>
+                </div>
+                <div class="overlay" ng-show="taskOrderCtrl.loading">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->

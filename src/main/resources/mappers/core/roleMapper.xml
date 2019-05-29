@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.RoleMapper">
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Role" id="baseMap">
+		<id property="id" column="id"/>
+		<result property="remark" column="remark"/>
+		<result property="name" column="name"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+	</resultMap>
+
+	<select id="selectByPrimaryKey" parameterType="long" resultMap="baseMap">
+		SELECT id,name,remark,create_time,update_time
+		FROM p_role
+		WHERE id = #{id}
+	</select>
+
+	<select id="selectAll" resultMap="baseMap">
+		SELECT id,name,remark,create_time,update_time
+		FROM p_role
+	</select>
+	
+	<select id="selectByParentId" parameterType="long" resultMap="baseMap">
+		SELECT id,name,remark,create_time,update_time
+		FROM p_role
+		WHERE parent_id = #{parentId}
+	</select>
+	
+	<insert id="add" parameterType="com.cnuip.pmes2.domain.core.Role" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_role
+		(name,remark)
+		VALUES
+		(#{name},#{remark})
+	</insert>
+	
+	<update id="update" parameterType="com.cnuip.pmes2.domain.core.Role">
+		UPDATE p_role
+		<set>
+			<if test="name!=null">name=#{name},</if>
+			<if test="remark!=null">remark=#{remark}</if>
+		</set>
+	</update>
+	
+	<delete id="delete" parameterType="long">
+		DELETE FROM p_role
+		WHERE id = #{id}
+	</delete>
+
+	<!-- 给角色添加对应的权限 -->
+	<insert id="addRoleAuthorities" parameterType="com.cnuip.pmes2.domain.core.Role">
+		REPLACE INTO p_role_authority (role_id,authority_id) VALUES
+		<foreach collection="authorities" separator="," item="authority">
+			(#{id},#{authority.id})
+		</foreach>
+	</insert>
+
+	<delete id="deleteRoleAuthorities" parameterType="long">
+		DELETE FROM p_role_authority WHERE role_id = #{roleId}
+	</delete>
+</mapper>

@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.ProcessOrderMapper">
+
+	<resultMap type="com.cnuip.pmes2.domain.core.ProcessOrder" id="baseMap">
+		<id property="id" column="id"/>
+		<result property="actInstanceId" column="act_instance_id"/>
+		<result property="instanceId" column="instance_id"/>
+		<result property="instanceType" column="instance_type"/>
+		<result property="processType" column="process_type"/>
+		<result property="instanceType" column="instance_type"/>
+		<result property="processCnfId" column="process_cnf_id"/>
+		<result property="state" column="state"/>
+		<result property="hasAlert" column="has_alert"/>
+		<result property="hasDue" column="has_due"/>
+		<result property="labelsetId" column="labelset_id"></result>
+		<result property="createTime" column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="userId" column="user_id"/>
+	</resultMap>
+	
+	<resultMap type="com.cnuip.pmes2.domain.core.ProcessOrder" id="alertMap" extends="baseMap">
+		<result property="processName" column="process_name"/>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.ProcessOrder" extends="baseMap" id="processOrderMap">
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+		<association property="process" column="process_cnf_id" select="com.cnuip.pmes2.repository.core.ProcessMapper.selectByPrimaryKey"></association>
+		<collection property="taskOrders" column="id" select="com.cnuip.pmes2.repository.core.TaskOrderMapper.findOrdersByProcessOrderId"></collection>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.ProcessOrder" extends="baseMap" id="processOrderMap2">
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+		<collection property="taskOrders" column="id" select="com.cnuip.pmes2.repository.core.TaskOrderMapper.findOrdersByProcessOrderId"></collection>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.ProcessOrder" extends="baseMap" id="processOrderMap3">
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+		<association property="process" column="process_cnf_id" select="com.cnuip.pmes2.repository.core.ProcessMapper.selectProcessById"></association>
+		<collection property="taskOrders" column="id" select="com.cnuip.pmes2.repository.core.TaskOrderMapper.findSimpleOrdersByProcessOrderId"></collection>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.ProcessOrder" extends="baseMap" id="processOrderMap4">
+		<association property="process" column="process_cnf_id" select="com.cnuip.pmes2.repository.core.ProcessMapper.selectProcessById"></association>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.ProcessOrder" extends="baseMap" id="patentProcessOrderSearchMap">
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+		<association property="process" column="process_cnf_id" select="com.cnuip.pmes2.repository.core.ProcessMapper.selectProcessById"></association>
+		<association property="patent" column="instance_id" select="com.cnuip.pmes2.repository.core.PatentMapper.selectSimpleByPrimaryKey"></association>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.ProcessOrder" extends="baseMap" id="requirementProcessOrderSearchMap">
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+		<association property="enterpriseRequirement" column="instance_id" select="com.cnuip.pmes2.repository.core.EnterpriseRequirementMapper.findById"></association>
+	</resultMap>
+
+	<sql id="selectList">
+		SELECT
+		id,
+		act_instance_id,
+		instance_id,
+		process_type,
+		instance_type,
+		process_cnf_id,
+		state,
+		create_time,
+		update_time,
+		user_id,
+		has_alert,has_due,
+		labelset_id
+		FROM p_process_order
+	</sql>
+
+	<select id="selectDashboardProcessOrderByKey" parameterType="long" resultMap="processOrderMap4">
+		<include refid="selectList" />
+		WHERE id = #{id}
+	</select>
+
+	<select id="selectSimpleByPrimaryKey" parameterType="long" resultMap="baseMap">
+		SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE id = #{id}
+	</select>
+
+	<select id="selectSimpleByInstanceId" parameterType="long" resultMap="baseMap">
+		SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE instance_id = #{instanceId}
+	</select>
+
+	<select id="selectSimpleByInstanceType" parameterType="int" resultMap="baseMap">
+		SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE instance_type = #{instanceType}
+	</select>
+
+	<select id="selectSimpleByProcessType" parameterType="int" resultMap="baseMap">
+		SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE process_type = #{processType}
+	</select>
+
+	<select id="getSimpleBaseIndexOrder" resultMap="baseMap">
+		SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE id=(SELECT SUBSTRING_INDEX(group_concat(id ORDER BY update_time DESC),',',1) id
+		FROM p_process_order
+		WHERE instance_id=#{instanceId} AND process_type=2
+		GROUP BY process_type)
+	</select>
+
+	<select id="getSimpleValueIndexOrder" resultMap="baseMap">
+		SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE id=(SELECT SUBSTRING_INDEX(group_concat(id ORDER BY update_time DESC),',',1) id
+		FROM p_process_order
+		WHERE instance_id=#{instanceId} AND process_type=3
+		GROUP BY process_type)
+	</select>
+
+	<select id="getSimplePriceIndexOrder" resultMap="baseMap">
+		SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE id=(SELECT SUBSTRING_INDEX(group_concat(id ORDER BY update_time DESC),',',1) id
+		FROM p_process_order
+		WHERE instance_id=#{instanceId} AND process_type=4
+		GROUP BY process_type)
+	</select>
+
+	<select id="getSimpleDeepIndexOrder" resultMap="baseMap">
+		SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE id=(SELECT SUBSTRING_INDEX(group_concat(id ORDER BY update_time DESC),',',1) id
+		FROM p_process_order
+		WHERE instance_id=#{instanceId} AND process_type=5
+		GROUP BY process_type)
+	</select>
+
+	<select id="findAssessmentOrderByInstanceId" resultMap="processOrderMap2" parameterType="long">
+		SELECT
+		  id,
+		  act_instance_id,
+		  instance_id,
+		  process_type,
+		  instance_type,
+		  process_cnf_id,
+		  state,
+		  create_time,
+		  update_time,
+		  user_id,
+		  has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE id = (SELECT max(id) id
+					FROM p_process_order
+					WHERE instance_id = #{instanceId} AND process_type = 1 AND state = 1)
+	</select>
+
+	<select id="findValueIndexOrderByInstanceId" resultMap="processOrderMap2" parameterType="long">
+		SELECT
+		id,
+		act_instance_id,
+		instance_id,
+		process_type,
+		instance_type,
+		process_cnf_id,
+		state,
+		create_time,
+		update_time,
+		user_id,
+		has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE id = (SELECT max(id) id
+		FROM p_process_order
+		WHERE instance_id = #{instanceId} AND process_type = 3 AND state = 1)
+	</select>
+
+	<select id="findSimpleAssessmentOrderByInstanceId" resultMap="baseMap" parameterType="long">
+		SELECT
+		id,
+		act_instance_id,
+		instance_id,
+		process_type,
+		instance_type,
+		process_cnf_id,
+		state,
+		create_time,
+		update_time,
+		user_id,
+		has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE id = (SELECT max(id) id
+		FROM p_process_order
+		WHERE instance_id = #{instanceId} AND process_type = 1 AND state = 1)
+	</select>
+	
+	<select id="getUnfinishedIndexOrder" resultMap="baseMap">
+		SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,labelset_id
+		FROM p_process_order
+		WHERE instance_id=
+		<if test="processType != 8">
+			#{instanceId} 
+		</if>
+		<if test="processType == 8">
+			(SELECT id FROM p_match WHERE require_id = #{instanceId} ORDER BY update_time DESC LIMIT 1)
+		</if>
+		AND process_type= #{processType} 
+		AND state = 0
+	</select>
+
+	<select id="selectByPrimaryKey" parameterType="long" resultMap="processOrderMap">
+		SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,labelset_id
+		FROM p_process_order
+		WHERE id = #{id}
+	</select>
+
+    <select id="selectByInstanceId" parameterType="long" resultMap="processOrderMap">
+        SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,labelset_id
+        FROM p_process_order
+        WHERE instance_id = #{instanceId}
+    </select>
+
+    <select id="selectByInstanceType" parameterType="int" resultMap="processOrderMap">
+        SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,labelset_id
+        FROM p_process_order
+        WHERE instance_type = #{instanceType}
+    </select>
+
+    <select id="selectByProcessType" parameterType="int" resultMap="processOrderMap">
+        SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,labelset_id
+        FROM p_process_order
+        WHERE process_type = #{processType}
+    </select>
+
+	<insert id="insert" parameterType="com.cnuip.pmes2.domain.core.ProcessOrder" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_process_order
+		(act_instance_id,instance_id,instance_type,
+		process_type,process_cnf_id,state,user_id,labelset_id)
+		VALUES
+		(#{actInstanceId},#{instanceId},#{instanceType},
+		#{processType},#{processCnfId},#{state},#{userId},#{labelsetId})
+	</insert>
+
+    <update id="delete">
+        DELETE FROM p_process_order WHERE id = #{id}
+    </update>
+
+	<update id="changeState">
+		UPDATE p_process_order
+		SET state = #{state}
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getFirstActTaskId" parameterType="string" resultType="string">
+		SELECT id_ FROM act_ru_task
+		WHERE execution_id_ = #{actProcessId}
+		LIMIT 1
+	</select>
+
+	<select id="searchPatent" parameterType="com.cnuip.pmes2.controller.api.request.ProcessOrderSearchCondition" resultMap="patentProcessOrderSearchMap">
+		<include refid="selectList" />
+		<where>
+			instance_type = #{condition.instanceType}
+			AND act_instance_id IS NOT NULL
+			AND id in (SELECT max(id) id FROM p_process_order WHERE instance_type = #{condition.instanceType} group by instance_id,process_type)
+			<if test="condition.actInstanceId!=null">AND act_instance_id = #{condition.actInstanceId}</if>
+			<if test="condition.actTaskId!=null">
+				AND id=(SELECT process_id FROM p_process_task WHERE id=#{condition.actTaskId})
+			</if>
+			<if test="condition.state!=null"> AND state = #{condition.state}</if>
+			<if test="condition.processId!=null"> AND process_cnf_id = #{condition.processId}</if>
+			<if test="condition.fromUpdateTime!=null">AND update_time &gt;= #{condition.fromUpdateTime}</if>
+			<if test="condition.toUpdateTime!=null">AND update_time &lt;= #{condition.toUpdateTime}</if>
+			<if test="condition.an!=null or
+			condition.ti!=null or
+			condition.pa!=null or
+			condition.pin!=null or
+			condition.lastLegalStatus!=null">
+				AND instance_id in (
+				SELECT id FROM p_patent
+				<where>
+					<if test="condition.an!=null and condition.an!=''"> AND an=#{condition.an}</if>
+					<if test="condition.ti!=null and condition.ti!=''"> AND ti=#{condition.ti}</if>
+					<if test="condition.pa!=null and condition.pa!=''"> AND pa LIKE '%${condition.pa}%'</if>
+					<if test="condition.pin!=null and condition.pin!=''"> AND pin LIKE '%${condition.pin}%'</if>
+					<if test="condition.lastLegalStatus!=null and condition.lastLegalStatus!=''"> AND last_legal_status=#{condition.lastLegalStatus}</if>
+				</where>
+				)
+			</if>
+		</where>
+	</select>
+
+	<select id="searchRequirement" parameterType="com.cnuip.pmes2.controller.api.request.ProcessOrderSearchCondition" resultMap="requirementProcessOrderSearchMap">
+		<include refid="selectList" />
+		<where>
+			instance_type = #{condition.instanceType}
+			AND act_instance_id IS NOT NULL
+			AND id in (SELECT max(id) id FROM p_process_order WHERE instance_type = #{condition.instanceType} group by instance_id,process_type)
+			<if test="condition.actInstanceId!=null">AND act_instance_id = #{condition.actInstanceId}</if>
+			<if test="condition.actTaskId!=null">
+				AND id=(SELECT process_id FROM p_process_task WHERE id=#{condition.actTaskId})
+			</if>
+			<if test="condition.state!=null"> AND state = #{condition.state}</if>
+			<if test="condition.fromUpdateTime!=null">AND update_time &gt;= #{condition.fromUpdateTime}</if>
+			<if test="condition.toUpdateTime!=null">AND update_time &lt;= #{condition.toUpdateTime}</if>
+
+			AND instance_id in (
+			SELECT id FROM p_enterprise_requirement
+			<where>
+				<if test="condition.requirement!=null"> AND requirement like CONCAT('%',#{condition.requirement},'%')</if>
+				<if test="condition.name!=null or condition.nationalEconomyField!=null">
+					AND enterprise_id in (
+					SELECT id FROM p_enterprise
+					<where>
+						<if test="condition.name!=null"> AND name like CONCAT('%',#{condition.name},'%')</if>
+						<if test="condition.nationalEconomyField!=null">
+							AND IFNULL(national_economy_field,'') in (SELECT code FROM p_national_economy WHERE code like CONCAT('%',#{condition.nationalEconomyField},'%'))
+						</if>
+					</where>
+					)
+				</if>
+			</where>
+			)
+
+		</where>
+	</select>
+
+	<select id="getAllProcessOrders" resultMap="processOrderMap3">
+		<include refid="selectList" />
+		<where>
+			instance_type = #{instanceType}
+			AND act_instance_id IS NOT NULL
+			AND instance_id = #{instanceId}
+			<if test="processId!=null">AND process_cnf_id=#{processId}</if>
+		</where>
+		ORDER BY update_time DESC
+	</select>
+	
+	<select id="getAlertProcessOrder" resultMap="alertMap">
+		SELECT
+		id,
+		act_instance_id,
+		instance_id,
+		process_type,
+		instance_type,
+		process_cnf_id,
+		state,
+		create_time,
+		update_time,
+		user_id,
+		has_alert,has_due,process_name 
+		FROM alert_process_order
+	</select>
+	
+	<select id="getDueProcessOrder" resultMap="alertMap">
+		SELECT
+		id,
+		act_instance_id,
+		instance_id,
+		process_type,
+		instance_type,
+		process_cnf_id,
+		state,
+		create_time,
+		update_time,
+		user_id,
+		has_alert,has_due,process_name 
+		FROM due_process_order
+	</select>
+	
+	<update id="updateHasAlert" parameterType="list">
+		UPDATE p_process_order
+		SET has_alert = 1
+		WHERE id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+	
+	<update id="updateHasDue" parameterType="list">
+		UPDATE p_process_order
+		SET has_due = 1
+		WHERE id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+
+    <select id="selectNeedSnapshot" resultMap="baseMap">
+		SELECT
+		id,
+		act_instance_id,
+		instance_id,
+		process_type,
+		instance_type,
+		process_cnf_id,
+		state,
+		create_time,
+		update_time,
+		user_id,
+		has_alert,has_due,process_name
+		FROM alert_process_order
+		WHERE act_instance_id IS NOT NULL AND instance_type = 1 AND state = 0
+    </select>
+
+	<select id="getAliveProcessOrderNum" resultType="int">
+		SELECT IFNULL(count(*),0) FROM p_process_order
+		WHERE process_type = #{type} and state = 0
+	</select>
+
+    <select id="findAllHumanIndexed" resultMap="baseMap">
+		SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE id in (
+			SELECT DISTINCT process_order_id FROM p_task_order
+			WHERE id IN (SELECT task_order_id FROM p_task_order_label) AND state = 1
+		)
+		AND process_type BETWEEN 2 AND 7
+    </select>
+
+</mapper>

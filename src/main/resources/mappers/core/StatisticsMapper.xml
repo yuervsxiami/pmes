@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.StatisticsMapper">
+
+	<select id="getPatentIndexOrderNum" resultType="com.cnuip.pmes2.domain.statistics.IndexOrder">
+		SELECT p.name AS name, IFNULL(o.orderNum,0) AS orderNum
+		FROM (
+			SELECT count(1) AS orderNum, process_type
+			FROM p_process_order
+			WHERE process_type BETWEEN 2 AND 5
+			AND state = 1
+			AND instance_id IN (
+			SELECT id FROM p_patent
+			<where>
+				<if test="pa!=null">pa LIKE '%${pa}%'</if>
+				<if test="pin!=null">AND	pin LIKE '%${pin}%'</if>
+				<if test="startTime!=null">AND update_time >= #{startTime}</if>
+				<if test="endTime!=null">AND update_time &lt;= #{endTime}</if>
+			</where>
+			)
+			GROUP BY process_type
+		) AS o
+		RIGHT JOIN p_process AS p ON p.type = o.process_type
+		WHERE p.type BETWEEN 2 AND 5
+	</select>
+
+	<select id="getProcessOrderNum" resultType="com.cnuip.pmes2.domain.statistics.IndexOrder" parameterType="java.util.Date">
+		SELECT p.name AS name, IFNULL(o.orderNum,0) AS orderNum
+		FROM (
+		SELECT count(1) AS orderNum, process_type
+		FROM p_process_order
+		WHERE process_type >= 2
+		AND state = 1
+		<if test="startTime!=null">AND update_time >= #{startTime}</if>
+		<if test="endTime!=null">AND update_time &lt;= #{endTime}</if>
+		GROUP BY process_type
+		) AS o
+		RIGHT JOIN p_process AS p ON p.type = o.process_type
+		WHERE p.type >= 2
+	</select>
+
+</mapper>

@@ -1,0 +1,122 @@
+spring:
+  application:
+    name: PMES2.0
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      max-active: 300
+      validation-query: SELECT 1
+      initial-size: 50
+      query-timeout: 1200
+      transaction-query-timeout: 3000
+      login-timeout: 60
+      core:
+#阿里云测试数据库
+#        url: jdbc:mysql://rm-bp18347e86i144q0vo.mysql.rds.aliyuncs.com:3306/pmes2?serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+#测试环境外网
+#        url: jdbc:mysql://58.213.198.77:12/pmes2?serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+#测试环境内网
+        url: jdbc:mysql://192.168.20.27:3306/pmes2?serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+#生产环境外网
+#        url: jdbc:mysql://58.213.198.76:10002/pmes2?serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+        username: pmes
+        password: pmes@2017
+      inventory:
+#测试环境出版社接口库
+#        url: jdbc:mysql://58.213.198.76:9/eip_nlg?serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+#        username: nlgpat_qry
+#        password: Nlgpat_qry!
+#生产环境出版社接口库
+        url: jdbc:mysql://192.168.20.9:3306/eip_zg?serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+        username: zgroot_qry
+        password: ZgrootQry123!
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /app/**,/js/**,/css/**
+  mvc:
+    static-path-pattern: /static/**
+    throw-exception-if-no-handler-found: true
+  data:
+    elasticsearch:
+#测试环境elasticsearch
+      cluster-nodes: 192.168.20.27:9300
+#生产环境elasticsearch
+#      cluster-nodes: 192.168.20.32:9300
+#阿里云测试环境elasticsearch
+#      cluster-nodes: 116.62.238.209:9300
+      cluster-name: elasticsearch
+    mongodb1:
+      database: patent
+      host: 192.168.20.24
+      port: 27017
+      socketTimeout: 0
+      socketKeepAlive: false
+      connectTimeout: 30000
+    mongodb2:
+       database: patentInfoSub
+       host: 192.168.20.24
+       port: 27017
+       socketTimeout: 0
+       socketKeepAlive: false
+       connectTimeout: 30000
+  cache:
+    type: redis
+    cache-names: RedisCache
+#    guava:
+#      spec: maximumSize=500,expireAfterWrite=360m
+  redis:
+    database: 0
+#测试环境redis 有密码,未绑定本机
+    host: 192.168.20.27
+    password: pmes@2017
+    port: 6379
+#生产环境redis 无密码,绑定本机
+#    host: 127.0.0.1
+#    password:
+#    port: 6379
+    timeout: 100
+    pool:
+      max-active: 300
+      max-wait: 1000
+      max-idle: 30
+      min-idle: 0
+  session:
+    store-type: redis
+  activiti:
+    check-process-definitions: false
+server:
+  port: ${port:8080}
+  tomcat:
+    uri-encoding: UTF-8
+logging:
+  config: classpath:logback.xml
+security:
+  basic:
+    enabled: false
+pmes:
+  cnipr-server: http://111.198.99.173:8080/cnipr-ds
+  highlight-property:
+    pre: <span style="color:red;font-weight:600;">
+    post: </span>
+tg:
+#测试
+#  url : http://192.168.20.42:15002/tiikong
+#线上
+  url : http://101.132.192.232:15002/tiikong
+#  url : http://192.168.4.164:15002/tiikong
+  appid: 1
+service-pmes:
+  url: http://192.168.20.42:15001/v2/saveProfessor
+

@@ -1,0 +1,171 @@
+/* 表格 */
+th, td {
+    vertical-align: middle !important;
+}
+
+/* label */
+label {
+    font-weight: 500;
+}
+
+/* bg-mybtn */
+.bg-mybtn .bg-btn{
+    float: left;
+    font-weight: bold;
+    position: relative;
+}
+.bg-mybtn .bg-btn:before{
+    content: '';
+    width: 18px;
+    height: 18px;
+    background: #5E5E5E;
+    position: absolute;
+    left: -22px;
+    top:1px
+}
+.bg-mybtn .bg-btn:nth-child(1):before {
+    background:#dd4b39;
+}
+.bg-mybtn .bg-btn:nth-child(2):before {
+    background:#f39d3f;
+}
+.bg-mybtn .bg-btn {
+    margin-left:32px;
+}
+.bg-mybtn {
+    margin-top: 16px;
+}
+
+/* form */
+.form-group {
+    margin-bottom: 10px;
+}
+.form-control {
+    font-size: 12px;
+    height: 28px;
+    padding: 3px 12px;
+}
+
+/* 登陆注册页面背景 */
+/*.login-page, register-page {*/
+    /*background: url('../images/login_bg.png') no-repeat fixed top;*/
+/*}*/
+
+/* sidebar */
+.sidebar-circle,
+.sidebar-triangle,
+.sidebar-triangle.active,
+.sidebar-circle.active {
+    position: relative;
+}
+
+.sidebar-circle:before,
+.sidebar-circle.active:before {
+    content: '';
+    position: absolute;
+    left: -13px;
+    top: 4px;
+
+    width: 10px;
+    height: 10px;
+    background: url(../images/circle-b.png) no-repeat;
+    -webkit-background-size: 6px 6px;
+    background-size: 6px 6px;
+}
+
+.sidebar-triangle:before,
+.sidebar-triangle.active:before {
+    content: '';
+    position: absolute;
+    left: -13px;
+    top: 3px;
+
+    width: 13px;
+    height: 13px;
+    background: url(../images/triangle-b.png) no-repeat;
+    -webkit-background-size: 6px 6px;
+    background-size: 6px 6px;
+}
+
+.sidebar-circle.active:before {
+    background-image: url(../images/circle-g.png);
+}
+
+.sidebar-triangle.active:before {
+    background-image: url(../images/triangle-g.png);
+}
+
+.filterSelect {
+    position: absolute;
+    z-index: 10000000000;
+}
+
+.filterSelect ul {
+    border: solid 1px black;
+    max-height: 200px;
+    overflow-y: scroll;
+    padding-left: 11px;
+    background-color: white;
+}
+
+.filterSelect ul li {
+    list-style-type:none;
+    cursor: default;
+}
+
+.filterSelect ul li:hover {
+    background-color: #1e90ff;
+}
+
+.hightlight {
+    color: red;
+    font-weight: 600;
+}
+
+.hoverCotent {
+    position: fixed;
+    background-color: rgba(254,243,161);
+    width: 600px;
+    border-radius:10px;
+    padding: 10px;
+    z-index: 300;
+}
+
+.selectProfessor {
+    width: 100px;
+    height: 36px;
+    float: left;
+    margin-bottom: 16px;
+    line-height: 36px;
+    display: inline-block;
+    background-color: #F2F2F2;
+    text-align: center;
+    margin-right: 16px;
+    color: #333333;
+    font-size: 14px;
+    position: relative;
+    border: 1px solid #75b9e6;
+}
+
+.selectProfessor ins {
+    position: absolute;
+    right: -8px;
+    top: -8px;
+    width: 16px;
+    z-index: 233;
+    text-align: center;
+    line-height: 15px;
+    height: 16px;
+    color: #fff;
+    background-color: #75b9e6;
+    border-radius: 50%;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.cropArea {
+    background: #E4E4E4;
+    overflow: hidden;
+    width:500px;
+    height:350px;
+}

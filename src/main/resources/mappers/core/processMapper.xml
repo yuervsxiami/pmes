@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.ProcessMapper">
+
+    <resultMap type="com.cnuip.pmes2.domain.core.Process" id="simplemMap">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="labelsetId" column="labelset_id"/>
+        <result property="type" column="type"/>
+        <result property="state" column="state"/>
+        <result property="alertTime" column="alert_time"/>
+        <result property="dueTime" column="due_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="userId" column="user_id"/>
+    </resultMap>
+
+    <resultMap type="com.cnuip.pmes2.domain.core.Process" id="noTaskProcessMap" extends="simplemMap">
+        <association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+        <association property="labelset" column="labelset_id" select="com.cnuip.pmes2.repository.core.LabelsetMapper.selectSimpleByPrimaryKey"></association>
+    </resultMap>
+
+    <resultMap type="com.cnuip.pmes2.domain.core.Process" id="processMap" extends="noTaskProcessMap">
+        <collection property="tasks" column="id" select="com.cnuip.pmes2.repository.core.ProcessTaskMapper.selectByProcessId"></collection>
+    </resultMap>
+
+    <select id="selectSimpleByPrimaryKey" parameterType="long" resultMap="simplemMap">
+        SELECT id,name,labelset_id,type,state,alert_time,due_time,create_time,update_time,user_id
+        FROM p_process
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectProcessById" parameterType="long" resultMap="noTaskProcessMap">
+        SELECT id,name,labelset_id,type,state,alert_time,due_time,create_time,update_time,user_id
+        FROM p_process
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="long" resultMap="processMap">
+        SELECT id,name,labelset_id,type,state,alert_time,due_time,create_time,update_time,user_id
+        FROM p_process
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="processMap">
+        SELECT id,name,labelset_id,type,state,alert_time,due_time,create_time,update_time,user_id
+        FROM p_process
+    </select>
+
+    <select id="selectAllByInstanceType" resultMap="noTaskProcessMap">
+        SELECT id,name,labelset_id,type,state,alert_time,due_time,create_time,update_time,user_id
+        FROM p_process
+        WHERE instance_type = #{type}
+    </select>
+
+    <select id="selectByType" parameterType="int" resultMap="processMap">
+        SELECT id,name,labelset_id,type,state,alert_time,due_time,create_time,update_time,user_id
+        FROM p_process
+        WHERE type = #{type}
+    </select>
+
+    <select id="selectAliveByType" parameterType="int" resultMap="noTaskProcessMap">
+        SELECT id,name,labelset_id,type,state,alert_time,due_time,create_time,update_time,user_id
+        FROM p_process
+        WHERE type = #{type} and state = 1
+    </select>
+
+    <insert id="addProcess" parameterType="com.cnuip.pmes2.domain.core.Process" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO p_process
+        (name,state,type,alert_time,due_time,user_id)
+        VALUES
+        (#{name},0,#{type},#{alertTime},#{dueTime},#{userId})
+    </insert>
+
+    <update id="updateProcess" parameterType="com.cnuip.pmes2.domain.core.Process">
+        UPDATE p_process
+        <set>
+            <if test="name!=null">name=#{name},</if>
+            <if test="labelsetId!=null">labelset_id=#{labelsetId},</if>
+            <if test="type!=null">type=#{type},</if>
+            <if test="userId!=null">user_id=#{userId},</if>
+            <if test="alertTime!=null">alert_time=#{alertTime},</if>
+            <if test="dueTime!=null">due_time=#{dueTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="changeState">
+        UPDATE p_process
+        SET state = #{state}
+        WHERE id = #{id}
+    </update>
+
+    <select id="search" parameterType="com.cnuip.pmes2.controller.api.request.ProcessSearchCondition" resultMap="noTaskProcessMap">
+        SELECT p.id,p.name,p.labelset_id,p.type,p.state,p.alert_time,p.due_time,p.create_time,p.update_time,p.user_id
+        FROM p_process AS p
+        LEFT JOIN p_user AS u ON p.user_id = u.id
+        <where>
+            <if test="condition.name!=null">AND p.name like CONCAT('%',#{condition.name},'%')</if>
+            <if test="condition.fromTime!=null">AND UNIX_TIMESTAMP(p.update_time) &gt;= UNIX_TIMESTAMP(#{condition.fromTime})</if>
+            <if test="condition.toTime!=null">AND UNIX_TIMESTAMP(p.update_time) &lt;= UNIX_TIMESTAMP(#{condition.toTime})</if>
+            <if test="condition.username!=null">AND u.name like CONCAT('%',#{condition.username},'%')</if>
+        </where>
+        ORDER BY p.update_time DESC
+    </select>
+
+    <update id="changeLabelset">
+        UPDATE p_process
+        SET labelset_id = #{labelsetId}
+        WHERE id = #{id}
+    </update>
+
+    <update id="changeTime">
+        UPDATE p_process
+        SET alert_time = #{alertTime},due_time = #{dueTime}
+        WHERE id = #{id}
+    </update>
+
+    <select id="getLastProcessCnfIdByType" parameterType="int" resultType="long">
+        SELECT id
+		FROM p_process
+		WHERE type = #{type} AND state = 1
+		ORDER BY update_time DESC
+		LIMIT 1
+    </select>
+
+</mapper>

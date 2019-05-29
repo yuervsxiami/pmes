@@ -1,0 +1,41 @@
+<div>
+	<div class="col-lg-3 col-xs-6">
+	    <!-- small box -->
+	    <div class="small-box bg-red">
+	        <div class="inner">
+	            <h4>超时定单</h4>
+	            <p>{{processOrderState.dueCount || 0}}</p>
+	        </div>
+	    </div>
+	</div>
+	<div class="col-lg-3 col-xs-6">
+	    <!-- small box -->
+	    <div class="small-box bg-yellow">
+	        <div class="inner">
+	            <h4>预警定单</h4>
+	            <p>{{processOrderState.alertCount || 0}}</p>
+	        </div>
+	    </div>
+	</div>
+	<div class="col-lg-3 col-xs-6">
+	    <!-- small box -->
+	    <div class="small-box bg-blue">
+	        <div class="inner">
+	            <h4>进行中定单</h4>
+	            <p>{{processOrderState.handlingCount || 0}}</p>
+	        </div>
+	    </div>
+	</div>
+	<div class="col-lg-3 col-xs-6">
+	    <!-- small box -->
+	    <div class="small-box bg-green">
+	        <div class="inner">
+	            <h4>已完成定单</h4>
+	            <p>{{processOrderState.doneCount || 0}}</p>
+	        </div>
+	    </div>
+	</div>
+    <div class="overlay" ng-show="loading">
+        <i class="fa fa-refresh fa-spin"></i>
+    </div>
+</div>

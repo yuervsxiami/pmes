@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.MatchMapper">
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Match" id="baseMap">
+		<result column="id" property="id"/>
+		<result column="keyword" property="keyword"/>
+		<result column="type" property="type"/>
+		<result column="require_id" property="requireId"/>
+		<result column="user_id" property="userId"/>
+		<result column="result" property="result"/>
+		<result column="state" property="state"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+	</resultMap>
+
+	<insert id="save" parameterType="com.cnuip.pmes2.domain.core.Match" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_match
+		(keyword, type, require_id, user_id, result, state)
+		VALUES
+		(#{keyword}, #{type}, #{requireId}, #{userId}, #{result}, #{state})
+	</insert>
+	
+	<select id="findById" parameterType="long" resultMap="baseMap">
+		SELECT id,keyword, type, require_id, user_id, result, state, create_time, update_time
+		FROM p_match
+		WHERE id = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.cnuip.pmes2.domain.core.Match">
+		UPDATE p_match
+		<set >
+			<if test="keyword != null">keyword = #{keyword},</if>
+			<if test="requireId != null">require_id = #{requireId},</if>
+			<if test="userId != null">user_id = #{userId},</if>
+			<if test="result != null">result = #{result},</if>
+			<if test="state != null">state = #{state},</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="delete" parameterType="long">
+		DELETE FROM p_match
+		WHERE id = #{id}
+	</delete>
+	
+	<select id="find" parameterType="com.cnuip.pmes2.domain.core.Match" resultMap="baseMap">
+		SELECT id,keyword, type, require_id, user_id, result, state, create_time, update_time
+		FROM p_match
+		<where>
+			<if test="id != null">id = #{id}</if>
+			<if test="keyword != null">AND keyword = #{keyword}</if>
+			<if test="requireId != null">AND require_id = #{requireId}</if>
+			<if test="userId != null">AND user_id = #{userId}</if>
+			<if test="type != null">AND type = #{type}</if>
+			<if test="result != null">AND result = #{result}</if>
+			<if test="state != null">AND state = #{state}</if>
+		</where>
+	</select>
+
+	<update id="changeState">
+		UPDATE p_match
+		SET state = #{state}
+		WHERE id = #{id}
+	</update>
+
+</mapper>

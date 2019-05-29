@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.SpecialistMapper">
+    <resultMap type="com.cnuip.pmes2.domain.core.Specialist" id="specialist">
+        <id property="id" column="id"/>
+        <id property="provinceName" column="province_name"/>
+        <result property="college" column="college"/>
+        <result property="name" column="name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="phone" column="phone"/>
+        <result property="sex" column="sex"/>
+        <result property="nation" column="nation"/>
+        <result property="nativePlace" column="native_place"/>
+        <result property="idCardNo" column="id_card_no"/>
+        <result property="birthday" column="birthday"/>
+        <result property="wchat" column="wchat"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="email" column="email"/>
+        <result property="speciality" column="speciality"/>
+        <result property="facultyDepartment" column="faculty_department"/>
+        <result property="education" column="education"/>
+        <result property="keyword" column="keyword"/>
+        <result property="editorId" column="editor_id"/>
+        <result property="editorName" column="editor_name"/>
+        <result property="source" column="source"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="com.cnuip.pmes2.domain.core.SpecialistExt" id="specialistExt">
+        <id property="id" column="id"/>
+        <result property="expertId" column="expert_id"/>
+        <result property="direction" column="direction"/>
+        <result property="honor" column="honor"/>
+        <result property="undertakeSubject" column="undertake_subject"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap type="com.cnuip.pmes2.domain.core.SpecialistTitle" id="specialistTitle">
+        <id property="id" column="id"/>
+        <result property="expertId" column="expert_id"/>
+        <result property="titleId" column="title_id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="level" column="level"/>
+        <result property="preCode" column="pre_code"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="com.cnuip.pmes2.domain.core.SpecialistPaper" id="specialistPaper">
+        <id property="id" column="id"/>
+        <result property="expertId" column="expert_id"/>
+        <result property="type" column="type"/>
+        <result property="name" column="name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap type="com.cnuip.pmes2.domain.core.SpecialistKeyword" id="specialistKeyword">
+        <id property="id" column="id"/>
+        <result property="expertId" column="expert_id"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="com.cnuip.pmes2.domain.core.SpecialistIpc" id="specialistIpc">
+        <id property="id" column="id"/>
+        <result property="expertId" column="expert_id"/>
+        <result property="ipcId" column="ipc_id"/>
+        <result property="code" column="code"/>
+        <result property="description" column="description"/>
+        <result property="level" column="level"/>
+        <result property="preCode" column="pre_code"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="com.cnuip.pmes2.domain.core.SpecialistNic" id="specialistNic">
+        <id property="id" column="id"/>
+        <result property="expertId" column="expert_id"/>
+        <result property="nicId" column="nic_id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="level" column="level"/>
+        <result property="preCode" column="pre_code"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="com.cnuip.pmes2.domain.core.SpecialistNtcc" id="specialistNtcc">
+        <id property="id" column="id"/>
+        <result property="expertId" column="expert_id"/>
+        <result property="ntccId" column="ntcc_id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="level" column="level"/>
+        <result property="preCode" column="pre_code"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.cnuip.pmes2.domain.core.Specialist" useGeneratedKeys="true" keyProperty="id">
+        insert into p_expert
+        (province_name, college, name, nick_name, phone,sex,nation,native_place,id_card_no,birthday,wchat,image_url,email,speciality,faculty_department,education,keyword,editor_id,editor_name,source)
+        VALUES
+		(#{provinceName}, #{college},#{name},#{nickName},#{phone},#{sex},#{nation},#{nativePlace},#{idCardNo},#{birthday},#{wchat},#{imageUrl},#{email},#{speciality},#{facultyDepartment},#{education},#{keyword},#{editorId},#{editorName},#{source})
+    </insert>
+
+    <insert id="insertExt" parameterType="com.cnuip.pmes2.domain.core.SpecialistExt">
+        insert into p_expert_ext
+        (expert_id,direction,honor,undertake_subject,remark)
+        values
+        (#{expertId},#{direction},#{honor},#{undertakeSubject},#{remark})
+    </insert>
+
+    <insert id="insertTitle" parameterType="com.cnuip.pmes2.domain.core.SpecialistTitle">
+        insert into p_expert_title
+        (expert_id, title_id, code, name, level, pre_code)
+        values
+        <foreach collection="list" open="" close="" separator="," item="item">
+            (#{item.expertId},#{item.titleId},#{item.code},#{item.name},#{item.level},#{item.preCode})
+        </foreach>
+    </insert>
+
+    <insert id="insertPaper" parameterType="com.cnuip.pmes2.domain.core.SpecialistPaper">
+        insert into p_expert_paper
+        (expert_id,type,name)
+        values
+        <foreach collection="list" open="" close="" separator="," item="item">
+            (#{item.expertId},#{item.type},#{item.name})
+        </foreach>
+    </insert>
+
+    <insert id="insertKeyword" parameterType="com.cnuip.pmes2.domain.core.SpecialistKeyword">
+        insert into p_expert_tchnical_keyword
+        (expert_id,content)
+        values
+        <foreach collection="list" open="" close="" separator="," item="item">
+            (#{item.expertId},#{item.content})
+        </foreach>
+    </insert>
+
+    <insert id="insertIpc" parameterType="com.cnuip.pmes2.domain.core.SpecialistIpc">
+        insert into p_expert_ipc
+        (expert_id, ipc_id, code, description, level, pre_code)
+        values
+        <foreach collection="list" open="" close="" separator="," item="item">
+            (#{item.expertId},#{item.ipcId},#{item.code},#{item.description},#{item.level},#{item.preCode})
+        </foreach>
+    </insert>
+
+    <insert id="insertNic" parameterType="com.cnuip.pmes2.domain.core.SpecialistNic">
+        insert into p_expert_nic
+        (expert_id, nic_id, code, name, level, pre_code,description)
+        values
+        <foreach collection="list" open="" close="" separator="," item="item">
+            (#{item.expertId},#{item.nicId},#{item.code},#{item.name},#{item.level},#{item.preCode},#{item.description})
+        </foreach>
+    </insert>
+
+    <insert id="insertNtcc" parameterType="com.cnuip.pmes2.domain.core.SpecialistNtcc">
+        insert into p_expert_ntcc
+        (expert_id, ntcc_id, code, name, level, pre_code)
+        values
+        <foreach collection="list" open="" close="" separator="," item="item">
+            (#{item.expertId},#{item.ntccId},#{item.code},#{item.name},#{item.level},#{item.preCode})
+        </foreach>
+    </insert>
+    <update id="update" parameterType="com.cnuip.pmes2.domain.core.Specialist">
+        update p_expert
+        <set>
+            <if test="provinceName!=null">province_name=#{provinceName},</if>
+            <if test="college!=null">college=#{college},</if>
+            <if test="name!=null">name=#{name},</if>
+            <if test="nickName!=null">nick_name=#{nickName},</if>
+            <if test="phone!=null">phone=#{phone},</if>
+            <if test="sex!=null">sex=#{sex},</if>
+            <if test="nation!=null">nation=#{nation},</if>
+            <if test="nativePlace!=null">native_place=#{nativePlace},</if>
+            <if test="idCardNo!=null">id_card_no=#{idCardNo},</if>
+            <if test="birthday!=null">birthday=#{birthday},</if>
+            <if test="wchat!=null">wchat=#{wchat},</if>
+            <if test="imageUrl!=null">image_url=#{imageUrl},</if>
+            <if test="email!=null">email=#{email},</if>
+            <if test="speciality!=null">speciality=#{speciality},</if>
+            <if test="facultyDepartment!=null">faculty_department=#{facultyDepartment},</if>
+            <if test="education!=null">education=#{education},</if>
+            <if test="keyword!=null">keyword=#{keyword},</if>
+            <if test="editorId!=null">editor_id=#{editorId},</if>
+            <if test="editorName!=null">editor_name=#{editorName},</if>
+            <if test="source!=null">source=#{source}</if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateExt" parameterType="com.cnuip.pmes2.domain.core.SpecialistExt">
+        update p_expert_ext
+        <set>
+            <if test="direction!=null">direction=#{direction},</if>
+            <if test="honor!=null">honor=#{honor},</if>
+            <if test="undertakeSubject!=null">undertake_subject=#{undertakeSubject},</if>
+            <if test="remark!=null">remark=#{remark}</if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteTitle" parameterType="integer">
+        delete from p_expert_title where expert_id=#{expertId}
+    </delete>
+    <delete id="deletePaper" parameterType="integer">
+        delete from p_expert_paper where expert_id=#{expertId}
+    </delete>
+    <delete id="deleteKeyword" parameterType="integer">
+        delete from p_expert_tchnical_keyword where expert_id=#{expertId}
+    </delete>
+    <delete id="deleteIpc" parameterType="integer">
+        delete from p_expert_ipc where expert_id=#{expertId}
+    </delete>
+    <delete id="deleteNic" parameterType="integer">
+        delete from p_expert_nic where expert_id=#{expertId}
+    </delete>
+    <delete id="deleteNtcc" parameterType="integer">
+        delete from p_expert_ntcc where expert_id=#{expertId}
+    </delete>
+
+
+    <select id="findById" resultMap="specialist">
+        select * from p_expert where id=#{id};
+    </select>
+    <select id="findExtById" resultMap="specialistExt">
+        select * from p_expert_ext where expert_id=#{id};
+    </select>
+    <select id="findTitleById" resultMap="specialistTitle">
+        select * from p_expert_title where expert_id=#{id};
+    </select>
+    <select id="findKeywordById" resultMap="specialistKeyword">
+        select * from p_expert_tchnical_keyword where expert_id=#{id};
+    </select>
+    <select id="findPaperById" resultMap="specialistPaper">
+        select * from p_expert_paper where expert_id=#{id};
+    </select>
+    <select id="findIpcById" resultMap="specialistIpc">
+        select * from p_expert_ipc where expert_id=#{id};
+    </select>
+    <select id="findNicById" resultMap="specialistNic">
+        select * from p_expert_nic where expert_id=#{id};
+    </select>
+    <select id="findNtccById" resultMap="specialistNtcc">
+        select * from p_expert_ntcc where expert_id=#{id};
+    </select>
+</mapper>

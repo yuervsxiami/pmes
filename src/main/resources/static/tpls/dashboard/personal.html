@@ -1,0 +1,210 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li><i class="iconfont icon-gongzuotai"></i> 工作台</li>
+        <li class="active">个人工作台</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-lg-1 col-xs-12"></div>
+        <div class="col-lg-2 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h4>超时工单</h4>
+                    <p>{{dpc.paginationConf.o1.totalItems || 0}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h4>预警工单</h4>
+                    <p>{{dpc.paginationConf.o2.totalItems || 0}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-blue">
+                <div class="inner">
+                    <h4>未完成工单</h4>
+                    <p>{{dpc.paginationConf.o3.totalItems || 0}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h4>已完成工单</h4>
+                    <p>{{dpc.paginationConf.o4.totalItems || 0}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-orange">
+                <div class="inner">
+                    <h4>退单</h4>
+                    <p>{{dpc.paginationConf.o5.totalItems || 0}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-1 col-xs-12"></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="box box-default">
+                <div class="box-header">
+                    <h3 class="box-title">超时工单</h3>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-striped" ng-show="!!dpc.orders.o1 && dpc.orders.o1.length > 0">
+                        <tr>
+                            <th>定单号</th>
+                            <th>工单号</th>
+                            <th>流程模版</th>
+                            <th>环节</th>
+                        </tr>
+                        <tr ng-repeat="o in dpc.orders.o1">
+                            <td><span ng-bind="o.processOrder.actInstanceId"></span></td>
+                            <td><span ng-bind="o.actTaskId"></span></td>
+                            <td><span ng-bind="o.processOrder.process.name"></span></td>
+                            <td><span ng-bind="o.processTask.name"></span></td>
+                        </tr>
+                    </table>
+                    <p ng-show="!!dpc.orders.o1 && dpc.orders.o1.length === 0">没有超时工单！</p>
+                </div>
+                <div class="box-footer" ng-show="!!dpc.orders.o1 && dpc.orders.o1.length > 0">
+                    <tm-pagination conf="dpc.paginationConf.o1" ng-if="!dpc.searching.o1"></tm-pagination>
+                </div>
+                <div class="overlay" ng-show="dpc.loading.o1">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+
+            <div class="box box-default">
+                <div class="box-header">
+                    <h3 class="box-title">未完成工单</h3>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-striped" ng-show="!!dpc.orders.o3 && dpc.orders.o3.length > 0">
+                        <tr>
+                            <th>定单号</th>
+                            <th>工单号</th>
+                            <th>流程模版</th>
+                            <th>环节</th>
+                        </tr>
+                        <tr ng-repeat="o in dpc.orders.o3">
+                            <td><span ng-bind="o.processOrder.actInstanceId"></span></td>
+                            <td><span ng-bind="o.actTaskId"></span></td>
+                            <td><span ng-bind="o.processOrder.process.name"></span></td>
+                            <td><span ng-bind="o.processTask.name"></span></td>
+                        </tr>
+                    </table>
+                    <p ng-show="!!dpc.orders.o3 && dpc.orders.o3.length === 0">没有未完成工单！</p>
+                </div>
+                <div class="box-footer" ng-show="!!dpc.orders.o3 && dpc.orders.o3.length > 0">
+                    <tm-pagination conf="dpc.paginationConf.o3" ng-if="!dpc.searching.o3"></tm-pagination>
+                </div>
+                <div class="overlay" ng-show="dpc.loading.o3">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+            <div class="box box-default">
+                <div class="box-header">
+                    <h3 class="box-title">退单</h3>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-striped" ng-show="!!dpc.orders.o5 && dpc.orders.o5.length > 0">
+                        <tr>
+                            <th>定单号</th>
+                            <th>工单号</th>
+                            <th>流程模版</th>
+                            <th>环节</th>
+                        </tr>
+                        <tr ng-repeat="o in dpc.orders.o5">
+                            <td><span ng-bind="o.processOrder.actInstanceId"></span></td>
+                            <td><span ng-bind="o.actTaskId"></span></td>
+                            <td><span ng-bind="o.processOrder.process.name"></span></td>
+                            <td><span ng-bind="o.processTask.name"></span></td>
+                        </tr>
+                    </table>
+                    <p ng-show="!!dpc.orders.o5 && dpc.orders.o5.length === 0">没有退单！</p>
+                </div>
+                <div class="box-footer" ng-show="!!dpc.orders.o5 && dpc.orders.o5.length > 0">
+                    <tm-pagination conf="dpc.paginationConf.o5" ng-if="!dpc.searching.o5"></tm-pagination>
+                </div>
+                <div class="overlay" ng-show="dpc.loading.o5">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="box box-default">
+                <div class="box-header">
+                    <h3 class="box-title">预警工单</h3>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-striped" ng-show="!!dpc.orders.o2 && dpc.orders.o2.length > 0">
+                        <tr>
+                            <th>定单号</th>
+                            <th>工单号</th>
+                            <th>流程模版</th>
+                            <th>环节</th>
+                        </tr>
+                        <tr ng-repeat="o in dpc.orders.o2">
+                            <td><span ng-bind="o.processOrder.actInstanceId"></span></td>
+                            <td><span ng-bind="o.actTaskId"></span></td>
+                            <td><span ng-bind="o.processOrder.process.name"></span></td>
+                            <td><span ng-bind="o.processTask.name"></span></td>
+                        </tr>
+                    </table>
+                    <p ng-show="!!dpc.orders.o2 && dpc.orders.o2.length === 0">没有预警工单！</p>
+                </div>
+                <div class="box-footer" ng-show="!!dpc.orders.o2 && dpc.orders.o2.length > 0">
+                    <tm-pagination conf="dpc.paginationConf.o2" ng-if="!dpc.searching.o2"></tm-pagination>
+                </div>
+                <div class="overlay" ng-show="dpc.loading.o2">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+            <div class="box box-default">
+                <div class="box-header">
+                    <h3 class="box-title">已完成工单</h3>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-striped" ng-show="!!dpc.orders.o4 && dpc.orders.o4.length > 0">
+                        <tr>
+                            <th>定单号</th>
+                            <th>工单号</th>
+                            <th>流程模版</th>
+                            <th>环节</th>
+                        </tr>
+                        <tr ng-repeat="o in dpc.orders.o4">
+                            <td><span ng-bind="o.processOrder.actInstanceId"></span></td>
+                            <td><span ng-bind="o.actTaskId"></span></td>
+                            <td><span ng-bind="o.processOrder.process.name"></span></td>
+                            <td><span ng-bind="o.processTask.name"></span></td>
+                        </tr>
+                    </table>
+                    <p ng-show="!!dpc.orders.o4 && dpc.orders.o4.length === 0">没有已完成工单！</p>
+                </div>
+                <div class="box-footer" ng-show="!!dpc.orders.o4 && dpc.orders.o4.length > 0">
+                    <tm-pagination conf="dpc.paginationConf.o4" ng-if="!dpc.searching.o4"></tm-pagination>
+                </div>
+                <div class="overlay" ng-show="dpc.loading.o4">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+

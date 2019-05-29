@@ -1,0 +1,31 @@
+<form role="form" name="add_labelset_form">
+    <div class="modal-header bg-info">
+        <button type="button" class="close" ng-click="labelsetEditer.cancel();"><span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" ng-bind="labelsetEditer.title"></h4>
+    </div>
+    <div class="modal-body">
+        <div class="box box-default">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <div class="form-group" ng-class="labelsetEditer.getCssClasses(add_labelset_form.name)">
+                            <label>标签体系名称：</label>
+                            <input type="text" name="name" class="form-control" required placeholder="请输入标签体系名称"
+                                   ng-model="labelsetEditer.labelset.name">
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
+            <div class="overlay" ng-show="labelsetEditer.loading">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="labelsetEditer.cancel();" ng-disabled="labelsetEditer.loading">取消</button>
+        <button type="button" class="btn btn-primary" ng-click="labelsetEditer.ok();" ng-disabled="labelsetEditer.loading ||!labelsetEditer.formCanSave(add_labelset_form)">确定</button>
+    </div>
+</form>x

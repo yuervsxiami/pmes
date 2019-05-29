@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.PatentMapper">
+	<resultMap type="com.cnuip.pmes2.domain.core.Patent" id="baseMap">
+		<id property="id" column="id"/>
+		<result property="ti" column="ti" />
+		<result property="type" column="type" />
+		<result property="ad" column="ad" />
+		<result property="an" column="an" />
+		<result property="od" column="od" />
+		<result property="onm" column="onm" />
+		<result property="pd" column="pd" />
+		<result property="pnm" column="pnm" />
+		<result property="examinant" column="examinant" />
+		<result property="sic" column="sic" />
+		<result property="pic" column="pic" />
+		<result property="country" column="country" />
+		<result property="province" column="province" />
+		<result property="dan" column="dan" />
+		<result property="prc" column="prc" />
+		<result property="prd" column="prd" />
+		<result property="ab" column="ab" />
+		<result property="abPicPath" column="ab_pic_path" />
+		<result property="pdfUrl" column="pdf_url" />
+		<result property="lastLegalStatus" column="last_legal_status" />
+		<result property="pa" column="pa" />
+		<result property="pin" column="pin" />
+		<result property="idPatent" column="id_patent" />
+		<result property="sectionName" column="section_name" />
+		<result property="sysId" column="sys_id" />
+		<result property="oCreateTime" column="o_createtime" />
+		<result property="oUpdateTime" column="o_updatetime" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="patentValue" column="patent_value" />
+		<result property="hasBatchIndexed" column="has_batch_indexed" />
+		<result property="indexState" column="index_state" />
+		<association property="index" column="an" select="com.cnuip.pmes2.repository.core.PatentIndexMapper.selectByAn"></association>
+	</resultMap>
+	<resultMap type="com.cnuip.pmes2.domain.core.ElPatent" extends="baseMap" id="elPatentMap">
+		<result property="keyword" column="keyword" />
+		<!--<result property="independentItem" column="independent_item" />-->
+		<result property="cl" column="cl" />
+	</resultMap>
+	<resultMap type="com.cnuip.pmes2.domain.core.Patent" extends="baseMap" id="patentMap">
+		<collection property="processOrders" column="id" select="com.cnuip.pmes2.repository.core.ProcessOrderMapper.selectByInstanceId"></collection>
+	</resultMap>
+	<resultMap type="com.cnuip.pmes2.domain.core.HumanAssessmentPatent" extends="baseMap" id="assessmentPatentMap">
+		<association property="assessmentOrder" column="id" select="com.cnuip.pmes2.repository.core.ProcessOrderMapper.findAssessmentOrderByInstanceId"></association>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.ValueIndexPatent" extends="baseMap" id="valueIndexPatentMap">
+		<association property="valueIndexOrder" column="id" select="com.cnuip.pmes2.repository.core.ProcessOrderMapper.findValueIndexOrderByInstanceId"></association>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Patent" extends="baseMap" id="patentProcessOrderMap">
+		<!--<association property="baseIndexOrder" column="id" select="com.cnuip.pmes2.repository.core.ProcessOrderMapper.getSimpleBaseIndexOrder"></association>
+		<association property="valueIndexOrder" column="id" select="com.cnuip.pmes2.repository.core.ProcessOrderMapper.getSimpleValueIndexOrder"></association>
+		<association property="priceIndexOrder" column="id" select="com.cnuip.pmes2.repository.core.ProcessOrderMapper.getSimplePriceIndexOrder"></association>
+		<association property="deepIndexOrder" column="id" select="com.cnuip.pmes2.repository.core.ProcessOrderMapper.getSimpleDeepIndexOrder"></association>-->
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Patent" extends="baseMap" id="fullLabelMap">
+		<collection property="instanceLabels" column="id" select="com.cnuip.pmes2.repository.core.InstanceLabelMapper.findByInstanceId"></collection>
+	</resultMap>
+
+	<sql id="searchSql">
+		SELECT	id,ti,type,ad,
+		an,od,onm,pd,
+		pnm,examinant,sic,pic,
+		country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,
+		last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,
+		create_time,update_time,patent_value,has_batch_indexed,index_state
+		FROM p_patent
+		<if test="condition!=null">
+			<where>
+				<if test="condition.an!=null">an LIKE '${condition.an}%'</if>
+				<if test="condition.ti!=null">AND ti like CONCAT('%',#{condition.ti},'%')</if>
+				<if test="condition.onm!=null">AND (onm = #{condition.onm} OR pnm = #{condition.onm})</if>
+				<choose>
+					<when test="condition.pa!=null and condition.searchType==1">
+						AND pa = #{condition.pa}
+					</when>
+					<otherwise>
+						AND pa LIKE '%${condition.pa}%'
+					</otherwise>
+				</choose>
+				<if test="condition.pin!=null">AND pin LIKE '%${condition.pin}%'</if>
+				<if test="condition.fromAd!=null">AND ad &gt;= #{condition.fromAd}</if>
+				<if test="condition.toAd!=null">AND ad &lt;= #{condition.toAd}</if>
+				<if test="condition.fromOd!=null">AND od &gt;= #{condition.fromOd}</if>
+				<if test="condition.toOd!=null">AND od &lt;= #{condition.toOd}</if>
+				<if test="condition.fromPd!=null">AND pd &gt;= #{condition.fromPd}</if>
+				<if test="condition.toPd!=null">AND pd &lt;= #{condition.toPd}</if>
+				<if test="condition.hasBatchIndexed!=null">AND has_batch_indexed = #{condition.hasBatchIndexed}</if>
+				<if test="condition.indexState!=null">AND index_state = #{condition.indexState}</if>
+				<if test="condition.lastLegalStatus!=null and !condition.lastLegalStatus.isEmpty()">
+					AND last_legal_status in
+					<foreach collection="condition.lastLegalStatus" open="(" close=")" separator="," item="st">
+						#{st}
+					</foreach>
+				</if>
+				<if test="condition.types!=null and !condition.types.isEmpty()">
+					AND type in
+					<foreach collection="condition.types" open="(" close=")" separator="," item="ty">
+						#{ty}
+					</foreach>
+				</if>
+			</where>
+		</if>
+	</sql>
+
+	<sql id="searchWithAnsSql">
+		SELECT id,ti,type,ad,
+		an,od,onm,pd,
+		pnm,examinant,sic,pic,
+		country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,
+		last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,
+		create_time,update_time,patent_value,has_batch_indexed,index_state
+		FROM p_patent
+		<if test="ans!=null">
+			WHERE an in
+			<foreach collection="ans" open="(" close=")" separator="," item="an">
+				#{an}
+			</foreach>
+		</if>
+	</sql>
+	
+	<select id="selectLastUpdateTime" resultType="java.util.Date">
+		SELECT MAX(o_updatetime) FROM p_patent 
+	</select>
+	
+	<select id="selectOupdateTimeByAn" parameterType="string" resultType="java.util.Date">
+		SELECT IFNULL(o_updatetime,o_createtime) FROM p_patent
+		WHERE an = #{an}
+	</select>
+
+	<select id="selectSimpleByPrimaryKey" parameterType="long" resultMap="baseMap">
+		SELECT id,ti,type,ad,
+		an,od,onm,pd,
+		pnm,examinant,sic,pic,
+		country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,
+		last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,
+		create_time,update_time,patent_value,has_batch_indexed,index_state
+		FROM p_patent
+		WHERE id = #{id}
+	</select>
+
+	<select id="selectByPrimaryKey" parameterType="long" resultMap="patentMap">
+		SELECT id,ti,type,ad,
+		an,od,onm,pd,
+		pnm,examinant,sic,pic,
+		country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,
+		last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,
+		create_time,update_time,patent_value,has_batch_indexed,index_state
+		FROM p_patent
+		WHERE id = #{id}
+	</select>
+
+	<select id="selectByAn" resultMap="baseMap" parameterType="string">
+		SELECT id,type,ti,ad,an,od,pnm,onm,examinant,sic,pic,country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,create_time,update_time,patent_value,has_batch_indexed,index_state
+		FROM p_patent
+		WHERE an = #{an}
+	</select>
+
+	<insert id="insert" parameterType="com.cnuip.pmes2.domain.core.Patent" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_patent
+		(type,ti,ad,an,od,onm,pd,pnm,examinant,sic,pic,country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,cl)
+		VALUES
+		(#{type},#{ti},#{ad},#{an},#{od},#{onm},#{od},#{onm},#{examinant},#{sic},#{pic},#{country},#{province},#{dan},#{prc},
+		#{prd},#{ab},#{abPicPath},#{pdfUrl},#{lastLegalStatus},#{pa},#{pin},#{idPatent},
+		#{sectionName},#{sysId},#{oCreateTime},#{oUpdateTime},#{cl})
+	</insert>
+
+	<insert id="batchInsert" parameterType="com.cnuip.pmes2.domain.core.Patent" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_patent
+		(type,ti,ad,an,od,onm,pd,pnm,examinant,sic,pic,country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,cl)
+		VALUES
+		<foreach collection="patents" open="" close="" separator="," item="p">
+			(#{p.type},#{p.ti},#{p.ad},#{p.an},#{p.od},#{p.onm},#{p.od},#{p.onm},#{p.examinant},#{p.sic},#{p.pic},#{p.country},#{p.province},#{p.dan},#{p.prc},
+			#{p.prd},#{p.ab},#{p.abPicPath},#{p.pdfUrl},#{p.lastLegalStatus},#{p.pa},#{p.pin},#{p.idPatent},
+			#{p.sectionName},#{p.sysId},#{p.oCreateTime},#{p.oUpdateTime},#{p.cl})
+		</foreach>
+	</insert>
+
+	<update id="update" parameterType="com.cnuip.pmes2.domain.core.Patent">
+		UPDATE p_patent
+		<set>
+			<if test="type!=null">type = #{type},</if>
+			<if test="ti!=null">ti = #{ti},</if>
+			<if test="ad!=null">ad = #{ad},</if>
+			<if test="an!=null">an = #{an},</if>
+			<if test="pd!=null">pd = #{pd},</if>
+			<if test="pnm!=null">pnm = #{pnm},</if>
+			<if test="examinant!=null">examinant = #{examinant},</if>
+			<if test="sic!=null">sic = #{sic},</if>
+			<if test="pic!=null">pic = #{pic},</if>
+			<if test="country!=null">country = #{country},</if>
+			<if test="province!=null">province = #{province},</if>
+			<if test="dan!=null">dan = #{dan},</if>
+			<if test="prc!=null">prc = #{prc},</if>
+			<if test="prd!=null">prd = #{prd},</if>
+			<if test="ab!=null">ab = #{ab},</if>
+			<if test="abPicPath!=null">ab_pic_path = #{abPicPath},</if>
+			<if test="pdfUrl!=null">pdf_url = #{pdfUrl},</if>
+			<if test="lastLegalStatus!=null">last_legal_status = #{lastLegalStatus},</if>
+			<if test="indexState!=null">index_state = #{indexState},</if>
+			<if test="hasBatchIndexed!=null">has_batch_indexed = #{hasBatchIndexed},</if>
+			<if test="pa!=null">pa = #{pa},</if>
+			<if test="pin!=null">pin = #{pin},</if>
+			<if test="idPatent!=null">id_patent = #{idPatent},</if>
+			<if test="sectionName!=null">section_name = #{sectionName},</if>
+			<if test="sysId!=null">sys_id = #{sysId},</if>
+			<if test="cl!=null">cl = #{cl},</if>
+			<if test="oCreateTime!=null">o_createtime = #{oCreateTime},</if>
+			<if test="oUpdateTime!=null">o_updatetime = #{oUpdateTime}</if>
+		</set>
+		WHERE an = #{an}
+	</update>
+
+	<update id="updatePatentValue" parameterType="string">
+		UPDATE p_patent
+		SET patent_value = #{value}
+		WHERE an = #{an}
+	</update>
+	
+	<update id="updatePatentInfo">
+		UPDATE p_patent
+		<set>
+			<if test="value != null">patent_value = #{value},</if>
+			<if test="keyword != null">keyword = #{keyword},</if>
+			update_time = now()
+		</set> 
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateHasBatchIndexed" parameterType="long">
+		UPDATE p_patent
+		SET has_batch_indexed = 1,
+		update_time = now()
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateHasNotBatchIndexed" parameterType="long">
+		UPDATE p_patent
+		SET has_batch_indexed = 0,
+		update_time = now()
+		WHERE id = #{id}
+	</update>
+
+	<select id="checkAnIsExist" parameterType="string" resultType="int">
+		SELECT IFNULL(count(*),0) FROM p_patent WHERE an = #{an}
+	</select>
+
+	<select id="search" parameterType="com.cnuip.pmes2.controller.api.request.PatentStartSearchCondition" resultMap="patentProcessOrderMap">
+		SELECT	id,ti,type,ad,
+		an,od,onm,pd,
+		pnm,examinant,sic,pic,
+		country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,
+		last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,
+		create_time,update_time,patent_value,has_batch_indexed,index_state
+		FROM p_patent
+		<if test="condition!=null">
+			<where>
+				<if test="condition.an!=null">an LIKE '%${condition.an}%'</if>
+				<if test="condition.ti!=null">AND ti like CONCAT('%',#{condition.ti},'%')</if>
+				<if test="condition.onm!=null">AND (onm = #{condition.onm} OR pnm = #{condition.onm})</if>
+				<if test="condition.pa!=null">AND pa LIKE '%${condition.pa}%'</if>
+				<if test="condition.pin!=null">AND pin LIKE '%${condition.pin}%'</if>
+				<if test="condition.fromAd!=null">AND ad &gt;= #{condition.fromAd}</if>
+				<if test="condition.toAd!=null">AND ad &lt;= #{condition.toAd}</if>
+				<if test="condition.fromOd!=null">AND od &gt;= #{condition.fromOd}</if>
+				<if test="condition.toOd!=null">AND od &lt;= #{condition.toOd}</if>
+				<if test="condition.fromPd!=null">AND pd &gt;= #{condition.fromPd}</if>
+				<if test="condition.toPd!=null">AND pd &lt;= #{condition.toPd}</if>
+				<if test="condition.hasBatchIndexed!=null">AND has_batch_indexed = #{condition.hasBatchIndexed}</if>
+				<if test="condition.indexState!=null">AND index_state = #{condition.indexState}</if>
+				<if test="condition.lastLegalStatus!=null and !condition.lastLegalStatus.isEmpty()">
+					AND last_legal_status in
+					<foreach collection="condition.lastLegalStatus" open="(" close=")" separator="," item="st">
+						#{st}
+					</foreach>
+				</if>
+				<if test="condition.types!=null and !condition.types.isEmpty()">
+					AND type in
+					<foreach collection="condition.types" open="(" close=")" separator="," item="ty">
+						#{ty}
+					</foreach>
+				</if>
+			</where>
+		</if>
+		ORDER BY ad DESC
+	</select>
+
+	<select id="searchWithAns" parameterType="string" resultMap="patentProcessOrderMap">
+		<include refid="searchWithAnsSql" />
+	</select>
+
+	<select id="searchHumanAssessment" parameterType="com.cnuip.pmes2.controller.api.request.PatentStartSearchCondition" resultMap="baseMap">
+		<include refid="searchSql" />
+	</select>
+
+	<select id="searchHumanAssessmentWithAns" parameterType="string" resultMap="baseMap">
+		<include refid="searchWithAnsSql" />
+	</select>
+
+	<select id="findUpdatedElPatents" resultMap="elPatentMap">
+		SELECT * FROM p_patent
+		<where>
+			has_batch_indexed = 1
+			<if test="lastUpdateTime != null">
+				AND update_time > #{lastUpdateTime}
+			</if>
+		</where>
+		ORDER BY update_time ASC
+	</select>
+	
+	<select id="selectTotalAfterTimeNum" resultType="int">
+		SELECT count(1)
+		FROM p_patent
+		<where>
+		last_legal_status != '无效'
+		<if test="endNum!=null">
+		AND id_patent%30 = #{endNum}
+		</if>
+		AND (
+			has_batch_indexed = 0
+		<if test="lastUpdateTime!=null">
+			or
+			(o_updatetime > #{lastUpdateTime}  OR o_createtime > #{lastUpdateTime})
+		</if>
+		)
+		</where> 
+	</select>
+	
+	<select id="selectTotalAfterTimeByTypeNum" resultType="int">
+		SELECT count(1)
+		FROM p_patent
+		<where>
+		<if test="type=='1'">
+			(section_name = 'FMSQ' OR section_name = 'FMZL')
+		</if>
+		<if test="type=='2'">
+			section_name = 'WGZL'
+		</if>
+		<if test="type=='3'">
+			section_name = 'SYXX'
+		</if>
+		AND (
+		<if test="lastUpdateTime!=null">
+			o_updatetime > #{lastUpdateTime} 
+			OR 
+		</if>
+			has_batch_indexed = 0
+		)
+		</where> 
+	</select>
+	
+	<select id="selectPatentUpdateAfterTime" resultMap="baseMap">
+		SELECT id,ti,type,ad,
+		an,od,onm,pd,
+		pnm,examinant,sic,pic,
+		country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,
+		last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,
+		create_time,update_time,patent_value,has_batch_indexed,index_state
+		FROM p_patent
+		<where>
+		last_legal_status != '无效'
+		<if test="endNum!=null">
+		AND id_patent%30 = #{endNum}
+		</if>
+		AND (
+			has_batch_indexed = 0
+		<if test="lastUpdateTime!=null">
+			or
+			(o_updatetime > #{lastUpdateTime}  OR o_createtime > #{lastUpdateTime})
+		</if>
+		)
+		</where> 
+       	LIMIT ${start},${limit}
+	</select>
+	
+	<select id="selectPatentUpdateAfterTimeByType" resultMap="baseMap">
+		SELECT id,ti,type,ad,
+		an,od,onm,pd,
+		pnm,examinant,sic,pic,
+		country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,
+		last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,
+		create_time,update_time,patent_value,has_batch_indexed,index_state
+		FROM p_patent
+		<where>
+		<if test="type=='1'">
+			(section_name = 'FMSQ' OR section_name = 'FMZL')
+		</if>
+		<if test="type=='2'">
+			section_name = 'WGZL'
+		</if>
+		<if test="type=='3'">
+			section_name = 'SYXX'
+		</if>
+		AND (
+		<if test="lastUpdateTime!=null">
+			o_updatetime > #{lastUpdateTime} 
+			OR 
+		</if>
+			has_batch_indexed = 0
+		)
+		</where> 
+       	LIMIT ${start},${limit}
+	</select>
+
+	<select id="findUnindexedPatentByEndNum" resultMap="baseMap" parameterType="int">
+		SELECT id,ti,type,ad,
+		an,od,onm,pd,
+		pnm,examinant,sic,pic,
+		country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,
+		last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,
+		create_time,update_time,patent_value,has_batch_indexed,index_state
+		FROM p_patent
+		WHERE last_legal_status != '无效'
+		AND has_batch_indexed = 0
+		<if test="endNum!=null">
+		AND id_patent%10 = #{endNum}
+		</if>
+		LIMIT 500
+	</select>
+
+	<select id="selectIdsUpdateAfterTime" resultType="long">
+		SELECT id
+		FROM p_patent
+		<where>
+			last_legal_status != '无效'
+			<if test="lastUpdateTime!=null">
+			AND (o_updatetime > #{lastUpdateTime}  OR o_createtime > #{lastUpdateTime})
+			</if>
+		</where>
+		LIMIT ${start},${limit}
+	</select>
+
+	<insert id="addIndexError" parameterType="string">
+		INSERT INTO p_index_error
+		(an,reason)
+		VALUES
+		(#{an}, #{reason})
+	</insert>
+
+	<resultMap id="indexErrorMap" type="com.cnuip.pmes2.domain.core.IndexEr">
+		<result column="id" property="id"></result>
+		<result column="an" property="an"></result>
+		<result column="reason" property="reason"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="is_deal" property="isDeal"></result>
+		<association property="patent" column="an" select="selectByAn"></association>
+	</resultMap>
+
+	<select id="selectIndexError" resultMap="indexErrorMap">
+		SELECT id,an,reason,create_time,update_time,is_deal
+		FROM p_index_error
+	</select>
+
+	<select id="searchOrderByUpdateTimeAsc" parameterType="com.cnuip.pmes2.controller.api.request.PatentStartSearchCondition" resultMap="patentProcessOrderMap">
+		SELECT	id,ti,type,ad,
+		an,od,onm,pd,
+		pnm,examinant,sic,pic,
+		country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,
+		last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,
+		create_time,update_time,patent_value,has_batch_indexed,index_state
+		FROM p_patent
+		<if test="condition!=null">
+			<where>
+				<if test="condition.lastUpdateTime!=null ">AND update_time >= #{condition.lastUpdateTime}  order by update_time ASC </if>
+			</where>
+		</if>
+	</select>
+
+	<select id="searchOrderByCreateTimeAsc" parameterType="com.cnuip.pmes2.controller.api.request.PatentStartSearchCondition" resultMap="patentProcessOrderMap">
+		SELECT	id,ti,type,ad,
+		an,od,onm,pd,
+		pnm,examinant,sic,pic,
+		country,province,dan,prc,
+		prd,ab,ab_pic_path,pdf_url,
+		last_legal_status,pa,pin,id_patent,
+		section_name,sys_id,o_createtime,o_updatetime,
+		create_time,update_time,patent_value,has_batch_indexed,index_state
+		FROM p_patent
+		<if test="condition!=null">
+			<where>
+				<if test="condition.lastCreateTime!=null ">AND create_time >= #{condition.lastCreateTime}  order by create_time ASC </if>
+			</where>
+		</if>
+	</select>
+
+	<select id="searchKeywordsByEndNum" resultType="com.cnuip.pmes2.domain.inventory.PatentSub3Info">
+		SELECT SYSID, TRSKEYWORD
+		FROM st_patentinfo_sub3
+		<where>
+			TRSKEYWORD IS NOT NULL AND TRSKEYWORD != ''
+			<if test="endNum!=10">
+			AND	RIGHT(an, 1) = #{endNum}
+			</if>
+			<if test="endNum==10">
+			AND	UPPER(RIGHT(an, 1)) = 'X'
+			</if>
+			<if test="lastSYSID != null">
+			AND (SYSID >= #{lastSYSID})
+			</if>
+		</where>
+		ORDER BY SYSID
+		LIMIT 1000
+	</select>
+
+	<select id="findPatentValueList" resultMap="baseMap" parameterType="List">
+		SELECT id,an,patent_value
+		FROM p_patent
+	    WHERE an in
+		<foreach collection="anList" item="listItem" index="index"  open="(" separator="," close=")" >
+			#{listItem,jdbcType=VARCHAR}
+		</foreach>
+         and patent_value is not null
+	</select>
+
+</mapper>

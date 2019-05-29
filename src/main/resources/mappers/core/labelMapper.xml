@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.LabelMapper">
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Label" id="baseMap">
+		<id property="id" column="id"/>
+		<result property="key" column="key"/>
+		<result property="name" column="name"/>
+		<result property="type" column="type"/>
+		<result property="valueType" column="value_type"/>
+		<result property="minValue" column="min_value"/>
+		<result property="maxValue" column="max_value"/>
+		<result property="indexType" column="index_type"/>
+		<result property="showInProcess" column="show_in_process"/>
+		<result property="isRequired" column="is_required"/>
+		<result property="isMultiple" column="is_multiple"/>
+		<result property="defaultValue" column="default_value"/>
+		<result property="metaKey" column="meta_key"/>
+		<result property="state" column="state"/>
+		<result property="source" column="source"/>
+		<result property="remark" column="remark"/>
+		<result property="userId" column="user_id"/>
+		<result property="mapRule" column="map_rule"/>
+		<result property="mapType" column="map_type"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Label" id="simpleMap">
+		<id property="id" column="id"/>
+		<result property="key" column="key"/>
+		<result property="name" column="name"/>
+		<result property="valueType" column="value_type"/>
+		<result property="indexType" column="index_type"/>
+		<result property="showInProcess" column="show_in_process"/>
+		<result property="source" column="source"/>
+		<result property="userId" column="user_id"/>
+		<result property="metaKey" column="meta_key"/>
+	</resultMap>
+	
+	<select id="selectSimpleByPrimaryKey" parameterType="long" resultMap="simpleMap">
+		SELECT id,`key`,name,value_type,index_type,
+			   show_in_process,source,user_id,meta_key
+		FROM p_label
+		WHERE id = #{id}
+	</select>
+	
+	<select id="selectByPrimaryKey" parameterType="long" resultMap="baseMap">
+		SELECT id,`key`,name,type,value_type,min_value,max_value,index_type,
+			   show_in_process,is_required,is_multiple,default_value,meta_key,
+			   state,source,remark,user_id,create_time,update_time,map_rule,map_type
+		FROM p_label
+		WHERE id = #{id}
+	</select>
+	
+	<select id="selectSimpleByKey" parameterType="string" resultMap="simpleMap">
+		SELECT id,`key`,name,type,value_type,min_value,max_value,index_type,
+			   show_in_process,is_required,is_multiple,default_value,meta_key,
+			   state,source,remark,user_id,create_time,update_time,map_rule,map_type
+		FROM p_label
+		WHERE `key` = #{key}
+	</select>
+	
+	<select id="selectByKey" parameterType="string" resultMap="baseMap">
+		SELECT id,`key`,name,type,value_type,min_value,max_value,index_type,
+			   show_in_process,is_required,is_multiple,default_value,meta_key,
+			   state,source,remark,user_id,create_time,update_time,map_rule,map_type
+		FROM p_label
+		WHERE `key` = #{key}
+	</select>
+	
+	<select id="selectByType" parameterType="int" resultMap="baseMap">
+		SELECT id,`key`,name,type,value_type,min_value,max_value,index_type,
+			   show_in_process,is_required,is_multiple,default_value,meta_key,
+			   state,source,remark,user_id,create_time,update_time,map_rule,map_type
+		FROM p_label
+		<if test="type!=null">
+		WHERE type = #{type}
+		</if>
+	</select>
+	
+	<insert id="add" parameterType="com.cnuip.pmes2.domain.core.Label" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_label
+		(`key`,name,type,value_type,min_value,max_value,index_type,show_in_process,
+		is_required,is_multiple,default_value,meta_key,state,source,remark,user_id)
+		VALUES
+		(#{key},#{name},#{type},#{valueType},#{minValue},#{maxValue},#{indexType},#{showInProcess},
+		#{isRequired},#{isMultiple},#{defaultValue},#{metaKey},0,#{source},#{remark},#{userId})
+	</insert>
+	
+	<update id="update" parameterType="com.cnuip.pmes2.domain.core.Label">
+		UPDATE p_label
+		<set>
+			<if test="name!=null and name!=''">name = #{name},</if>
+			<if test="type!=null and type!=''">type = #{type},</if>
+			<if test="valueType!=null and valueType!=''">value_type = #{valueType},</if>
+			<if test="minValue!=null and minValue!=''">min_value = #{minValue},</if>
+			<if test="maxValue!=null and maxValue!=''">max_value = #{maxValue},</if>
+			<if test="indexType!=null and indexType!=''">index_type = #{indexType},</if>
+			<if test="showInProcess!=null and showInProcess!=''">show_in_process = #{showInProcess},</if>
+			<if test="isRequired!=null and isRequired!=''">is_required = #{isRequired},</if>
+			<if test="isMultiple!=null and isMultiple!=''">is_multiple = #{isMultiple},</if>
+			<if test="defaultValue!=null and defaultValue!=''">default_value = #{defaultValue},</if>
+			<if test="metaKey!=null and metaKey!=''">meta_key = #{metaKey},</if>
+			<if test="source!=null and source!=''">source = #{source},</if>
+			<if test="remark!=null and remark!=''">remark = #{remark},</if>
+			<if test="userId!=null and userId!=''">user_id = #{userId}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="changeState">
+		UPDATE p_label
+		SET state = #{state}
+		WHERE id = #{id}
+	</update>
+	
+	<select id="checkKeyExist" parameterType="string" resultType="int">
+		SELECT IFNULL(count(*),0)
+		FROM p_label
+		WHERE `key` = #{key}
+	</select>
+	
+	<select id="search" parameterType="com.cnuip.pmes2.controller.api.request.LabelSearchCondition" resultMap="baseMap">
+		SELECT l.id,l.`key`,l.name,l.type,l.value_type,l.min_value,l.max_value,l.index_type,
+			   l.show_in_process,l.is_required,l.is_multiple,l.default_value,l.meta_key,l.state,
+			   l.source,l.remark,l.user_id,l.create_time,l.update_time,l.map_rule,l.map_type
+		FROM p_label AS l
+		LEFT JOIN p_user AS u ON l.user_id = u.id
+		<where>
+			<if test="condition.type!=null">l.type = #{condition.type}</if>
+			<if test="condition.name!=null">AND l.name like CONCAT('%',#{condition.name},'%')</if>
+			<if test="condition.state!=null">AND l.state = #{condition.state}</if>
+			<if test="condition.indexType!=null">AND l.index_type = #{condition.indexType}</if>
+			<if test="condition.source!=null">AND l.source = #{condition.source}</if>
+			<if test="condition.fromTime!=null">AND l.update_time &gt;= #{condition.fromTime}</if>
+			<if test="condition.toTime!=null">AND l.update_time &lt;= #{condition.toTime}</if>
+			<if test="condition.username!=null">AND u.name like CONCAT('%',#{condition.username},'%')</if>
+		</where> 
+	</select>
+	
+	<select id="selectByTypeAndIndexType" resultMap="baseMap">
+		SELECT id,`key`,name,type,value_type,min_value,max_value,index_type,
+			   show_in_process,is_required,is_multiple,default_value,meta_key,state,
+			   source,remark,user_id,create_time,update_time,map_rule,map_type
+		FROM p_label
+		<where>
+			<if test="type!=null">type = #{type}</if>
+			<if test="indexTypes!=null and indexTypes.size()>0">
+				AND index_type IN 
+				<foreach collection="indexTypes" open="(" close=")" separator="," item="indexType">
+					#{indexType}
+				</foreach>
+			</if>
+			<if test="mapTypes!=null and mapTypes.size()>0">
+				AND map_type IN 
+				<foreach collection="mapTypes" open="(" close=")" separator="," item="mapType">
+					#{mapType}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<select id="selectIdByTypeAndIndexType" resultType="long">
+		SELECT id
+		FROM p_label
+		<where>
+			<if test="type!=null">type = #{type}</if>
+			<if test="indexTypes!=null and indexTypes.size()>0">
+				AND index_type IN
+				<foreach collection="indexTypes" open="(" close=")" separator="," item="indexType">
+					#{indexType}
+				</foreach>
+			</if>
+			<if test="mapTypes!=null and mapTypes.size()>0">
+				AND map_type IN
+				<foreach collection="mapTypes" open="(" close=")" separator="," item="mapType">
+					#{mapType}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectInProcessTask" parameterType="long" resultMap="baseMap">
+		SELECT id,`key`,name,type,value_type,min_value,max_value,index_type,
+			   show_in_process,is_required,is_multiple,default_value,meta_key,
+			   state,source,remark,user_id,create_time,update_time,map_rule,map_type
+		FROM p_label
+		WHERE id in (
+	        SELECT label_id
+	        FROM p_process_task_label
+	        WHERE task_id = #{processTaskId} AND labelset_id = #{labelsetId}
+		)
+	</select>
+
+    <select id="checkHasUsed" resultType="int" parameterType="long">
+		SELECT count(*) FROM p_process_task_label WHERE label_id = #{labelId}
+    </select>
+
+</mapper>

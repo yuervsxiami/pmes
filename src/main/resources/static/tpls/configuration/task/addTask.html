@@ -1,0 +1,33 @@
+<form role="form" name="add_task_form">
+    <div class="modal-header bg-info">
+        <button type="button" class="close" ng-click="addProcessTask.cancel();"><span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">添加环节</h4>
+    </div>
+    <div class="modal-body">
+        <div class="box box-default">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <div class="form-group" ng-class="addProcessTask.getCssClasses(add_task_form.name)">
+                            <label>环节名称：</label>
+                            <input type="text" name="name" class="form-control" required placeholder="请输入环节名称"
+                                   ng-model="addProcessTask.processTask.name">
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
+            <div class="overlay" ng-show="addProcessTask.loading">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="addProcessTask.cancel();"
+                ng-disabled="addProcessTask.loading">取消</button>
+        <button type="button" class="btn btn-primary" ng-click="addProcessTask.ok();"
+                ng-disabled="addProcessTask.loading ||!addProcessTask.formCanSave(add_task_form)">确定</button>
+    </div>
+</form>

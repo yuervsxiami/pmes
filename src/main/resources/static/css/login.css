@@ -1,0 +1,106 @@
+body {
+    color: #797979;
+    color: #666;
+    font-family: 'Open Sans', sans-serif;
+    /* font-family: "Helvetica Neue",Helvetica,Microsoft Yahei,Hiragino Sans GB,WenQuanYi Micro Hei,sans-serif; */
+    padding: 0px !important;
+    margin: 0px !important;
+    font-size: 13px;
+}
+p {
+    line-height: 22px;
+}
+.header-frontend .navbar {
+    margin-bottom: 0;
+}
+.header-frontend .navbar {
+    min-height: 100px;
+}
+
+.navbar-brand {
+    color: #bcc0cd;
+    font-size: 30px;
+    font-weight: 100;
+    line-height: 30px;
+    margin-top: 30px;
+    padding: 0 0 0 15px;
+}
+
+.navbar-brand .logo{height:50px;}
+
+.navbar-brand span{
+    color: #f25f5b;
+}
+.content h3, .media h3 {
+    color: #475168;
+    font-size: 20px;
+    font-family: 'Fjalla One', sans-serif;
+}
+.vam{vertical-align:middle;}
+/*底部*/
+.footer{background-color:#fff;color:inherit;margin-top:0;padding:40px 0 0;}
+.footer a{color:#777;}
+.footer a:hover{color:#f77b6f;}
+.footer .logo{height:50px;margin-top:12px;}
+.footer .row{margin-top:50px;}
+.footer .row>div{margin-bottom:30px;}
+.footer .row strong{color:#333;}
+.footer .list-unstyled{line-height:2;}
+.footer .input-wrap{position:relative;margin-top:28px;}
+.footer .input-wrap label{position:absolute;top:-28px;left:0;white-space:nowrap;}
+.footer .btn{padding-left:30px;padding-right:30px;border-radius:0;}
+.footer .btn-black{background-color:#333;color:#fff;}
+.footer .form-control{color:inherit;border-color:#999;margin-right:20px;border-radius:0;}
+.footer .form-control:focus{border-color:#666;}
+@media (min-width:992px){
+    .footer .input-wrap{float:right;text-align:right;}
+}
+@media (min-width:768px){
+    .footer .form-control{width:300px!important;}
+}
+.footer hr{border-color:#e2e2e2;}
+.footer .md-bottom{padding:30px 0;background-color:#333;color:#999;}
+.footer .md-bottom a{color:currentColor;text-decoration:underline;}
+.footer .md-bottom a:hover{color:#f77b6f;}
+
+@media (max-width:767px){
+    .navbar-header{margin-top:0;margin-bottom:0;width:auto;}
+    .navbar-brand{font-size:0;margin-top:0;float:left;}
+    .header-frontend .navbar{min-height: auto;}
+}
+
+.body{overflow: hidden;background:url('../images/image_02.png') no-repeat center top;background-size: auto 710px;min-height:100vh;}
+.media,.media-body{overflow:visible;}
+.login{position:relative;padding:155px 0;}
+.login-bg{min-height:400px;width:100%;object-fit:cover;}
+.login-content h1{color:#fff;color:rgba(255,255,255,.85);}
+.login-content p{letter-spacing:0.08em;font-size:14px;}
+.login-box{width:340px;background-color:#fff;box-shadow:0 0 5px rgba(0,0,0,.5);padding:40px 30px;padding-top:90px;position:relative;}
+.login-box.form{font-size:13px;}
+.login-box.form .form-control{padding:9px 15px;height:40px;padding-left:40px;background-repeat:no-repeat;background-position:13px center;background-size:14px;font-size:13px;line-height:20px;}
+.login-box .login-icon{width:96px;height:96px;border-radius:50%;position:absolute;top:-24px;left:50%;margin-left:-50px;border:7px solid #fff;background:#cecece url('../images/User.png') center 10px no-repeat;}
+.form .trad-layout .pull-right{height:40px;font-size:inherit;}
+.form .trad-layout .btn.pull-right{padding-top:9px;padding-bottom:9px;}
+.login-box .bg-user{background-image:url('../images/icon_user.png');}
+.login-box .bg-lock{background-image:url('../images/icon_password.png');}
+.box-title span {color: #75B9E6 !important;}
+.btn-primary{background-color: #75B9E6 !important;border-color: #75B9E6 !important;}
+.form-group{margin-bottom: 25px}
+#video{width: 100%;height: 100%;position: absolute;top: 0;left: 0;z-index: -1111;text-align: center;}
+.login-content-bg{background-color: rgba(101, 173, 224, 0.8) !important;}
+#rememberMe{width: auto;height: auto;display: inline;}
+.form-group label{font-weight: normal;}
+.navbar-brand{padding: 15px 0 0 84px;}
+
+.login-content { position:relative;}
+.login-content-bg { position:absolute;width:100%;top:50px;bottom:50px;background-color:rgba(247, 50, 23, 0.44);z-index:-1;}
+.login-box { padding-top:10px;}
+.box-title { padding-bottom:10px;padding-left: 20px;color:#02D1BF;border-bottom:2px solid #F4F4F4;}
+.box-title span { color:#02D1BF;border-bottom:2px solid #8D8D8D;padding: 7px;}
+.tab-content { margin-top:30px;}
+.footer-tag { position:fixed;width: 100%;bottom: 0;background-color: #fff;z-index:-1;}
+.footer-tag .text-center { margin:36px 0;color:#9ca5bd;}
+
+#conversejs #converse-roster span.pending-contact-name{width:100%}
+.language { display:none;}
+.language_show { display:block;}

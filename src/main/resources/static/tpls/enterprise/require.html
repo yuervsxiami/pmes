@@ -1,0 +1,135 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li><i class="iconfont icon-qiye"></i> 企业加工管理</li>
+        <li class="active">企业信息管理</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box box-default">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>企业名称：</label>
+                                <input type="text" class="form-control" placeholder="请输入企业名称" ng-model="erlc.query.enterprise.name">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>国民经济领域：</label>
+                                <button class="btn btn-default form-control" style="background-color: transparent; text-align: left"
+                                        ng-bind="erlc.currentNationalEconomyField ? erlc.currentNationalEconomyField.name: '全部'"
+                                        ng-click="erlc.openNationalDlg()" ></button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>注册地址：</label>
+                                <button class="btn btn-default form-control" style="background-color: transparent; text-align: left"
+                                        ng-bind="erlc.region | changeSearchRegion"
+                                        ng-click="erlc.openRegionDlg()" ></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>企业需求：</label>
+                                <input type="text" class="form-control" placeholder="请输入企业需求" ng-model="erlc.query.requirement">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>操作时间：</label>
+                                <my-datetime-range on-datetime-range-changed="erlc.onDatetimeRangeChanged('optDate', start, end)"
+                                                start-date="erlc.query.optDateFrom"
+                                                end-date="erlc.query.optDateTo" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-warning" ng-disabled="erlc.loading" ng-click="erlc.search()">查询</button>
+                    <button type="reset" class="btn btn-default" ng-click="erlc.reset()">重置</button>
+                </div>
+            </div>
+
+            <div class="box box-default">
+                <div class="box-header">
+                    <h3 class="box-title">企业需求列表</h3>
+                    <div class="box-tools">
+                        <div class="btn-group">
+                            <button class="btn btn-info btn-sm" ng-click="erlc.startProcess('EnterpriseRequire', 'enterpriseRequireIndex', null)">启动标引</button>
+                            <button class="btn btn-info btn-sm" ng-click="erlc.startProcess('MATCH', 'enterpriseRequireMatch', null)">启动匹配</button>
+                        </div>
+                        <button class="btn btn-primary btn-sm" ng-click="erlc.editRequirement({}, -1)">添加</button>
+                    </div>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-striped">
+                        <tr>
+                            <th width="32px;">
+                                <input type="checkbox"
+                                       ng-model="erlc.allSelected"
+                                       ng-change="erlc.changeAllSelected()">
+                            </th>
+                            <th>企业名称</th>
+                            <th>企业需求</th>
+                            <th>注册地址</th>
+                            <th>国民经济领域</th>
+                            <th>是否进行过企业需求标引</th>
+                            <th>操作人</th>
+                            <th>操作时间</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        <tr ng-repeat="item in erlc.requirements">
+                            <td>
+                                <input type="checkbox"
+                                       ng-model="item.selected"
+                                       ng-change="erlc.changeSelected()">
+                            </td>
+                            <td><span ng-bind="item.data.enterprise.name"></span></td>
+                            <td><span ng-bind="item.data.requirement"></span></td>
+                            <td><span ng-bind="item.data.enterprise | changeRegionWithAddress"></span></td>
+                            <td><span ng-bind="item.data.enterprise.nationalEconomy.name || '-'"></span></td>
+                            <td><span ng-bind="item.data.state ? '是' : '否'"></span></td>
+                            <td><span ng-bind="item.data.user.name || '-'"></span></td>
+                            <td><span ng-bind="item.data.updateTime | date: 'yyyy-MM-dd HH:mm:ss'"></span></td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" ng-click="erlc.editRequirement(item.data, $index)">修改</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" ng-click="erlc.startProcess('EnterpriseRequire', 'enterpriseRequireIndex', item.data)" ng-disabled="item.data.hasIndexing==1">启动标引</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" ng-click="erlc.startProcess('MATCH', 'enterpriseRequireMatch', item.data)" ng-disabled="item.data.hasPatentMatching==1">精准匹配专利</button>
+                            </td>
+                            <td>
+                                <!--<a class="btn btn-success btn-sm" ui-sref="main.console.elsearch.patent({keywords:item.data.requirement})">模糊匹配</a>-->
+                                <a class="btn btn-success btn-sm"  ng-disabled="true">精准匹配专家</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="box-footer">
+                    <tm-pagination conf="erlc.paginationConf" ng-if="!erlc.searching"></tm-pagination>
+                </div>
+                <div class="overlay" ng-show="erlc.loading">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.EnterpriseMapper">
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Enterprise" id="baseMap">
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="unifiedSocialCreditCode" column="social_code"/>
+		<result property="nationalEconomyField" column="national_economy_field"/>
+		<result property="provinceId" column="province_id"/>
+		<result property="cityId" column="city_id"/>
+		<result property="districtId" column="district_id"/>
+		<result property="address" column="address"/>
+		<result property="contact" column="contact"/>
+		<result property="phone" column="phone"/>
+		<result property="type" column="type"/>
+		<result property="scaleType" column="scale_type"/>
+		<result property="certification" column="certification"/>
+		<result property="state" column="state"/>
+		<result property="userId" column="user_id"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="hasIndexing" column="has_indexing"/>
+		<association property="user" column="user_id" columnPrefix="euser_" javaType="com.cnuip.pmes2.domain.core.User">
+			<result property="name" column="name" />
+		</association>
+	</resultMap>
+
+	<sql id="selectAll">
+		SELECT e.id,e.name,e.social_code,e.national_economy_field,e.province_id,e.city_id,e.district_id,e.address,e.contact,e.phone,e.type,e.scale_type,e.certification,e.state,e.create_time,e.update_time,
+		u.name euser_name, e.has_indexing
+		FROM p_enterprise e
+		LEFT JOIN p_user u on e.user_id = u.id
+	</sql>
+
+	<select id="findById" parameterType="long" resultMap="baseMap">
+		<include refid="selectAll" />
+		WHERE e.id = #{id}
+	</select>
+
+	<select id="find" parameterType="com.cnuip.pmes2.domain.core.Enterprise" resultMap="baseMap">
+		<include refid="selectAll" />
+		<where>
+			<if test="id != null">e.id = #{id}</if>
+			<if test="userId != null">e.user_id = #{userId}</if>
+			<if test="name != null and name != ''">AND e.name LIKE '%${name}%'</if>
+			<if test="unifiedSocialCreditCode != null and unifiedSocialCreditCode != ''">AND e.social_code LIKE '%${unifiedSocialCreditCode}%'</if>
+			<if test="nationalEconomyField != null and nationalEconomyField != ''">
+				AND IFNULL(e.national_economy_field,'') in (SELECT code FROM p_national_economy WHERE code like CONCAT('%',#{nationalEconomyField},'%'))
+			</if>
+			<if test="address != null">AND e.address LIKE '%${address}%'</if>
+			<if test="contact != null">AND e.contact LIKE '%${contact}%'</if>
+			<if test="phone != null">AND e.phone LIKE '%${phone}%'</if>
+			<if test="type != null">AND e.type = #{type}</if>
+			<if test="scaleType != null">AND e.scale_type = #{scaleType}</if>
+			<if test="state != null">AND e.state = #{state}</if>
+			<if test="certification != null and certification != ''">AND e.certification = LIKE '%${certification}%'</if>
+			<if test="provinceId != null">AND e.province_id = #{provinceId}</if>
+			<if test="cityId != null">AND e.city_id = #{cityId}</if>
+			<if test="districtId != null">AND e.district_id = #{districtId}</if>
+			<if test="optDateFrom != null">AND e.update_time >= #{optDateFrom}</if>
+			<if test="optDateTo != null">AND e.update_time &lt;= #{optDateTo}</if>
+		</where>
+		ORDER BY e.update_time DESC
+	</select>
+
+	<select id="search" parameterType="com.cnuip.pmes2.domain.core.Enterprise" resultMap="baseMap">
+		<include refid="selectAll" />
+		<where>
+			<if test="enterprise.id != null">e.id = #{enterprise.id}</if>
+			<if test="enterprise.name != null and enterprise.name != ''">AND e.name LIKE '%${enterprise.name}%'</if>
+			<if test="enterprise.unifiedSocialCreditCode != null and enterprise.unifiedSocialCreditCode != ''">AND e.social_code LIKE '%${enterprise.unifiedSocialCreditCode}%'</if>
+			<if test="enterprise.nationalEconomyField != null and enterprise.nationalEconomyField != ''">
+				AND IFNULL(e.national_economy_field,'') in (SELECT code FROM p_national_economy WHERE code like CONCAT('%',#{enterprise.nationalEconomyField},'%'))
+			</if>
+			<if test="enterprise.address != null">AND e.address LIKE '%${enterprise.address}%'</if>
+			<if test="enterprise.contact != null">AND e.contact LIKE '%${enterprise.contact}%'</if>
+			<if test="enterprise.phone != null">AND e.phone LIKE '%${enterprise.phone}%'</if>
+			<if test="enterprise.type != null">AND e.type = #{enterprise.type}</if>
+			<if test="enterprise.scaleType != null">AND e.scale_type = #{enterprise.scaleType}</if>
+			<if test="enterprise.state != null">AND e.state = #{enterprise.state}</if>
+			<if test="enterprise.certification != null and enterprise.certification != ''">AND e.certification = LIKE '%${enterprise.certification}%'</if>
+			<if test="enterprise.districtId == null and enterprise.cityId == null and enterprise.provinceId != null">AND e.province_id = #{enterprise.provinceId}</if>
+			<if test="enterprise.districtId == null and enterprise.cityId != null">AND e.city_id = #{enterprise.cityId}</if>
+			<if test="enterprise.districtId != null">AND e.district_id = #{enterprise.districtId}</if>
+			<if test="enterprise.optDateFrom != null">AND e.update_time >= #{enterprise.optDateFrom}</if>
+			<if test="enterprise.optDateTo != null">AND e.update_time &lt;= #{enterprise.optDateTo}</if>
+		</where>
+		ORDER BY e.update_time DESC
+	</select>
+
+	<insert id="save" parameterType="com.cnuip.pmes2.domain.core.Enterprise" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_enterprise
+		(name,social_code,national_economy_field,province_id,city_id,district_id,address,contact,phone,type,scale_type,certification)
+		VALUES
+		(#{name},#{unifiedSocialCreditCode},#{nationalEconomyField},#{provinceId},#{cityId},#{districtId},#{address},#{contact},#{phone},#{type},#{scaleType},#{certification})
+	</insert>
+
+	<delete id="delete" parameterType="com.cnuip.pmes2.domain.core.Enterprise">
+		DELETE FROM p_enterprise
+		<where>
+			<if test="id != null">id = #{id}</if>
+			<if test="name != null and name != ''">AND name LIKE '%${name}%'</if>
+			<if test="unifiedSocialCreditCode != null and unifiedSocialCreditCode != ''">AND social_code = #{unifiedSocialCreditCode}</if>
+			<if test="nationalEconomyField != null and nationalEconomyField != ''">
+/*
+				AND IFNULL(national_economy_field,'') in (SELECT name FROM p_national_economy WHERE code like CONCAT('%',#{nationalEconomyField},'%'))
+*/
+				AND national_economy_field = #{nationalEconomyField}
+			</if>
+			<if test="address != null">AND address LIKE '%${address}%'</if>
+			<if test="contact != null">AND contact LIKE '%${contact}%'</if>
+			<if test="phone != null">AND phone LIKE '%${phone}%'</if>
+			<if test="type != null">AND type = #{type}</if>
+			<if test="scaleType != null">AND scale_type = #{scaleType}</if>
+			<if test="state != null">AND state = #{state}</if>
+			<if test="certification != null and certification != ''">AND certification = LIKE '%${certification}%'</if>
+			<if test="provinceId != null">AND province_id = #{provinceId}</if>
+			<if test="cityId != null">AND city_id = #{cityId}</if>
+			<if test="districtId != null">AND district_id = #{districtId}</if>
+			<if test="userId != null">AND user_id = #{userId}</if>
+		</where>
+	</delete>
+
+	<update id="update" parameterType="com.cnuip.pmes2.domain.core.Enterprise">
+		UPDATE p_enterprise
+		<set>
+			province_id = #{provinceId}, city_id = #{cityId}, district_id = #{districtId},
+			<if test="name != null and name != ''">name = #{name},</if>
+			<if test="unifiedSocialCreditCode != null">social_code = #{unifiedSocialCreditCode},</if>
+			<if test="nationalEconomyField != null">national_economy_field = #{nationalEconomyField},</if>
+			<if test="address != null">address = #{address},</if>
+			<if test="contact != null">contact = #{contact},</if>
+			<if test="phone != null">phone = #{phone},</if>
+			<if test="type != null">type = #{type},</if>
+			<if test="scaleType != null">scale_type = #{scaleType},</if>
+			<if test="state != null">state = #{state},</if>
+			<if test="certification != null and certification != ''">certification = #{certification},</if>
+			<if test="userId != null">user_id = #{userId}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="changeState">
+		UPDATE p_enterprise
+		SET state = #{state}
+		WHERE id = #{id}
+	</update>
+
+	<update id="changeIndexState">
+		UPDATE p_enterprise
+		SET has_indexing = #{hasIndexing}
+		WHERE id = #{id}
+	</update>
+
+</mapper>

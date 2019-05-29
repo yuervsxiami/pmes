@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.TaskOrderLabelMapper">
+
+	<resultMap type="com.cnuip.pmes2.domain.core.LabelValue" id="labelValueMap">
+		<result property="labelId" column="label_id"/>
+		<result property="value" column="value"/>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrderLabel" id="simpleMap">
+		<id property="id" column="id"/>
+		<result property="taskOrderId" column="task_order_id"/>
+		<result property="labelId" column="label_id"/>
+		<result property="strValue" column="str_value"/>
+		<result property="textValue" column="text_value"/>
+		<result property="createTime" column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="userId" column="user_id"/>
+	</resultMap>
+	
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrderLabel" id="baseMap" extends="simpleMap">
+		<association property="label" column="label_id" select="com.cnuip.pmes2.repository.core.LabelMapper.selectSimpleByPrimaryKey"></association>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrderLabel" id="taskOrderLabelMap" extends="baseMap">
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrderLabel" id="exTaskOrderLabelMap" extends="taskOrderLabelMap">
+		<association property="labelset" column="task_order_id" select="getLabelsetByTaskOrderId"></association>
+		<association property="patent" column="task_order_id" select="getPatentByTaskOrderId"></association>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Labelset" id="labelsetMap">
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="type" column="type"/>
+		<result property="version" column="version"/>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Patent" id="patentMap">
+		<id property="id" column="id"/>
+		<result property="ti" column="ti" />
+		<result property="type" column="type" />
+		<result property="ad" column="ad" />
+		<result property="an" column="an" />
+		<result property="od" column="od" />
+		<result property="onm" column="onm" />
+		<result property="pd" column="pd" />
+		<result property="pnm" column="pnm" />
+		<result property="examinant" column="examinant" />
+		<result property="sic" column="sic" />
+		<result property="pic" column="pic" />
+		<result property="country" column="country" />
+		<result property="province" column="province" />
+		<result property="dan" column="dan" />
+		<result property="prc" column="prc" />
+		<result property="prd" column="prd" />
+		<result property="ab" column="ab" />
+		<result property="abPicPath" column="ab_pic_path" />
+		<result property="pdfUrl" column="pdf_url" />
+		<result property="lastLegalStatus" column="last_legal_status" />
+		<result property="pa" column="pa" />
+		<result property="pin" column="pin" />
+		<result property="idPatent" column="id_patent" />
+		<result property="sectionName" column="section_name" />
+		<result property="sysId" column="sys_id" />
+	</resultMap>
+
+	<select id="getLabelsetByTaskOrderId" parameterType="long" resultMap="labelsetMap">
+		SELECT d.id,d.name,d.type,d.version
+		FROM p_task_order a
+		LEFT JOIN p_process_order b ON a.process_order_id=b.id
+		LEFT JOIN p_process c ON b.process_cnf_id=c.id
+		LEFT JOIN p_labelset d ON c.labelset_id=d.id
+		WHERE a.id = #{taskOrderId}
+	</select>
+
+	<select id="getPatentByTaskOrderId" parameterType="long" resultMap="patentMap">
+		SELECT c.id,c.ti,c.type,c.ad,
+		c.an,c.od,c.onm,c.pd,
+		c.pnm,c.examinant,c.sic,c.pic,
+		c.country,c.province,c.dan,c.prc,
+		c.prd,c.ab,c.ab_pic_path,c.pdf_url,
+		c.last_legal_status,c.pa,c.pin,c.id_patent,
+		c.section_name,c.sys_id
+		FROM p_task_order a
+		LEFT JOIN p_process_order b ON a.process_order_id=b.id
+		LEFT JOIN p_patent c ON b.instance_id=c.id
+		WHERE a.id = #{taskOrderId}
+	</select>
+
+	<select id="selectByPrimaryKey" parameterType="long" resultMap="taskOrderLabelMap">
+		SELECT id,task_order_id,label_id,str_value,text_value,create_time,update_time,user_id
+		FROM p_task_order_label
+		WHERE id = #{id}
+	</select>
+
+	<select id="selectByTaskOrderId" parameterType="long" resultMap="baseMap">
+		SELECT id,task_order_id,label_id,str_value,text_value,create_time,update_time,user_id
+		FROM p_task_order_label
+		WHERE task_order_id = #{taskOrderId}
+	</select>
+
+	<select id="selectByProcessOrderId" parameterType="long" resultMap="baseMap">
+		SELECT id,task_order_id,label_id,str_value,text_value,create_time,update_time,user_id
+		FROM p_task_order_label
+		WHERE task_order_id in (
+			SELECT id FROM p_task_order WHERE process_order_id = #{processOrderId}
+		)
+	</select>
+
+	<insert id="insert" parameterType="com.cnuip.pmes2.domain.core.TaskOrderLabel" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_task_order_label
+		(task_order_id,label_id,str_value,
+		text_value,user_id)
+		VALUES
+		(#{taskOrderId},#{labelId},#{strValue},
+		#{textValue},#{userId})
+	</insert>
+
+	<insert id="update" parameterType="com.cnuip.pmes2.domain.core.TaskOrderLabel">
+		UPDATE p_task_order_label
+		<set>
+			<if test="strValue!=null">str_value=#{strValue},</if>
+			<if test="textValue!=null">text_value=#{textValue},</if>
+			<if test="userId!=null">user_id=#{userId},</if>
+		</set>
+		WHERE id = #{id}
+	</insert>
+
+	<insert id="delete" parameterType="long">
+		DELETE FROM p_task_order_label WHERE id = #{id}
+	</insert>
+	
+	<insert id="deleteByTaskOrderId" parameterType="long">
+		DELETE FROM p_task_order_label WHERE task_order_id = #{taskOrderId}
+	</insert>
+	
+	<insert id="batchInsert" parameterType="com.cnuip.pmes2.domain.core.TaskOrderLabel">
+		INSERT INTO p_task_order_label
+		(task_order_id,label_id,str_value,text_value,user_id)
+		VALUES
+		<foreach collection="taskOrderLabels" open="" close="" separator="," item="taskOrderLabel">
+			(#{taskOrderLabel.taskOrderId},#{taskOrderLabel.labelId},#{taskOrderLabel.strValue},#{taskOrderLabel.textValue},#{taskOrderLabel.userId})
+		</foreach>
+	</insert>
+	
+	<select id="getRecentLabelByTaskOrderId" parameterType="long" resultMap="taskOrderLabelMap">
+		SELECT id,task_order_id,label_id,str_value,text_value,create_time,update_time,user_id
+		FROM p_task_order_label
+		WHERE (label_id,update_time) in (
+			SELECT label_id,max(update_time)
+			FROM p_task_order_label
+			WHERE task_order_id in
+			<foreach collection="ids" open="(" close=")" separator="," item="id">
+				#{id}
+			</foreach>
+			GROUP BY label_id
+		)
+	</select>
+
+	<select id="selectValueByKeyAndAn" parameterType="string" resultType="string">
+		SELECT IFNULL(t.str_value,t.text_value)
+		FROM p_task_order_label AS t
+		LEFT JOIN p_label AS l ON t.label_id = l.id
+		WHERE t.task_order_id in (
+			SELECT id FROM p_task_order WHERE (process_order_id in (
+				SELECT id FROM p_process_order WHERE instance_id =
+					(SELECT id FROM p_patent WHERE an = #{an})
+			)) AND (state = 1 OR process_task_id IS NULL)
+		) AND l.key = #{key}
+		ORDER BY t.update_time DESC
+		LIMIT 1
+	</select>
+
+	<select id="selectValueByTaskOrderIdAndLabelId" parameterType="long" resultType="string">
+		SELECT IFNULL(str_value,text_value)
+		FROM p_task_order_label
+		WHERE task_order_id = #{taskOrderId} and label_id = #{labelId}
+	</select>
+	
+	<select id="selectLabelValues" resultMap="labelValueMap">
+		SELECT label_id,IFNULL(str_value,text_value) AS value 
+		FROM p_task_order_label
+		WHERE 
+		<foreach collection="labelIds" open="" close="" separator=" OR " item="labelId">
+			(task_order_id = #{taskOrderId}  and label_id = #{labelId})
+		</foreach>
+	</select>
+	
+	<select id="getLabelByProcessOrder" resultMap="simpleMap">
+		SELECT id,task_order_id,label_id,str_value,text_value,create_time,update_time,user_id
+		FROM p_task_order_label
+		WHERE task_order_id in (
+			SELECT id FROM p_task_order WHERE process_order_id = #{processOrderId}
+		)
+		and (
+		<foreach collection="labelIds" open="" close="" separator=" OR " item="labelId">
+			label_id = #{labelId}
+		</foreach>
+		)
+	</select>
+
+	<select id="patentSearch" parameterType="com.cnuip.pmes2.controller.api.request.PatentTaskOrderLabelSearchCondition" resultMap="exTaskOrderLabelMap">
+
+		SELECT a.id,a.task_order_id,a.label_id,a.str_value,a.text_value,a.create_time,a.update_time,a.user_id
+		FROM p_task_order_label a
+
+		INNER JOIN (SELECT * FROM p_label
+		<if test="condition!=null">
+			<where>
+				<if test="condition.labelName!=null">AND name like CONCAT('%',#{condition.labelName},'%')</if>
+				<if test="condition.labelSource!=null">AND source=#{condition.labelSource}</if>
+			</where>
+		</if>) b ON a.label_id=b.id
+
+		INNER JOIN p_task_order z ON a.task_order_id=z.id
+
+		INNER JOIN p_process_order c ON z.process_order_id=c.id
+
+		INNER JOIN (SELECT * FROM p_process
+		<if test="condition!=null">
+			<where>
+				<if test="condition.labelsetId!=null">AND labelset_id =#{condition.labelsetId}</if>
+			</where>
+		</if>
+		) d	ON c.process_cnf_id=d.id
+
+		INNER JOIN	(SELECT * FROM p_patent
+		<if test="condition!=null">
+			<where>
+				<if test="condition.an!=null">AND an = #{condition.an}</if>
+				<if test="condition.ti!=null">AND ti like CONCAT('%',#{condition.ti},'%')</if>
+			</where>
+		</if>) e ON c.instance_id=e.id
+		<if test="condition!=null">
+			<where>
+				<if test="condition.state!=null">AND t.state = #{condition.state}</if>
+				<if test="condition.userId!=null">AND t.user_id = #{condition.userId}</if>
+				<if test="condition.fromUpdateTime!=null">AND t.update_time &gt;= #{condition.fromUpdateTime}</if>
+				<if test="condition.toUpdateTime!=null">AND t.update_time &lt;= #{condition.toUpdateTime}</if>
+			</where>
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.TaskOrderMapper">
+
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrder" id="baseMap">
+		<id property="id" column="id"/>
+		<result property="actTaskId" column="act_task_id"/>
+		<result property="processOrderId" column="process_order_id"/>
+		<result property="processTaskId" column="process_task_id"/>
+		<result property="state" column="state"/>
+		<result property="hasAlert" column="has_alert"/>
+		<result property="hasDue" column="has_due"/>
+		<result property="createTime" column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="userId" column="user_id"/>
+	</resultMap>
+	
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrder" id="alertMap" extends="baseMap">
+		<result property="taskName" column="task_name"/>
+		<result property="processId" column="process_id"/>
+	</resultMap>
+	
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrder" id="simpleMap" extends="baseMap">
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+		<association property="processTask" column="process_task_id" select="com.cnuip.pmes2.repository.core.ProcessTaskMapper.selectSimpleByPrimaryKey"></association>
+		<association property="processOrder" column="process_order_id" select="getProcessOrder"></association>
+	</resultMap>
+	
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrder" id="simplePatentOrderMap" extends="simpleMap">
+		<association property="patent" column="process_order_id" select="getPatent"></association>
+	</resultMap>
+	
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrder" id="simpleEnterpriseMap" extends="simpleMap">
+		<association property="enterprise" column="process_order_id" select="getEnterprise"></association>
+	</resultMap>
+	
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrder" id="simpleEnterpriseRequirementMap" extends="simpleMap">
+		<association property="enterpriseRequirement" column="process_order_id" select="getEnterpriseRequirement"></association>
+	</resultMap>
+	
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrder" id="simpleMatchMap" extends="simpleMap">
+		<association property="match" column="process_order_id" select="getMatch"></association>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrder" id="taskOrderMap" extends="baseMap">
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+		<association property="processTask" column="process_task_id" select="com.cnuip.pmes2.repository.core.ProcessTaskMapper.selectByPrimaryKey"></association>
+		<association property="processOrder" column="process_order_id" select="getProcessOrder"></association>
+		<association property="patent" column="process_order_id" select="getPatent"></association>
+		<collection property="labels" column="id" select="com.cnuip.pmes2.repository.core.TaskOrderLabelMapper.selectByTaskOrderId"></collection>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrder" id="simpleTaskOrderMap" extends="baseMap">
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+		<collection property="labels" column="id" select="com.cnuip.pmes2.repository.core.TaskOrderLabelMapper.findByTaskOrderId"></collection>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrder" id="mapForOrderDetail" extends="baseMap">
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+		<association property="processTask" column="process_task_id" select="com.cnuip.pmes2.repository.core.ProcessTaskMapper.findById"></association>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.TaskOrder" id="dashboardTaskOrderMap" extends="baseMap">
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+		<association property="processTask" column="process_task_id" select="com.cnuip.pmes2.repository.core.ProcessTaskMapper.selectByPrimaryKey"></association>
+		<association property="processOrder" column="process_order_id" select="com.cnuip.pmes2.repository.core.ProcessOrderMapper.selectDashboardProcessOrderByKey"></association>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.ProcessOrder" id="processOrderMap">
+		<id property="id" column="id"/>
+		<result property="actInstanceId" column="act_instance_id"/>
+		<result property="instanceId" column="instance_id"/>
+		<result property="instanceType" column="instance_type"/>
+		<result property="processType" column="process_type"/>
+		<result property="instanceType" column="instance_type"/>
+		<result property="processCnfId" column="process_cnf_id"/>
+		<result property="state" column="state"/>
+		<result property="labelsetId" column="labelset_id"/>
+		<result property="createTime" column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="userId" column="user_id"/>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Patent" id="patentMap">
+		<id property="id" column="id"/>
+		<result property="ti" column="ti" />
+		<result property="type" column="type" />
+		<result property="ad" column="ad" />
+		<result property="an" column="an" />
+		<result property="od" column="od" />
+		<result property="onm" column="onm" />
+		<result property="pd" column="pd" />
+		<result property="pnm" column="pnm" />
+		<result property="examinant" column="examinant" />
+		<result property="sic" column="sic" />
+		<result property="pic" column="pic" />
+		<result property="country" column="country" />
+		<result property="province" column="province" />
+		<result property="dan" column="dan" />
+		<result property="prc" column="prc" />
+		<result property="prd" column="prd" />
+		<result property="ab" column="ab" />
+		<result property="abPicPath" column="ab_pic_path" />
+		<result property="pdfUrl" column="pdf_url" />
+		<result property="lastLegalStatus" column="last_legal_status" />
+		<result property="pa" column="pa" />
+		<result property="pin" column="pin" />
+		<result property="idPatent" column="id_patent" />
+		<result property="sectionName" column="section_name" />
+		<result property="sysId" column="sys_id" />
+		<result property="oCreateTime" column="o_createtime" />
+		<result property="oUpdateTime" column="o_updatetime" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Enterprise" id="enterpriseMap">
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="unifiedSocialCreditCode" column="social_code"/>
+		<result property="nationalEconomyField" column="national_economy_field"/>
+		<result property="provinceId" column="province_id"/>
+		<result property="cityId" column="city_id"/>
+		<result property="districtId" column="district_id"/>
+		<result property="address" column="address"/>
+		<result property="contact" column="contact"/>
+		<result property="phone" column="phone"/>
+		<result property="type" column="type"/>
+		<result property="scaleType" column="scale_type"/>
+		<result property="certification" column="certification"/>
+		<result property="state" column="state"/>
+		<result property="userId" column="user_id"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.EnterpriseRequirement" id="enterpriseRequirementMap">
+		<id property="id" column="id"/>
+		<result property="requirement" column="requirement"/>
+		<result property="keywords" column="keywords"/>
+		<result property="userId" column="user_id"/>
+		<result property="enterpriseId" column="enterprise_id"/>
+		<result property="state" column="state"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<association property="enterprise" column="enterprise_id" columnPrefix="e_" javaType="com.cnuip.pmes2.domain.core.Enterprise">
+			<result property="name" column="name"/>
+			<result property="unifiedSocialCreditCode" column="social_code"/>
+			<result property="nationalEconomyField" column="national_economy_field"/>
+			<result property="provinceId" column="province_id"/>
+			<result property="cityId" column="city_id"/>
+			<result property="districtId" column="district_id"/>
+			<result property="address" column="address"/>
+			<result property="contact" column="contact"/>
+			<result property="phone" column="phone"/>
+			<result property="type" column="type"/>
+			<result property="scaleType" column="scale_type"/>
+			<result property="certification" column="certification"/>
+			<result property="state" column="state"/>
+		</association>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Match" id="matchMap">
+		<result column="id" property="id"/>
+		<result column="keyword" property="keyword"/>
+		<result column="type" property="type"/>
+		<result column="require_id" property="requireId"/>
+		<result column="user_id" property="userId"/>
+		<result column="result" property="result"/>
+		<result column="state" property="state"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+		<association property="enterpriseRequirement" column="require_id" select="com.cnuip.pmes2.repository.core.EnterpriseRequirementMapper.findById"></association>
+	</resultMap>
+
+	<select id="getProcessOrder" parameterType="long" resultMap="processOrderMap">
+		SELECT id,act_instance_id,instance_id,process_type,instance_type,process_cnf_id,state,create_time,update_time,user_id,has_alert,has_due,labelset_id
+		FROM p_process_order
+		WHERE id = #{processOrderId}
+	</select>
+
+	<select id="getPatent" parameterType="long" resultMap="patentMap">
+		SELECT p.id,p.ti,p.type,p.ad,
+		p.an,p.od,p.onm,p.pd,
+		p.pnm,p.examinant,p.sic,p.pic,
+		p.country,p.province,p.dan,p.prc,
+		p.prd,p.ab,p.ab_pic_path,p.pdf_url,
+		p.last_legal_status,p.pa,p.pin,p.id_patent,
+		p.section_name,p.sys_id,p.o_createtime,p.o_updatetime,
+		p.create_time,p.update_time
+		FROM (SELECT instance_id FROM p_process_order WHERE id=#{processOrderId}) po
+		LEFT JOIN p_patent p ON po.instance_id=p.id
+	</select>
+	
+	<select id="getEnterprise" parameterType="long" resultMap="enterpriseMap">
+		SELECT id,name,social_code,national_economy_field,province_id,city_id,district_id,address,contact,phone,type,scale_type,certification,state,create_time,update_time
+		FROM p_enterprise
+		WHERE id = (SELECT instance_id FROM p_process_order WHERE id=#{processOrderId} LIMIT 1)
+	</select>
+
+	<select id="getEnterpriseRequirement" parameterType="long" resultMap="enterpriseRequirementMap">
+		SELECT er.id,er.requirement,er.keywords,er.user_id,er.enterprise_id,er.state,er.create_time,er.update_time,
+		e.id e_id,e.name e_name,e.social_code e_social_code,e.national_economy_field e_national_economy_field,
+		e.province_id e_province_id,e.city_id e_city_id,e.district_id e_district_id,e.address e_address,e.contact e_contact,
+		e.phone e_phone,e.type e_type,e.scale_type e_scale_type,e.certification e_certification,e.state e_state
+		FROM p_enterprise_requirement er
+		LEFT JOIN p_enterprise e on er.enterprise_id = e.id
+		WHERE er.id = (SELECT instance_id FROM p_process_order WHERE id=#{processOrderId} LIMIT 1)
+	</select>
+	
+	<select id="getMatch" parameterType="long" resultMap="matchMap">
+		SELECT id,keyword, type, require_id, user_id, result, state, create_time, update_time
+		FROM p_match
+		WHERE id =  (SELECT instance_id FROM p_process_order WHERE id=#{processOrderId} LIMIT 1)
+	</select>
+
+	<select id="selectSimpleByPrimaryKey" parameterType="long" resultMap="simpleMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order
+		WHERE id = #{id}
+	</select>
+	
+	<select id="selectByPrimaryKey" parameterType="long" resultMap="taskOrderMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order
+		WHERE id = #{id}
+	</select>
+	
+	<select id="selectByActTaskId" parameterType="string" resultMap="simpleMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order
+		WHERE act_task_id = #{actTaskId}
+	</select>
+
+	<select id="selectNeedSkipByProcessTaskId" resultMap="simpleMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order
+		WHERE state = 0
+		<if test="processTaskIds!=null and processTaskIds.size > 0">
+		AND process_task_id IN
+		<foreach collection="processTaskIds" open="(" close=")" separator="," item="id">#{id}</foreach>
+		</if>
+		LIMIT 100
+	</select>
+
+	<select id="selectRecentChargebackOrder" parameterType="long" resultMap="taskOrderMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order
+		WHERE process_order_id = #{processOrderId} and state = 2
+		ORDER BY update_time DESC 
+		LIMIT 1
+	</select>
+	
+	<select id="selectRecentOrderByType" resultMap="simpleMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order
+		WHERE process_order_id = #{processOrderId} 
+		AND process_task_id IN (
+			SELECT id FROM p_process_task WHERE task_type = #{taskType}
+		) AND state = 1
+		ORDER BY update_time DESC 
+		LIMIT 1
+	</select>
+	
+	<select id="selectByProcessOrderId" parameterType="long" resultMap="taskOrderMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order
+		WHERE process_order_id = #{processOrderId}
+	</select>
+	
+	<select id="selectAliveIdsByProcessOrderId" parameterType="long" resultType="long">
+		SELECT id
+		FROM p_task_order
+		WHERE process_order_id = #{processOrderId} and state = 1
+	</select>
+
+	<insert id="insert" parameterType="com.cnuip.pmes2.domain.core.TaskOrder" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_task_order
+		(act_task_id,process_order_id,process_task_id,
+		state,user_id)
+		VALUES
+		(#{actTaskId},#{processOrderId},#{processTaskId},
+		#{state},#{userId})
+	</insert>
+
+	<insert id="delete" parameterType="long">
+		DELETE FROM p_task_order WHERE id = #{id}
+	</insert>
+
+	<update id="changeUser">
+		UPDATE p_task_order
+		SET user_id = #{userId}
+		WHERE id = #{id}
+	</update>
+
+	<update id="changeUserByActTaskId">
+		UPDATE p_task_order
+		SET user_id = #{userId}
+		WHERE act_task_id = #{actTaskId}
+	</update>
+
+	<update id="changeState">
+		UPDATE p_task_order
+		SET state = #{state}
+		WHERE id = #{id}
+	</update>
+	<update id="changeStateByActTaskId">
+		UPDATE p_task_order
+		SET state = #{state}
+		WHERE act_task_id = #{actTaskId}
+	</update>
+	
+	<update id="deal">
+		UPDATE p_task_order
+		SET user_id = #{userId} 
+		,state = 1
+		WHERE id = #{id}
+	</update>
+	
+	<update id="redeploy">
+		UPDATE p_task_order
+		SET user_id = #{userId}
+		WHERE id = #{id} AND state = 0
+	</update>
+	
+	<update id="updateProcessOrderIdByActTaskId">
+		UPDATE p_task_order
+		SET process_order_id = #{prId}
+		WHERE act_task_id = #{actTaskId}
+	</update>
+	
+	<select id="getMyPatentTaskOrder" parameterType="com.cnuip.pmes2.controller.api.request.PatentTaskOrderSearchCondition" resultMap="simplePatentOrderMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order t
+		<if test="condition!=null">
+		<where>
+			act_task_id IS NOT NULL
+			AND process_order_id in
+			(
+			SELECT id FROM p_process_order 
+			WHERE instance_type = 1
+			AND instance_id IN (
+				SELECT id FROM p_patent
+				<where>
+				<if test="condition.an!=null and condition.an!=''">AND an = #{condition.an}</if>
+				<if test="condition.ti!=null and condition.ti!=''">AND ti like CONCAT('%',#{condition.ti},'%')</if>
+				<if test="condition.pa!=null and condition.pa!=''">AND pa like CONCAT('%',#{condition.pa},'%')</if>
+				<if test="condition.pin!=null and condition.pin!=''">AND pin like CONCAT('%',#{condition.pin},'%')</if>
+				<if test="condition.lastLegalStatus!=null and condition.lastLegalStatus!=''">AND last_legal_status = #{condition.lastLegalStatus}</if>
+				<if test="condition.fromAd!=null">AND ad &gt;= #{condition.fromAd}</if>
+				<if test="condition.toAd!=null">AND ad &lt;= #{condition.toAd}</if>
+				</where>
+				)
+			<if test="condition.processType != null">
+			AND process_type = #{condition.processType}
+			</if>
+			<if test="condition.actInstanceId != null">
+			AND act_instance_id = #{condition.actInstanceId}
+			</if>
+			)
+		<if test="condition.taskType != null">
+			AND process_task_id in (
+				SELECT id FROM p_process_task 
+				WHERE task_type = #{condition.taskType}
+				<if test="condition.processType != null">
+					AND process_id = #{condition.processType}
+				</if>
+				<if test="condition.userId != null">
+				AND (
+					role_id IS NULL 
+					OR role_id = (SELECT role_id FROM p_user WHERE id = #{condition.userId})
+				)
+				</if>
+			)
+			<if test="condition.userId != null">
+			AND (
+				user_id = #{condition.userId}
+				<if test="condition.taskType == 1">
+				OR user_id is NULL
+				</if>
+				)
+			</if>
+		</if>
+		<if test="condition.actTaskId != null">AND act_task_id = #{condition.actTaskId}</if>
+		<if test="condition.state != null">AND state = #{condition.state}</if>
+		<if test="condition.fromUpdateTime!=null">AND t.update_time &gt;= #{condition.fromUpdateTime}</if>
+		<if test="condition.toUpdateTime!=null">AND t.update_time &lt;= #{condition.toUpdateTime}</if>
+		</where> 
+		</if>
+        ORDER BY update_time DESC
+	</select>
+	
+	<select id="getMyEnterpriseTaskOrder" parameterType="com.cnuip.pmes2.domain.core.Enterprise" resultMap="simpleEnterpriseMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order t
+		<if test="condition!=null">
+		<where>
+			act_task_id IS NOT NULL
+			AND process_order_id in
+			(
+			SELECT id FROM p_process_order 
+			WHERE instance_type = 2
+			AND instance_id IN (
+				SELECT id FROM p_enterprise
+				<where>
+				<if test="condition.name!=null and condition.name!=''">AND name like CONCAT('%',#{condition.name},'%')</if>
+				<if test="condition.nationalEconomyField!=null and condition.nationalEconomyField!=''">
+					AND IFNULL(national_economy_field,'') in (SELECT code FROM p_national_economy WHERE code like CONCAT('%',#{condition.nationalEconomyField},'%'))
+				</if>
+				<if test="condition.districtId!=null">AND district_id = #{condition.districtId}</if>
+				<if test="condition.districtId==null and condition.cityId!=null">AND city_id = #{condition.cityId}</if>
+				<if test="condition.districtId==null and condition.cityId==null and condition.provinceId!=null">AND province_id = #{condition.provinceId}</if>
+				</where>
+				)
+			<if test="condition.processType != null">
+			AND process_type = #{condition.processType}
+			</if>
+			<if test="condition.actInstanceId != null">
+			AND act_instance_id = #{condition.actInstanceId}
+			</if>
+			)
+		<if test="condition.taskType != null">
+			AND process_task_id in (
+				SELECT id FROM p_process_task 
+				WHERE task_type = #{condition.taskType}
+				<if test="condition.processType != null">
+					AND process_id = #{condition.processType}
+				</if>
+				<if test="condition.userId != null">
+				AND (
+					role_id IS NULL 
+					OR role_id = (SELECT role_id FROM p_user WHERE id = #{condition.userId})
+				)
+				</if>
+			)
+			<if test="condition.userId != null">
+			AND (
+				user_id = #{condition.userId}
+				<if test="condition.taskType == 1">
+				OR user_id is NULL
+				</if>
+				)
+			</if>
+		</if>
+		<if test="condition.actTaskId != null">AND act_task_id = #{condition.actTaskId}</if>
+		<if test="condition.taskState != null">AND state = #{condition.taskState}</if>
+		<if test="condition.optDateFrom!=null">AND t.update_time &gt;= #{condition.optDateFrom}</if>
+		<if test="condition.optDateTo!=null">AND t.update_time &lt;= #{condition.optDateTo}</if>
+		</where>
+		</if>
+        ORDER BY update_time DESC
+	</select>
+	
+	<select id="getMyEnterpriseRequirementTaskOrder" parameterType="com.cnuip.pmes2.domain.core.EnterpriseRequirement" resultMap="simpleEnterpriseRequirementMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order t
+		<if test="condition!=null">
+		<where>
+			act_task_id IS NOT NULL
+			AND process_order_id in
+			(
+			SELECT id FROM p_process_order 
+			WHERE instance_type = 3
+			AND instance_id IN (
+				SELECT id FROM p_enterprise_requirement 
+				<where>
+				<if test="condition.requirement!=null and condition.requirement!=''">requirement like CONCAT('%',#{condition.requirement},'%')</if>
+				<if test="condition.enterprise!=null">
+				AND id in 
+					(SELECT id FROM p_enterprise
+					<where>
+					<if test="condition.enterprise.name!=null and condition.enterprise.name!=''">AND name like CONCAT('%',#{condition.enterprise.name},'%')</if>
+					<if test="condition.enterprise.nationalEconomyField!=null and condition.enterprise.nationalEconomyField!=''">
+						AND IFNULL(national_economy_field,'') in (SELECT code FROM p_national_economy WHERE code like CONCAT('%',#{condition.enterprise.nationalEconomyField},'%'))
+					</if>
+					<if test="condition.enterprise.districtId!=null">AND district_id = #{condition.enterprise.districtId}</if>
+					<if test="condition.enterprise.districtId==null and condition.enterprise.cityId!=null">AND city_id = #{condition.enterprise.cityId}</if>
+					<if test="condition.enterprise.districtId==null and condition.enterprise.cityId==null and condition.enterprise.provinceId!=null">AND province_id = #{condition.enterprise.provinceId}</if>
+					</where>
+					)
+				</if>
+				</where>
+				)
+			<if test="condition.processType != null">
+			AND process_type = #{condition.processType}
+			</if>
+			<if test="condition.actInstanceId != null">
+			AND act_instance_id = #{condition.actInstanceId}
+			</if>
+			)
+		<if test="condition.taskType != null">
+			AND process_task_id in (
+				SELECT id FROM p_process_task 
+				WHERE task_type = #{condition.taskType}
+				<if test="condition.processType != null">
+					AND process_id = #{condition.processType}
+				</if>
+				<if test="condition.userId != null">
+				AND (
+					role_id IS NULL 
+					OR role_id = (SELECT role_id FROM p_user WHERE id = #{condition.userId})
+				)
+				</if>
+			)
+			<if test="condition.userId != null">
+			AND (
+				user_id = #{condition.userId}
+				<if test="condition.taskType == 1">
+				OR user_id is NULL
+				</if>
+				)
+			</if>
+		</if>
+		<if test="condition.actTaskId != null">AND act_task_id = #{condition.actTaskId}</if>
+		<if test="condition.taskState != null">AND state = #{condition.taskState}</if>
+		<if test="condition.optDateFrom!=null">AND t.update_time &gt;= #{condition.optDateFrom}</if>
+		<if test="condition.optDateTo!=null">AND t.update_time &lt;= #{condition.optDateTo}</if>
+		</where> 
+		</if>
+        ORDER BY update_time DESC
+	</select>
+	
+	<select id="getMyMatchTaskOrder" parameterType="com.cnuip.pmes2.domain.core.Match" resultMap="simpleMatchMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order t
+		<if test="condition!=null">
+		<where>
+			act_task_id IS NOT NULL
+			AND process_order_id in (
+				SELECT id FROM p_process_order 
+				WHERE instance_type = 5
+				AND instance_id IN (
+					SELECT id FROM p_match
+					<where>
+					<if test="condition.enterpriseRequirement != null">
+					require_id in (
+						SELECT id FROM p_enterprise_requirement 
+						<where>
+						<if test="condition.enterpriseRequirement.requirement!=null and condition.enterpriseRequirement.requirement!=''">requirement like CONCAT('%',#{condition.enterpriseRequirement.requirement},'%')</if>
+						<if test="condition.enterpriseRequirement.keywords!=null and condition.enterpriseRequirement.keywords!=''">keywords like CONCAT('%',#{condition.enterpriseRequirement.keywords},'%')</if>
+						<if test="condition.enterpriseRequirement.enterprise!=null">
+						AND id in (
+							(SELECT id FROM p_enterprise
+							<where>
+							<if test="condition.enterpriseRequirement.enterprise.name!=null and condition.enterpriseRequirement.enterprise.name!=''">AND name like CONCAT('%',#{condition.enterpriseRequirement.enterprise.name},'%')</if>
+							<if test="condition.enterpriseRequirement.enterprise.nationalEconomyField!=null and condition.enterpriseRequirement.enterprise.nationalEconomyField!=''">
+								AND IFNULL(national_economy_field,'') in (SELECT code FROM p_national_economy WHERE code like CONCAT('%',#{condition.enterpriseRequirement.enterprise.nationalEconomyField},'%'))
+							</if>
+							<if test="condition.enterpriseRequirement.enterprise.districtId!=null">AND district_id = #{condition.enterpriseRequirement.enterprise.districtId}</if>
+							<if test="condition.enterpriseRequirement.enterprise.districtId==null and condition.enterpriseRequirement.enterprise.cityId!=null">AND city_id = #{condition.enterpriseRequirement.enterprise.cityId}</if>
+							<if test="condition.enterpriseRequirement.enterprise.districtId==null and condition.enterpriseRequirement.enterprise.cityId==null and condition.enterpriseRequirement.enterprise.provinceId!=null">AND province_id = #{condition.enterpriseRequirement.enterprise.provinceId}</if>
+							</where>
+							)
+						)
+						</if>
+						</where>
+					)
+					</if>
+					<if test="condition.processType != null">
+					AND process_type = #{condition.processType}
+					</if>
+					<if test="condition.actInstanceId != null">
+					AND act_instance_id = #{condition.actInstanceId}
+					</if>
+					</where>
+				)
+			)
+		<if test="condition.taskType != null">
+			AND process_task_id in (
+				SELECT id FROM p_process_task 
+				WHERE task_type = #{condition.taskType}
+				<if test="condition.processType != null">
+					AND process_id = #{condition.processType}
+				</if>
+				<if test="condition.userId != null">
+				AND (
+					role_id IS NULL 
+					OR role_id = (SELECT role_id FROM p_user WHERE id = #{condition.userId})
+				)
+				</if>
+			)
+			<if test="condition.userId != null">
+			AND (
+				user_id = #{condition.userId}
+				<if test="condition.taskType == 1">
+				OR user_id is NULL
+				</if>
+				)
+			</if>
+		</if>
+		<if test="condition.actTaskId != null">AND act_task_id = #{condition.actTaskId}</if>
+		<if test="condition.taskState != null">AND state = #{condition.taskState}</if>
+		<if test="condition.optDateFrom!=null">AND t.update_time &gt;= #{condition.optDateFrom}</if>
+		<if test="condition.optDateTo!=null">AND t.update_time &lt;= #{condition.optDateTo}</if>
+		</where> 
+		</if>
+        ORDER BY update_time DESC
+	</select>
+
+	<select id="patentSearch" parameterType="com.cnuip.pmes2.controller.api.request.PatentTaskOrderSearchCondition" resultMap="taskOrderMap">
+		SELECT t.id,t.act_task_id,t.process_order_id,t.process_task_id,t.state,t.create_time,t.update_time,t.user_id,t.has_alert,t.has_due
+		FROM p_task_order t
+		LEFT JOIN p_user u ON t.user_id=u.id
+		INNER JOIN (SELECT * FROM p_process_order
+		<if test="condition!=null">
+			<where>
+				<if test="condition.instanceType!=null">AND instance_type = #{condition.instanceType}</if>
+				<if test="condition.processType!=null">AND process_type = #{condition.processType}</if>
+				<if test="condition.actInstanceId!=null">AND act_instance_id = #{condition.actInstanceId}</if>
+			</where>
+		</if>) po ON t.process_order_id=po.id
+		INNER JOIN (SELECT * FROM p_patent
+		<if test="condition!=null">
+			<where>
+				<if test="condition.an!=null">AND an = #{condition.an}</if>
+				<if test="condition.ti!=null">AND ti like CONCAT('%',#{condition.ti},'%')</if>
+				<if test="condition.pa!=null">AND pa = #{condition.pa}</if>
+				<if test="condition.pin!=null">AND pin = #{condition.pin}</if>
+				<if test="condition.pin!=null">AND pin = #{condition.pin}</if>
+				<if test="condition.fromAd!=null">AND ad &gt;= #{condition.fromAd}</if>
+			</where>
+		</if>)
+		p ON po.instance_id=p.id
+		<if test="condition!=null">
+			<where>
+				<if test="condition.actTaskId!=null">AND t.act_task_id = #{condition.actTaskId}</if>
+				<if test="condition.state!=null">AND t.state = #{condition.state}</if>
+				<if test="condition.userId!=null">AND t.user_id = #{condition.userId}</if>
+				<if test="condition.fromUpdateTime!=null">AND t.update_time &gt;= #{condition.fromUpdateTime}</if>
+				<if test="condition.toUpdateTime!=null">AND t.update_time &lt;= #{condition.toUpdateTime}</if>
+			</where>
+		</if>
+        ORDER BY update_time DESC
+	</select>
+	
+	<select id="getAlertTaskOrder" resultMap="alertMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due,task_name,process_id
+		FROM alert_task_order
+	</select>
+	
+	<select id="getDueTaskOrder" resultMap="alertMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due,task_name,process_id
+		FROM due_task_order
+	</select>
+	
+	<update id="updateHasAlert" parameterType="list">
+		UPDATE p_task_order
+		SET has_alert = 1
+		WHERE id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+	
+	<update id="updateHasDue" parameterType="list">
+		UPDATE p_task_order
+		SET has_due = 1
+		WHERE id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+
+	<select id="findDueOrders" resultMap="dashboardTaskOrderMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order
+		WHERE act_task_id IS NOT NULL AND has_due = 1 and state = 0
+		<if test="user!=null">
+			AND user_id=#{user.id}
+		</if>
+		ORDER BY update_time DESC
+	</select>
+
+	<select id="findAlertOrders" resultMap="dashboardTaskOrderMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order
+		WHERE act_task_id IS NOT NULL AND has_alert = 1 and state = 0
+		<if test="user!=null">
+			AND user_id=#{user.id}
+		</if>
+		ORDER BY update_time DESC
+	</select>
+
+	<select id="findUnfinishedOrders" resultMap="dashboardTaskOrderMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order
+		WHERE act_task_id IS NOT NULL AND state = 0
+		<if test="user!=null">
+			AND user_id=#{user.id}
+		</if>
+		ORDER BY update_time DESC
+	</select>
+
+	<select id="findFinishedOrders" resultMap="dashboardTaskOrderMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order
+		WHERE act_task_id IS NOT NULL AND state = 1
+		<if test="user!=null">
+			AND user_id=#{user.id}
+		</if>
+		ORDER BY update_time DESC
+	</select>
+
+	<select id="findBackOrders" resultMap="dashboardTaskOrderMap">
+		SELECT id,act_task_id,process_order_id,process_task_id,state,create_time,update_time,user_id,has_alert,has_due
+		FROM p_task_order
+		WHERE act_task_id IS NOT NULL AND state = 2
+		<if test="user!=null">
+			AND user_id=#{user.id}
+		</if>
+		ORDER BY update_time DESC
+	</select>
+
+</mapper>

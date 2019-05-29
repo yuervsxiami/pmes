@@ -1,0 +1,83 @@
+<form role="form" name="add_labelset_form">
+    <div class="modal-header bg-info">
+        <button type="button" class="close" ng-click="labelsetLabel.cancel();"><span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">添加标签体系标签</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-5">
+                <table class="table no-border" style="margin-bottom: 0px;">
+                    <tr>
+                        <td width="30%" class="text-right"><label>标签名称</label></td>
+                        <td width="70%"><input class="form-control" ng-model="labelsetLabel.labelsetKeyword" ></td>
+                    </tr>
+                </table>
+                <div style="height: 400px; overflow-y: scroll;">
+                    <table class="table table-striped">
+                        <tr>
+                            <th width="32px;">
+                                <input type="checkbox"
+                                       ng-model="labelsetLabel.setLabelAllSelected"
+                                       ng-selected="labelsetLabel.isAllSetLabelSelected()"
+                                       ng-change="labelsetLabel.selectAllSetLabels()"
+                                >
+                            </th>
+                            <th>标签名称</th>
+                            <th>标签来源</th>
+                            <th>标引方式</th>
+                        </tr>
+                        <tr ng-repeat="label in labelsetLabel.labelset.labelsetLabels | filter: labelsetLabel.labelsetKeyword">
+                            <td>
+                                <input type="checkbox" ng-model="label.selected" ng-disabled="label.parentId === 0 || label.parentId">
+                            </td>
+                            <td><span ng-bind="label.label.name"></span></td>
+                            <td><span ng-bind="label.label.source | changeLabelSource"></span></td>
+                            <td><span ng-bind="label.label.indexType | changeIndexType"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-2 text-center" style="padding-top: 180px;">
+                <button class="btn btn-default" ng-click="labelsetLabel.addLabels()">&lt;&lt;</button><br><br>
+                <button class="btn btn-danger" ng-click="labelsetLabel.removeLabels()">&gt;&gt;</button>
+            </div>
+            <div class="col-md-5">
+                <table class="table no-border" style="margin-bottom: 0px;">
+                    <tr>
+                        <td width="30%" class="text-right"><label>标签名称</label></td>
+                        <td width="70%"><input class="form-control" ng-model="labelsetLabel.labelKeyword" ></td>
+                    </tr>
+                </table>
+                <div style="height: 400px; overflow-y: scroll;">
+                    <table class="table table-striped">
+                        <tr>
+                            <th width="32px;">
+                                <input type="checkbox"
+                                       ng-selected="labelsetLabel.isAllSelected()"
+                                       ng-change="labelsetLabel.selectAllLabels()"
+                                       ng-model="labelsetLabel.allSelected"
+                                >
+                            </th>
+                            <th>标签名称</th>
+                            <th>标签来源</th>
+                            <th>标引方式</th>
+                        </tr>
+                        <tr ng-repeat="label in labelsetLabel.labels | filter: labelsetLabel.labelKeyword">
+                            <td>
+                                <input type="checkbox" ng-model="label.selected">
+                            </td>
+                            <td><span ng-bind="label.name"></span></td>
+                            <td><span ng-bind="label.source | changeLabelSource"></span></td>
+                            <td><span ng-bind="label.indexType | changeIndexType"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="labelsetLabel.cancel();">取消</button>
+        <button type="button" class="btn btn-primary" ng-click="labelsetLabel.ok();">确定</button>
+    </div>
+</form>

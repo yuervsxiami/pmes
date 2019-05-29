@@ -1,0 +1,31 @@
+<form role="form" name="add_process_form">
+    <div class="modal-header bg-info">
+        <button type="button" class="close" ng-click="processEditer.cancel();"><span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" ng-bind="processEditer.title"></h4>
+    </div>
+    <div class="modal-body">
+        <div class="box box-default">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <div class="form-group" ng-class="processEditer.getCssClasses(add_process_form.name)">
+                            <label>流程模版名称：</label>
+                            <input type="text" name="name" class="form-control" required placeholder="请输入流程模版名称"
+                                   ng-model="processEditer.process.name">
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
+            <div class="overlay" ng-show="processEditer.loading">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="processEditer.cancel();" ng-disabled="processEditer.loading">取消</button>
+        <button type="button" class="btn btn-primary" ng-click="processEditer.ok();" ng-disabled="processEditer.loading ||!processEditer.formCanSave(add_process_form)">确定</button>
+    </div>
+</form>

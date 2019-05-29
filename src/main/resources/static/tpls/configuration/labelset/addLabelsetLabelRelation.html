@@ -1,0 +1,109 @@
+<form role="form" name="add_labelset_form">
+    <div class="modal-header bg-info">
+        <button type="button" class="close" ng-click="labelsetRelation.cancel();"><span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">设置标签体系标签关系</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                <span ng-if="!labelsetRelation.labels || labelsetRelation.labels.length == 0" >正在加载中...</span>
+                <echarts-tree ng-if="labelsetRelation.labels.length>0" tree="labelsetRelation.tree" on-chart-ctrl-aware="labelsetRelation.onChartCtrlAware(ctrl)" on-tree-selected="labelsetRelation.onTreeSelected(label)" />
+            </div>
+            <div class="col-md-6">
+                <div class="box box-default" ng-if="labelsetRelation.selectedLabel">
+                    <div class="box-header">
+                        <h3 class="box-title" ng-bind="labelsetRelation.selectedLabel.name"></h3>
+                    </div>
+                    <div class="box-body">
+                        <p ng-if="labelsetRelation.selectedLabel.id === 0">根节点，请添加子节点</p>
+                        <div class="row" ng-if="labelsetRelation.selectedLabel.id !== 0 && labelsetRelation.selectedLabel.type === 0">
+                            <!-- 叶子节点 -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>节点名称</label>
+                                    <input type="text" class="form-control" ng-model="labelsetRelation.selectedLabel.name" >
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>节点类型</label>
+                                    <select class="form-control" ng-model="labelsetRelation.selectedLabel.type">
+                                        <option ng-repeat="nodeType in labelsetRelation.nodeTypes" ng-value="nodeType.id" ng-bind="nodeType.name" ng-selected="nodeType.id === labelsetRelation.selectedLabel.type"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>计算规则</label>
+                                    <input type="file" class="form-control" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" ng-if="labelsetRelation.selectedLabel.id !== 0 && labelsetRelation.selectedLabel.type === 1">
+                            <!-- 非叶子节点 -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>节点名称</label>
+                                    <input type="text" class="form-control" ng-model="labelsetRelation.selectedLabel.name" >
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>节点类型</label>
+                                    <select class="form-control" ng-model="labelsetRelation.selectedLabel.type">
+                                        <option ng-repeat="nodeType in labelsetRelation.nodeTypes" ng-value="nodeType.id" ng-bind="nodeType.name" ng-selected="nodeType.id === labelsetRelation.selectedLabel.type"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group" ng-repeat="cl in labelsetRelation.getChildrenLabels()">
+                                    <label ng-bind="cl.name"></label>
+                                    <slider-value model="cl" min="0" max="100" on-change="labelsetRelation.onChange(label, changed)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <button type="button" class="btn btn-default" ng-disabled="labelsetRelation.selectedLabel.type === 0" ng-click="labelsetRelation.showLabelForm()"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-danger" ng-click="labelsetRelation.removeNode()"><i class="fa fa-remove"></i></button>
+                    </div>
+                </div>
+                <div class="box box-default" ng-show="labelsetRelation.showsLabelForm && labelsetRelation.selectedLabel.type === 1">
+                    <div class="box-header">
+                        <h3 class="box-title">请选择需要添加的标签</h3>
+                        <div class="box-tools">
+                            <select class="form-control" style="width: 120px;" ng-model="labelsetRelation.selectedNodeType" ng-options="nodeType as nodeType.name for nodeType in labelsetRelation.nodeTypes track by nodeType.id" />
+                        </div>
+                    </div>
+                    <div class="box-body" style="height: 240px; overflow-y: scroll;">
+                        <table class="table table-striped">
+                            <tr>
+                                <th width="32px;">&nbsp;</th>
+                                <th>标签名称</th>
+                                <th>标签来源</th>
+                            </tr>
+                            <tr ng-repeat="ls in labelsetRelation.labels">
+                                <td>
+                                    <input type="checkbox"
+                                           ng-model="ls.selected"
+                                    >
+                                </td>
+                                <td><span ng-bind="ls.name"></span></td>
+                                <td><span ng-bind="ls.label.source | changeLabelSource"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="box-footer">
+                        <button type="button" class="btn btn-primary" ng-click="labelsetRelation.addLabelsToTree()">确定</button>
+                        <button type="button" class="btn btn-default" ng-click="labelsetRelation.hideLabelForm()">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="labelsetRelation.cancel();">取消</button>
+        <button type="button" class="btn btn-primary" ng-click="labelsetRelation.ok();">确定</button>
+    </div>
+</form>

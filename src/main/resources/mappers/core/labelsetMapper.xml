@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.LabelsetMapper">
+    <resultMap type="com.cnuip.pmes2.domain.core.Labelset" id="baseMap">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="userId" column="user_id"/>
+        <result property="state" column="state"/>
+        <result property="docUrl" column="doc_url"/>
+        <result property="version" column="version"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    
+    <resultMap type="com.cnuip.pmes2.domain.core.Labelset" id="labelsetMap" extends="baseMap"> 
+        <association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+        <!--<collection property="labelsetLabels" column="id" select="selectLabelsetLabels"></collection>-->
+    </resultMap>
+    
+    <resultMap type="com.cnuip.pmes2.domain.core.LabelsetLabel" id="labelsetLabelMap">
+        <id property="id" column="id"/>
+        <result property="labelsetId" column="labelset_id"/>
+        <result property="labelId" column="label_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="type" column="type"/>
+        <result property="name" column="name"/>
+        <result property="weight" column="weight"/>
+        <result property="docUrl" column="doc_url"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <!--<association property="labelset" column="id" select="selectByPrimaryKey"></association>-->
+        <association property="label" column="label_id" select="com.cnuip.pmes2.repository.core.LabelMapper.selectSimpleByPrimaryKey"></association>
+        <!--<association property="parent" column="parent_id" select="selectParentLabelsetLabel"></association>-->
+        <collection property="children" column="id" select="selectChildLabelsetLabels"></collection>
+    </resultMap>
+
+    <select id="selectSimpleByPrimaryKey" parameterType="long" resultMap="baseMap">
+        SELECT id,name,type,user_id,state,doc_url,version,create_time,update_time
+        FROM p_labelset
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectByPrimaryKey" parameterType="long" resultMap="labelsetMap">
+        SELECT id,name,type,user_id,state,doc_url,version,create_time,update_time
+        FROM p_labelset
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectByProcessTaskId" parameterType="long" resultMap="labelsetMap">
+        SELECT id,name,type,user_id,state,doc_url,version,create_time,update_time
+        FROM p_labelset
+        WHERE id = (
+        	SELECT labelset_id FROM p_process 
+        	WHERE id = (
+        		SELECT process_id FROM p_process_task 
+        		WHERE id = #{processTaskId}
+        	)
+        )
+    </select>
+
+    <select id="selectAll" resultMap="labelsetMap">
+        SELECT id,name,type,user_id,state,doc_url,version,create_time,update_time
+        FROM p_labelset
+    </select>
+
+    <select id="selectByType" parameterType="int" resultMap="labelsetMap">
+        SELECT id,name,type,user_id,state,doc_url,version,create_time,update_time
+        FROM p_labelset
+        WHERE type = #{type}
+        ORDER BY update_time DESC
+    </select>
+    
+    <select id="selectAliveByType" parameterType="int" resultMap="baseMap">
+        SELECT id,name,type,user_id,state,doc_url,version,create_time,update_time
+        FROM p_labelset
+        WHERE type = #{type} AND state = 1
+        ORDER BY update_time DESC
+        LIMIT 1
+    </select>
+    
+    <select id="selectValueSystem" parameterType="long" resultMap="labelsetLabelMap">
+        SELECT id,labelset_id,label_id,parent_id,type,name,weight,doc_url,create_time,update_time
+        FROM p_labelset_label
+        WHERE labelset_id = #{labelsetId} and parent_id = 0
+    </select>
+    
+    <select id="selectLabelsetLabels" parameterType="long" resultMap="labelsetLabelMap">
+        SELECT id,labelset_id,label_id,parent_id,type,name,weight,doc_url,create_time,update_time
+        FROM p_labelset_label
+        WHERE labelset_id = #{id}
+    </select>
+
+    <select id="selectParentLabelsetLabel" parameterType="long" resultMap="labelsetLabelMap">
+        SELECT id,labelset_id,label_id,parent_id,type,name,weight,doc_url,create_time,update_time
+        FROM p_labelset_label
+        WHERE id = #{parentId}
+    </select>
+
+    <select id="selectChildLabelsetLabels" parameterType="long" resultMap="labelsetLabelMap">
+        SELECT id,labelset_id,label_id,parent_id,type,name,weight,doc_url,create_time,update_time
+        FROM p_labelset_label
+        WHERE parent_id = #{id}
+    </select>
+
+    <select id="selectLabelsetLabel" parameterType="long" resultMap="labelsetLabelMap">
+        SELECT id,labelset_id,label_id,parent_id,type,name,weight,doc_url,create_time,update_time
+        FROM p_labelset_label
+        WHERE id = #{id}
+    </select>
+
+    <insert id="addLabelset" parameterType="com.cnuip.pmes2.domain.core.Labelset" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO p_labelset
+        (name,type,user_id,state,doc_url,version)
+        VALUES
+        (#{name},#{type},#{userId},0,#{docUrl},#{version})
+    </insert>
+
+    <insert id="addLabelsetLabel" parameterType="com.cnuip.pmes2.domain.core.LabelsetLabel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO p_labelset_label
+        (labelset_id,label_id,parent_id,type,name,weight,doc_url)
+        VALUES
+        (#{labelsetId},#{labelId},#{parentId},#{type},#{name},#{weight},#{docUrl})
+    </insert>
+
+    <insert id="addLabelsetLabels" parameterType="com.cnuip.pmes2.domain.core.LabelsetLabel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO p_labelset_label
+        (labelset_id,label_id,parent_id,type,name,weight,doc_url)
+        VALUES
+        <foreach collection="list" separator="," item="v">
+            (#{v.labelsetId},#{v.labelId},#{v.parentId},#{v.type},#{v.name},#{v.weight},#{v.docUrl})
+        </foreach>
+    </insert>
+
+    <insert id="copyLabelsetLabels" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO p_labelset_label
+        (labelset_id,label_id,parent_id,type,name,weight,doc_url)
+        VALUES
+        <foreach collection="labelsetLabels" separator="," item="v">
+            (#{labelSetId},#{v.labelId},#{v.parentId},#{v.type},#{v.name},#{v.weight},#{v.docUrl})
+        </foreach>
+    </insert>
+
+
+    <update id="updateLabelset" parameterType="com.cnuip.pmes2.domain.core.Labelset">
+        UPDATE p_labelset
+        <set>
+            <if test="name!=null">name=#{name},</if>
+            <if test="type!=null">type=#{type},</if>
+            <if test="userId!=null">user_id=#{userId},</if>
+            <if test="docUrl!=null">doc_url=#{docUrl},</if>
+            <if test="version!=null">version=#{version},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateLabelsetLabel" parameterType="com.cnuip.pmes2.domain.core.LabelsetLabel">
+        UPDATE p_labelset_label
+        <set>
+            parent_id=#{parentId},
+            <if test="labelId!=null">label_id=#{labelId},</if>
+            <if test="name!=null">name=#{name},</if>
+            <if test="type!=null">type=#{type},</if>
+            <if test="weight!=null">weight=#{weight},</if>
+            <if test="docUrl!=null">doc_url=#{docUrl},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="changeLabelsetState">
+        UPDATE p_labelset
+        SET state = #{state}
+        WHERE id = #{id}
+    </update>
+
+    <update id="changeLabelsetFieldValue">
+        UPDATE p_labelset
+        SET #{field} = #{value}
+        WHERE id = #{id}
+    </update>
+
+    <select id="search" parameterType="com.cnuip.pmes2.controller.api.request.LabelsetSearchCondition" resultMap="labelsetMap">
+        SELECT l.id,l.name,l.type,l.user_id,l.state,l.doc_url,l.version,l.create_time,l.update_time
+        FROM p_labelset AS l
+        LEFT JOIN p_user AS u ON l.user_id = u.id
+        <where>
+            <if test="condition.type!=null">l.type = #{condition.type}</if>
+            <if test="condition.name!=null">AND l.name like CONCAT('%',#{condition.name},'%')</if>
+            <if test="condition.version!=null">AND l.version = #{condition.version}</if>
+            <if test="condition.fromTime!=null">AND UNIX_TIMESTAMP(l.update_time) &gt;= UNIX_TIMESTAMP(#{condition.fromTime})</if>
+            <if test="condition.toTime!=null">AND UNIX_TIMESTAMP(l.update_time) &lt;= UNIX_TIMESTAMP(#{condition.toTime})</if>
+            <if test="condition.username!=null">AND u.name like CONCAT('%',#{condition.username},'%')</if>
+        </where>
+    </select>
+
+    <select id="findByType" parameterType="int" resultMap="baseMap">
+        SELECT id,name,type,user_id,state,doc_url,version,create_time,update_time
+        FROM p_labelset
+        WHERE type = #{type} and state != 0
+    </select>
+
+
+    <delete id="removeLabelsetLabels" parameterType="long">
+        DELETE FROM p_labelset_label WHERE labelset_id = #{id}
+    </delete>
+
+    <select id="selectMaxVersion" resultType="int" parameterType="int">
+      SELECT IFNULL(MAX(version),0) FROM p_labelset WHERE type = #{type}
+    </select>
+
+</mapper>

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.ResultMapper">
+
+    <resultMap type="com.cnuip.pmes2.domain.core.Result" id="baseMap">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="maturity" column="maturity"/>
+        <result property="mode" column="mode"/>
+        <result property="provinceName" column="province_name"/>
+        <result property="college" column="college"/>
+        <result property="facultyDepartment" column="faculty_department"/>
+        <result property="linkman" column="linkman"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="holder" column="holder"/>
+        <result property="holderPhone" column="holder_phone"/>
+        <result property="source" column="source"/>
+        <result property="editorId" column="editor_id"/>
+        <result property="editorName" column="editor_name"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="updatedTime" column="updated_time"/>
+    </resultMap>
+
+    <resultMap type="com.cnuip.pmes2.domain.core.Ipc" id="ipcMap">
+        <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="level" column="level"/>
+        <result property="preCode" column="pre_code"/>
+        <result property="description" column="description"/>
+    </resultMap>
+    <resultMap type="com.cnuip.pmes2.domain.core.Nic" id="nicMap">
+        <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="level" column="level"/>
+        <result property="name" column="name"/>
+        <result property="preCode" column="pre_code"/>
+        <result property="description" column="description"/>
+    </resultMap>
+    <resultMap type="com.cnuip.pmes2.domain.core.Ntcc" id="ntccMap">
+        <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="level" column="level"/>
+        <result property="name" column="name"/>
+        <result property="preCode" column="pre_code"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.cnuip.pmes2.domain.core.Result" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_result
+		(name,maturity,mode,province_name,college,faculty_department,linkman,phone,email,holder,holder_phone,source,editor_id,editor_name)
+		VALUES
+		(#{name},#{maturity},#{mode},#{provinceName},#{college},#{facultyDepartment},#{linkman},#{phone},#{email},#{holder},#{holderPhone},#{source},#{editorId},#{editorName})
+	</insert>
+
+
+    <update id="update">
+        UPDATE p_result
+        <set>
+            <if test="name!=null">name=#{name},</if>
+            <if test="maturity!=null">maturity=#{maturity},</if>
+            <if test="mode!=null">mode=#{mode},</if>
+            <if test="mode!=null">province_name=#{provinceName},</if>
+            <if test="college!=null">college=#{college},</if>
+            <if test="facultyDepartment!=null">faculty_department=#{facultyDepartment},</if>
+            <if test="linkman!=null">linkman=#{linkman},</if>
+            <if test="phone!=null">phone=#{phone},</if>
+            <if test="email!=null">email=#{email},</if>
+            <if test="holder!=null">holder=#{holder},</if>
+            <if test="holderPhone!=null">holder_phone=#{holderPhone},</if>
+            <if test="source!=null">source=#{source},</if>
+            <if test="editorId!=null">editor_id=#{editorId},</if>
+            <if test="editorName!=null">editor_name=#{editorName},</if>
+            updated_time=#{updatedTime}
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="findIpcByCode" resultMap="ipcMap" parameterType="string">
+		SELECT ID,CODE,LEVEL,PRE_CODE,description FROM p_ipc
+		WHERE CODE=#{code}
+	</select>
+
+    <select id="findIpcAll" resultMap="ipcMap">
+        SELECT ID,CODE,LEVEL,PRE_CODE,description FROM p_ipc where level &lt; 3
+    </select>
+
+    <select id="findNicByCode" resultMap="nicMap" parameterType="string">
+		SELECT ID,CODE,LEVEL,NAME,PRE_CODE,description FROM p_nic
+		WHERE CODE=#{code}
+	</select>
+
+    <select id="findNicAll" resultMap="nicMap">
+        SELECT ID,CODE,LEVEL,NAME,PRE_CODE,description FROM p_nic  where level &lt; 4
+    </select>
+
+    <select id="findNtccByCode" resultMap="ntccMap" parameterType="string">
+		SELECT ID,CODE,LEVEL,NAME,PRE_CODE FROM p_ntcc
+		WHERE CODE=#{code}
+	</select>
+
+    <select id="findNtccAll" resultMap="ntccMap">
+        SELECT ID,CODE,LEVEL,NAME,PRE_CODE FROM p_ntcc where level &lt; 4
+    </select>
+
+    <insert id="saveIpc" parameterType="com.cnuip.pmes2.domain.core.ResultIpc" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_result_ipc
+		(result_id,ipc_id,code,level,pre_code,description)
+		VALUES
+		(#{resultId},#{ipcId},#{code},#{level},#{preCode},#{description})
+	</insert>
+
+    <insert id="saveNic" parameterType="com.cnuip.pmes2.domain.core.ResultNic" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_result_nic
+		(result_id,nic_id,name,code,level,pre_code,description)
+		VALUES
+		(#{resultId},#{nicId},#{name},#{code},#{level},#{preCode},#{description})
+	</insert>
+
+    <insert id="saveNtcc" parameterType="com.cnuip.pmes2.domain.core.ResultNtcc" useGeneratedKeys="true"
+            keyProperty="id">
+		INSERT INTO p_result_ntcc
+		(result_id,ntcc_id,name,code,level,pre_code)
+		VALUES
+		(#{resultId},#{ntccId},#{name},#{code},#{level},#{preCode})
+	</insert>
+
+    <insert id="saveResultExt" parameterType="com.cnuip.pmes2.domain.core.ResultExt" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO p_result_ext
+        (result_id,introduction,innovation_point,technical_indicator,application_domain,market_outlook,
+        team_introduction
+        )
+        VALUES
+        (#{resultId},#{introduction},#{innovationPoint},#{technicalIndicator},#{applicationDomain},#{marketOutlook},#{teamIntroduction})
+    </insert>
+
+    <insert id="saveResultKeyword" parameterType="com.cnuip.pmes2.domain.core.ResultKeyWord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO p_result_tchnical_keyword
+        (result_id,content)
+        VALUES
+        (#{resultId},#{content})
+    </insert>
+
+    <delete id="deleteIpc" parameterType="integer">
+        DELETE FROM p_result_ipc
+    	WHERE result_id = #{resultId}
+	</delete>
+    <delete id="deleteNic" parameterType="integer">
+        DELETE FROM p_result_nic
+        WHERE result_id = #{resultId}
+    </delete>
+    <delete id="deleteNtcc" parameterType="integer">
+        DELETE FROM p_result_ntcc
+        WHERE result_id = #{resultId}
+    </delete>
+
+    <update id="updateResultExt">
+        UPDATE p_result_ext
+        <set>
+            <if test="introduction!=null">introduction=#{introduction},</if>
+            <if test="innovationPoint!=null">innovation_point=#{innovationPoint},</if>
+            <if test="technicalIndicator!=null">technical_indicator=#{technicalIndicator},</if>
+            <if test="applicationDomain!=null">application_domain=#{applicationDomain},</if>
+            <if test="marketOutlook!=null">market_outlook=#{marketOutlook},</if>
+            <if test="teamIntroduction!=null">team_introduction=#{teamIntroduction},</if>
+            updated_time=#{updatedTime}
+        </set>
+        WHERE result_id = #{resultId}
+    </update>
+
+    <update id="updateResultKeyWord">
+        UPDATE p_result_tchnical_keyword
+        <set>
+            <if test="content!=null">content=#{content},</if>
+            updated_time=#{updatedTime}
+        </set>
+        WHERE result_id = #{resultId}
+    </update>
+
+    <select id="getIpcFirst"  resultMap="ipcMap">
+        SELECT ID,CODE,LEVEL,PRE_CODE,description FROM p_ipc
+        WHERE LEVEL=1
+    </select>
+
+    <select id="childIpcByCode" parameterType="string" resultMap="ipcMap">
+        SELECT ID,CODE,LEVEL,PRE_CODE,description FROM p_ipc
+        WHERE PRE_CODE=#{code}
+    </select>
+
+    <select id="getNicFirst"  resultMap="nicMap">
+        SELECT ID,CODE,LEVEL,NAME,PRE_CODE,description FROM p_nic
+        WHERE LEVEL=1
+    </select>
+
+    <select id="childNicByCode" parameterType="string" resultMap="nicMap">
+        SELECT ID,CODE,LEVEL,NAME,PRE_CODE,description FROM p_nic
+        WHERE PRE_CODE=#{code}
+    </select>
+
+    <select id="getNtccFirst"  resultMap="ntccMap">
+         SELECT ID,CODE,LEVEL,NAME,PRE_CODE FROM p_ntcc
+        WHERE LEVEL=1
+    </select>
+
+    <select id="childNtccByCode" parameterType="string" resultMap="ntccMap">
+         SELECT ID,CODE,LEVEL,NAME,PRE_CODE FROM p_ntcc
+        WHERE PRE_CODE=#{code}
+    </select>
+
+</mapper>

@@ -1,0 +1,108 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li><i class="iconfont icon-peizhi"></i> 配置管理</li>
+        <li class="active">标签体系管理</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box box-default">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <meta-selector meta-key="labelsetType" empty-title="全部" empty-value="" model="labelset.searchCondition.type" />
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>标签体系名称：</label>
+                                <input type="text" class="form-control" placeholder="请输入标签体系名称" ng-model="labelset.searchCondition.name">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>操作人：</label>
+                                <input type="text" class="form-control" placeholder="请输入操作人名称" ng-model="labelset.searchCondition.username">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>标签体系版本：</label>
+                                <input type="number" class="form-control" placeholder="请输入版本号" ng-model="labelset.searchCondition.version">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label>操作时间：</label>
+                            <my-datetime-range on-datetime-range-changed="labelset.onDatetimeRangeChanged(start, end)"
+                                            max-date="labelset.maxDate"
+                                            start-date="labelset.searchCondition.fromTime"
+                                            end-date="labelset.searchCondition.toTime" />
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="box-footer">
+					<button type="submit" class="btn btn-warning" ng-click="labelset.search()">查询</button>
+                    <button type="reset" class="btn btn-default" ng-click="labelset.reset()">重置</button>
+                </div>
+            </div>
+
+            <div class="box box-default">
+                <div class="box-header">
+                    <h3 class="box-title">标签体系列表</h3>
+                    <div class="box-tools">
+                        <button class="btn btn-info btn-sm" ng-click="labelset.add()">添加</button>
+                    </div>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>标签体系类型</th>
+                            <th>标签体系名称</th>
+                            <th>版本</th>
+                            <th>状态</th>
+                            <th>操作人</th>
+                            <th>操作时间</th>
+                            <th>添加标签</th>
+                            <th>标签关系</th>
+                            <th>修改</th>
+                           <!-- <th>标签关系详情</th>
+                            <th>标签详情</th>-->
+                            <th>体系文档</th>
+                            <!--<th>标签体系状态变更</th>-->
+                        </tr>
+                        <tr ng-repeat="ls in labelset.labelsets">
+                            <td><span ng-bind="ls.type | labelsetType"></span></td>
+                            <td><span ng-bind="ls.name"></span></td>
+                            <td><span ng-bind="'V' + ls.version"></span></td>
+                            <td><button class="btn btn-primary btn-sm" ng-class="{'btn-primary': ls.state === 0, 'btn-danger': ls.state === 1}" ng-click="labelset.toggleState(ls)" ng-bind="ls.state === 1 ? '禁用' : '启用'"></button></td>
+                            <td><span ng-bind="ls.user.name"></span></td>
+                            <td><span ng-bind="ls.updateTime | date: 'yyyy-MM-dd HH:mm'"></span></td>
+                            <td><button class="btn btn-primary btn-sm" ng-click="labelset.addLabels(ls)">标签</button></td>
+                            <td><button class="btn btn-primary btn-sm" ng-if="ls.type === 1 || ls.type === 3" ng-click="labelset.addLabelsetRelation(ls)">添加</button></td>
+                            <td><button class="btn btn-primary btn-sm" ng-click="labelset.edit(ls)">修改</button></td>
+                            <!--<td><button class="btn btn-primary btn-sm">修改</button></td>
+                            <td><button class="btn btn-primary btn-sm">查看</button></td>-->
+                            <td><a ng-if="ls.type === 1 || ls.type === 3" ng-href="{{labelset.contextPath + '/static/attatchs/pmes-value-set.docx'}}">下载</a></td>
+                            <!--<td><button class="btn btn-primary btn-sm">查看</button></td>-->
+                        </tr>
+                    </table>
+                </div>
+                <div class="box-footer">
+                    <tm-pagination conf="labelset.paginationConf"></tm-pagination>
+                </div>
+                <div class="overlay" ng-show="labelset.loading">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+

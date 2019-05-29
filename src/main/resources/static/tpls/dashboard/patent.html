@@ -1,0 +1,187 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li><i class="iconfont icon-gongzuotai"></i> 工作台</li>
+        <li class="active">专利加工管理员工作台</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h4>超时定单</h4>
+                    <p>{{pdc.processOrderStat.dueCount || 0}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h4>预警定单</h4>
+                    <p>{{pdc.processOrderStat.alertCount || 0}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-blue">
+                <div class="inner">
+                    <h4>进行中定单</h4>
+                    <p>{{pdc.processOrderStat.handlingCount || 0}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h4>已完成定单</h4>
+                    <p>{{pdc.processOrderStat.doneCount || 0}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <stat-detail order-type="process" stat-type="due"></stat-detail>
+        </div>
+        <div class="col-md-3">
+            <stat-detail order-type="process" stat-type="alert"></stat-detail>
+        </div>
+        <div class="col-md-3">
+            <stat-detail order-type="process" stat-type="processing"></stat-detail>
+        </div>
+        <div class="col-md-3">
+            <stat-detail order-type="process" stat-type="done"></stat-detail>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box box-default">
+                <div class="box-body" style="padding-bottom: 0px">
+                    <uib-tabset active="2" type="tabs">
+                        <uib-tab index="2" heading="专利基础标引" ng-click="pdc.changeCurrentProcessType(2)">
+						    <div class="row">
+						        <div class="col-md-12">
+						            <stat-process process-id="2"></stat-process>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-md-12">
+						            <stat-use-time process-id="2" cp-id="pdc.currentProcessType"></stat-use-time>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-md-6">
+									<stat-remind-num process-id="2" is-alert="false" cp-id="pdc.currentProcessType"></stat-remind-num>
+						        </div>
+						        <div class="col-md-6">
+									<stat-remind-user process-id="2" is-alert="false" cp-id="pdc.currentProcessType"></stat-remind-user>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-md-6">
+									<stat-remind-num process-id="2" is-alert="true" cp-id="pdc.currentProcessType"></stat-remind-num>
+						        </div>
+						        <div class="col-md-6">
+									<stat-remind-user process-id="2" is-alert="true" cp-id="pdc.currentProcessType"></stat-remind-user>
+						        </div>
+						    </div>
+                        </uib-tab>
+                        <uib-tab index="3" heading="专利价值标引" ng-click="pdc.changeCurrentProcessType(3)">
+						    <div class="row">
+						        <div class="col-md-12">
+						            <stat-process process-id="3"></stat-process>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-md-12">
+						            <stat-use-time process-id="3" cp-id="pdc.currentProcessType"></stat-use-time>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-md-6">
+									<stat-remind-num process-id="3" is-alert="false" cp-id="pdc.currentProcessType"></stat-remind-num>
+						        </div>
+						        <div class="col-md-6">
+									<stat-remind-user process-id="3" is-alert="false" cp-id="pdc.currentProcessType"></stat-remind-user>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-md-6">
+									<stat-remind-num process-id="3" is-alert="true" cp-id="pdc.currentProcessType"></stat-remind-num>
+						        </div>
+						        <div class="col-md-6">
+									<stat-remind-user process-id="3" is-alert="true" cp-id="pdc.currentProcessType"></stat-remind-user>
+						        </div>
+						    </div>
+                        </uib-tab>
+                        <uib-tab index="4" heading="专利价格标引" ng-click="pdc.changeCurrentProcessType(4)">
+						    <div class="row">
+						        <div class="col-md-12">
+						            <stat-process process-id="4"></stat-process>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-md-12">
+						            <stat-use-time process-id="4" cp-id="pdc.currentProcessType"></stat-use-time>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-md-6">
+									<stat-remind-num process-id="4" is-alert="false" cp-id="pdc.currentProcessType"></stat-remind-num>
+						        </div>
+						        <div class="col-md-6">
+									<stat-remind-user process-id="4" is-alert="false" cp-id="pdc.currentProcessType"></stat-remind-user>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-md-6">
+									<stat-remind-num process-id="4" is-alert="true" cp-id="pdc.currentProcessType"></stat-remind-num>
+						        </div>
+						        <div class="col-md-6">
+									<stat-remind-user process-id="4" is-alert="true" cp-id="pdc.currentProcessType"></stat-remind-user>
+						        </div>
+						    </div>
+                        </uib-tab>
+                        <uib-tab index="5" heading="专利深度标引" ng-click="pdc.changeCurrentProcessType(5)">
+						    <div class="row">
+						        <div class="col-md-12">
+						            <stat-process process-id="5"></stat-process>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-md-12">
+						            <stat-use-time process-id="5" cp-id="pdc.currentProcessType"></stat-use-time>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-md-6">
+									<stat-remind-num process-id="5" is-alert="false" cp-id="pdc.currentProcessType"></stat-remind-num>
+						        </div>
+						        <div class="col-md-6">
+									<stat-remind-user process-id="5" is-alert="false" cp-id="pdc.currentProcessType"></stat-remind-user>
+						        </div>
+						    </div>
+						    <div class="row">
+						        <div class="col-md-6">
+									<stat-remind-num process-id="5" is-alert="true" cp-id="pdc.currentProcessType"></stat-remind-num>
+						        </div>
+						        <div class="col-md-6">
+									<stat-remind-user process-id="5" is-alert="true" cp-id="pdc.currentProcessType"></stat-remind-user>
+						        </div>
+						    </div>
+                        </uib-tab>
+                    </uib-tabset>
+                </div>
+			</div>
+		</div>
+	</div>    
+    
+</section>
+<!-- /.content -->

@@ -1,0 +1,117 @@
+<div class="modal-header bg-info">
+    <button type="button" class="close" ng-click="labView.cancel();"><span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">标签详情</h4>
+</div>
+<div class="modal-body">
+	<form class="form-horizontal" name="editForm">
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label for="inputName" class="col-sm-4 control-label">标签名称</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.name}}</span>
+				</div>
+			</div>
+			<div class="col-sm-5">
+				<label for="inputKey" class="col-sm-4 control-label">标签key</label>
+				<span>{{labView.currentLabel.key}}</span>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label for="selectType" class="col-sm-4 control-label">标签类型</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.type | changeLabelType}}</span>
+				</div>
+			</div>
+			<div class="col-sm-5">
+				<label for="inputValueType" class="col-sm-4 control-label">标签值类型</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.valueType | changeValueType}}</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label for="inputMax" class="col-sm-4 control-label">最大值/长度</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.maxValue || '暂无最大值'}}</span>
+				</div>
+			</div>
+			<div class="col-sm-5">
+				<label for="inputMin" class="col-sm-4 control-label">最小值/长度</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.minValue || '暂无最小值'}}</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label for="inputDefaultValue" class="col-sm-4 control-label">默认值</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.defaultValue || '暂无默认值'}}</span>
+				</div>
+			</div>
+			<div class="col-sm-5" ng-class="{'has-success':editForm.inputRemark.$valid,'has-error':editForm.inputRemark.$invalid && editForm.inputRemark.$dirty}">
+				<label for="inputRemark" class="col-sm-4 control-label">备注</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.remark || '暂无备注'}}</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label for="selectSource" class="col-sm-4 control-label">标签来源</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.source | changeLabelSource}}</span>
+				</div>
+			</div>
+			<div class="col-sm-5">
+				<label for="selectIndexType" class="col-sm-4 control-label">标引方式</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.indexType | changeIndexType}}</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label for="checkShowInProcess" class="col-sm-4 control-label">在流程中显示</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.showInProcess?'是':'否'}}</span>
+				</div>
+			</div>
+			<div class="col-sm-5">
+				<label for="checkIsRequired" class="col-sm-4 control-label">是否必填</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.isRequired?'是':'否'}}</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label for="checkIsmultiple" class="col-sm-4 control-label">是否多选</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.isMultiple?'是':'否'}}</span>
+				</div>
+			</div>
+			<div class="col-sm-5">
+				<label for="selectMetaKey" class="col-sm-4 control-label">元数据</label>
+				<div class="col-sm-8" style="padding-top: 7px">
+					<span>{{labView.currentLabel.metaKey || '暂无元数据'}}</span>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default"
+            ng-click="labView.cancel();">取消
+    </button>
+</div>

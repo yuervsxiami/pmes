@@ -1,0 +1,32 @@
+<div class="modal-header bg-info">
+    <button type="button" class="close" ng-click="me.cancel();"><span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title" ng-bind="me.title"></h4>
+</div>
+<div class="modal-body">
+	<table class="table table-striped">
+		<tr>
+			<th>元数据名称</th>
+			<th>元数据类型</th>
+			<th>元数据值类型</th>
+			<th>元数据显示值</th>
+			<th>元数据实际值</th>
+			<th>操作人</th>
+			<th>操作时间</th>
+       </tr>
+	   <tr ng-repeat="v in me.currentMeta.values">
+	   		<td>{{me.currentMeta.name}}</td>
+	   		<td>{{me.currentMeta.type | changeMetaType}}</td>
+	   		<td>{{me.currentMeta.valueType | changeValueType}}</td>
+	   		<td>{{v.name}}</td>
+	   		<td>{{v.value?v.value:'-'}}</td>
+	   		<td>{{v.user.name}}</td>
+	   		<td>{{v.updateTime | date:'yyyy-MM-dd HH:mm' : '+0000'}}</td>
+	   </tr>
+	</table>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-if="!me.hideCancel"
+            ng-click="me.cancel();">取消
+    </button>
+</div>

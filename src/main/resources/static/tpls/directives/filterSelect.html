@@ -1,0 +1,8 @@
+<div>
+  <input type="data" ng-model="data" class="form-control" style="display: inline;" ng-focus="start()" ng-blur="end()"/></input>
+  <div class="filterSelect" ng-show="selecting">
+    <ul>
+      <li ng-repeat="c in list | filter: {name: data}" ng-click="select(c)">{{c.name}}</li>
+    </ul>
+  </div>
+</div>

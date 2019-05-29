@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.RequirementProfessorMapper">
+
+    <insert id="insert" parameterType="com.cnuip.pmes2.domain.core.RequirementProfessor" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_enterprise_requirement_professor
+		(requirement_id,origin_id,professor_remote_key,professor_name,professor_college_name,score,matching_degree,keywords)
+		VALUES
+        <foreach collection="professors" item="p" separator=",">
+            (#{p.requirementId},#{p.originId} , #{p.professorRemoteKey},#{p.professorName},#{p.professorCollegeName},#{p.score},#{p.matchingDegree},#{p.keywords})
+        </foreach>
+    </insert>
+    <select id="findByRqId" resultType="com.cnuip.pmes2.domain.core.RequirementProfessor">
+        select * from p_enterprise_requirement_professor where requirement_id= #{rqId}
+    </select>
+</mapper>

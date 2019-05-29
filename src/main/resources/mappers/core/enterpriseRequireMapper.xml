@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.EnterpriseRequireMapper">
+
+	<resultMap type="com.cnuip.pmes2.domain.core.EnterpriseRequire" id="baseMap">
+		<id property="id" column="id"/>
+		<result property="companyName" column="company_name"/>
+		<result property="enterpriseId" column="enterprise_id"/>
+		<result property="title" column="title"/>
+		<result property="requirement" column="requirement"/>
+		<result property="classifyId" column="classify_id"/>
+		<result property="keywords" column="keywords"/>
+		<result property="pushState" column="push_state"/>
+		<result property="source" column="source"/>
+		<result property="originId" column="origin_id"/>
+		<result property="requirementType" column="requirement_type"/>
+		<result property="enterpriseType" column="enterprise_type"/>
+		<result property="userId" column="user_id"/>
+		<result property="originCreateTime" column="origin_create_time"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="keywordsWeight" column="keywords_weight"/>
+		<result property="code" column="code"/>
+	</resultMap>
+
+	
+	<select id="selectEnterpriseRequireList" parameterType="com.cnuip.pmes2.controller.api.request.EnterpriseRequireSearchCondition" resultMap="baseMap">
+		SELECT id,company_name,enterprise_id,title,requirement,classify_id,keywords,state,push_state,
+		source,origin_id,requirement_type,enterprise_type,user_id,origin_create_time,create_time,update_time
+		FROM p_enterprise_requirement
+		<where>
+			1 = 1
+			<if test="condition.title!=null">AND title like CONCAT('%',#{condition.title},'%')</if>
+			<if test="condition.companyName!=null">AND company_name like CONCAT('%',#{condition.companyName},'%')</if>
+			<if test="condition.source!=null">AND source = #{condition.source}</if>
+			<if test="condition.pushState!=null">AND push_state = #{condition.pushState}</if>
+			<if test="condition.startTime!=null">AND create_time &gt;= #{condition.startTime}</if>
+			<if test="condition.endTime!=null">AND create_time &lt;= #{condition.endTime}</if>
+		</where> 
+	</select>
+
+	<select id="findEnterpriseRequireById" parameterType="Long" resultMap="baseMap">
+		SELECT id,company_name,enterprise_id,title,requirement,classify_id,keywords,state,push_state,
+		source,origin_id,requirement_type,enterprise_type,user_id,origin_create_time,create_time,update_time
+		FROM p_enterprise_requirement
+		WHERE id=#{erid}
+	</select>
+
+	<update id="updatePushState">
+		update p_enterprise_requirement set push_state=1 where id=#{rqId}
+	</update>
+
+	<insert id="save" parameterType="com.cnuip.pmes2.domain.core.EnterpriseRequire" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_enterprise_requirement
+		(company_name,
+		enterprise_id,
+		title,
+		requirement,
+		classify_id,
+		code,
+		keywords,
+		keywords_weight,
+		state,
+		push_state,
+		source,
+		origin_id,
+		requirement_type,
+		enterprise_type,
+		user_id,
+		origin_create_time,
+		create_time,
+		update_time
+		)
+		VALUES
+		(#{companyName},#{enterpriseId},#{title},#{requirement},#{classifyId},#{code},#{keywords},#{keywordsWeight},#{state},#{pushState},#{source},#{originId},#{requirementType},#{enterpriseType},#{userId},#{originCreateTime},#{createTime},#{updateTime})
+	</insert>
+</mapper>

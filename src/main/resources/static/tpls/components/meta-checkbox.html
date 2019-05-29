@@ -1,0 +1,17 @@
+<!-- checkbox -->
+<div class="form-group">
+    <label ng-if="!!meta && labelDirection=='H'" class="control-label col-sm-2" ng-bind="meta.name"></label>
+    <label ng-if="!!meta && labelDirection=='V'">{{meta.name}}:</label>
+    <div class="{{labelDirection=='H'? 'col-sm-10' : 'form-control'}}">
+        <div style="display: inline; margin-right: 10px;" ng-if="!!checkAllTitle">
+            <label>
+                <input type="checkbox" ng-checked="shouldAllChecked()" ng-click="toggleCheckAll()"> {{checkAllTitle}}
+            </label>
+        </div>
+        <div style="display: inline; margin-right: 10px;" ng-repeat="meta in meta.values">
+            <label>
+                <input type="checkbox" ng-model="meta.selected"> {{meta.name}}
+            </label>
+        </div>
+    </div>
+</div>

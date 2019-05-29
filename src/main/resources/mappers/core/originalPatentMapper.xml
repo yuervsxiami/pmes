@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.OriginalPatentMapper">
+
+    <resultMap id="basicInfoMap" type="com.cnuip.pmes2.domain.inventory.PatentInfo">
+        <id property="patentId" column="IDPATENT" javaType="long" jdbcType="BIGINT"/>
+        <result property="sectionName" column="SECTIONNAME"/>
+        <result property="sysId" column="SYSID"/>
+        <result property="ti" column="TI"/>
+        <result property="an" column="AN"/>
+        <result property="ad" column="AD"/>
+        <result property="pd" column="PD"/>
+        <result property="od" column="OD"/>
+        <result property="pnm" column="PNM"/>
+        <result property="onm" column="ONM"/>
+        <result property="pa" column="PA"/>
+        <result property="ab" column="AB"/>
+        <result property="pin" column="PIN"/>
+        <result property="lastLegalStatus" column="LASTLEGALSTATUS"/>
+        <result property="whereAbouts" column="WHEREABOUTS"/>
+        <result property="isChecked" column="ISCHECKED"/>
+        <result property="creatTime" column="CREATTIME" jdbcType="TIMESTAMP"
+                javaType="java.util.Date"/>
+        <result property="updateTime" column="UPDATETIME" jdbcType="TIMESTAMP"
+                javaType="java.util.Date"/>
+    </resultMap>
+    
+    <resultMap type="com.cnuip.pmes2.domain.inventory.PatentInfo" id="patentMap" extends="basicInfoMap">
+        <association property="extra" column="SYSID" select="selectSub3BySysId"></association>
+    </resultMap>
+
+    <resultMap id="sub3Map" type="com.cnuip.pmes2.domain.inventory.PatentSub3Info">
+        <result property="patType" column="PATTYPE"/>
+        <result property="examinant" column="EXAMINANT"/>
+        <result property="sic" column="SIC"/>
+        <result property="pic" column="PIC"/>
+        <result property="co" column="CO"/>
+        <result property="dan" column="DAN"/>
+        <result property="pr" column="PR"/>
+        <result property="abPicPath" column="ABPICPATH"/>
+        <result property="pdfUrl" column="PDFURL"/>
+        <result property="cl" column="CL"/>
+    </resultMap>
+
+	<select id="findSub1LastUpdateTime" resultType="java.util.Date">
+		SELECT MAX(IFNULL(updatetime,creattime)) FROM st_patentinfo_sub1 
+	</select>
+	
+	<select id="findSub3LastUpdateTime" resultType="java.util.Date">
+		SELECT MAX(IFNULL(updatetime,creattime)) FROM st_patentinfo_sub3 
+	</select>
+	
+	<select id="findLegalStatusLastUpdateTime" resultType="java.util.Date">
+		SELECT MAX(creattime) FROM st_legalstatusinfo 
+	</select>
+	
+	<select id="findFeeLastUpdateTime" resultType="java.util.Date">
+		SELECT MAX(creattime) FROM st_patfeeinfo 
+	</select>
+	
+	<select id="findPrsexploitationLastUpdateTime" resultType="java.util.Date">
+		SELECT MAX(creattime) FROM st_patprsexploitationinfo 
+	</select>
+	
+	<select id="findPrspreservationLastUpdateTime" resultType="java.util.Date">
+		SELECT MAX(creattime) FROM st_patprspreservationinfo 
+	</select>
+	
+	<select id="findPrstransferLastUpdateTime" resultType="java.util.Date">
+		SELECT MAX(creattime) FROM st_patprstransferinfo 
+	</select>
+	
+	<select id="findScoreLastUpdateTime" resultType="java.util.Date">
+		SELECT MAX(creattime) FROM st_scoreinfo 
+	</select>
+	
+	<insert id="replaceSub1" parameterType="com.cnuip.pmes2.domain.inventory.PatentInfo">
+		REPLACE INTO st_patentinfo_sub1
+		(IDPATENT,SECTIONNAME,SYSID,TI,AN,AD,PNM,PD,PA,AB,
+		LASTLEGALSTATUS,PIN,WHEREABOUTS,ISCHECKED,CREATTIME,UPDATETIME)
+		VALUES
+		<foreach collection="list" open="" close="" separator="," item="l">
+		(#{l.idPatent},#{l.sectionName},#{l.sysId},#{l.ti},#{l.an},#{l.ad},#{l.pnm},#{l.pd},#{l.pa},#{l.ab},
+		#{l.lastLegalStatus},#{l.pin},#{l.whereAbouts},#{l.isChecked},#{l.creatTime},#{l.updateTime})
+		</foreach>
+	</insert>
+	
+	<insert id="replaceSub3" parameterType="com.cnuip.pmes2.domain.inventory.PatentSub3Info">
+		REPLACE INTO st_patentinfo_sub3
+		(SYSID,SECTIONNAME,AN,AD,PNM,PD,LASTLEGALSTATUS,APPID,CO,PIC,SIC,PR,AR,IAN,IPN,DEN,AGC,AGT,BZR,DAN,EXAMINANT,FAMILY,TZZLX,ABPICPATH,CLM,CL,PDFURL,
+		DE,DRA,PATTYPE,TRSKEYWORD,TIFDISTRIBUTEPATH,PAGES,SQTIFPATH,SQTIFPAGES,PATENTRIGHT,WHEREABOUTS,INCO,DECI,REEX,OPPO,VERD,INVA,TCLN,ICLN,DCLN,CLT,
+		SCORE,ISCHECKED,CREATTIME,UPDATETIME,SIGNTIME,PDFLOCALPATH,ZHAIYAOLOCALPATH,ECCODE,CREATOR,CREATORID,ISWAIGUANSAVED,ISXMLSAVED)
+		VALUES
+		<foreach collection="list" open="" close="" separator="," item="l">
+		(#{l.sysId},#{l.sectionname},#{l.an},#{l.ad},#{l.pnm},#{l.pd},#{l.lastLegalStatus},#{l.appId},#{l.co},#{l.pic},#{l.sic},#{l.pr},#{l.ar},#{l.ian},#{l.ipn},
+		#{l.den},#{l.agc},#{l.agt},#{l.bzr},#{l.dan},#{l.examinant},#{l.family},#{l.tzzlx},#{l.abPicPath},#{l.clm},#{l.cl},#{l.pdfUrl},#{l.de},#{l.dra},#{l.patType},
+		#{l.trskeyword},#{l.tifDistributePath},#{l.pages},#{l.sqtifPath},#{l.sqtifPages},#{l.patentRight},#{l.whereAbouts},#{l.inco},#{l.deci},#{l.reex},#{l.oppo},#{l.verd},
+		#{l.inva},#{l.tcln},#{l.icln},#{l.dcln},#{l.clt},#{l.score},#{l.isChecked},#{l.creatTime},#{l.updateTime},#{l.signTime},#{l.pdfLocalPath},#{l.zhaiYaoLocalPath},#{l.eccode},
+		#{l.createor},#{l.bigInt},#{l.isWaiGuanSaved},#{l.isXmlSaved})
+		</foreach>
+	</insert>
+	
+	<insert id="replaceLegal" parameterType="com.cnuip.pmes2.domain.inventory.LegalStatusInfo">
+		REPLACE INTO st_legalstatusinfo
+		(IDLEGAL,UUID,STRAN,SYSID,STRLEGALSTATUS,STRSTATUSINFO,STRLEGALSTATUSDAY,STRACCREDIT,CREATTIME,SIGNTIME)
+		VALUES
+		<foreach collection="list" open="" close="" separator="," item="l">
+		(#{l.idLegal},#{l.uuid},#{l.stran},#{l.sysId},#{l.strLegalStatus},#{l.strstatusInfo},#{l.strLegalStatusDay},#{l.strAccredit},#{l.creatTime},#{l.signTime})
+		</foreach>
+	</insert>
+	
+	<insert id="replaceFee" parameterType="com.cnuip.pmes2.domain.inventory.PatfeeInfo">
+		REPLACE INTO st_patfeeinfo
+		(IDFEE,APPLYNUM,SYSID,FEE,FEETYPE,RECEIPTION,REGISTERCODE,HKINFO,STATE,HKDATE,RECEIPTIONDATE,CREATTIME,SIGNTIME)		
+		VALUES
+		<foreach collection="list" open="" close="" separator="," item="l">
+		(#{l.idFee},#{l.applyNum},#{l.sysId},#{l.fee},#{l.feeType},#{l.receiption},#{l.registerCode},#{l.hkInfo},#{l.state},#{l.hkDate},#{l.receiptionDate},#{l.creatTime},#{l.signTime})
+		</foreach>
+	</insert>
+	
+	<insert id="replacePrsexploitation" parameterType="com.cnuip.pmes2.domain.inventory.PatprsexploitationInfo">
+		REPLACE INTO st_patprsexploitationinfo
+		(IDEXP,AN,SYSID,APPLICANTINFO,STRSTATUSINFO,STRLEGALSTATUS,STRLEGALSTATUSDAY,EVENTCODE,TI,AB,CL,IPC,
+		TYPE,RANGYUREN,SHOURANGREN,DANGQIANSRR,XUKEZHONGLEI,HETONGBAH,BEIANRI,BIANGENGRI,JIECHURI,CREATTIME,SIGNTIME)
+		VALUES
+		<foreach collection="list" open="" close="" separator="," item="l">
+		(#{l.idExp},#{l.an},#{l.sysId},#{l.applicantInfo},#{l.strStatusInfo},#{l.strLegalStatus},#{l.strLegalStatusDay},#{l.eventCode},#{l.ti},#{l.ab},#{l.cl},#{l.ipc},
+		#{l.type},#{l.rangYuRen},#{l.shouRangRen},#{l.DangQianSrr},#{l.xuKeZhongLei},#{l.heTongBAH},#{l.beiAnRi},#{l.bianGenRi},#{l.jieChuRi},#{l.creatTime},#{l.signTime})
+		</foreach>
+	</insert>
+	
+	<insert id="replacePrspreservation" parameterType="com.cnuip.pmes2.domain.inventory.PatprspreservationInfo">
+		REPLACE INTO st_patprspreservationinfo
+		(IDPRE,AN,SYSID,APPLICANTINFO,STRSTATUSINFO,STRLEGALSTATUS,STRLEGALSTATUSDAY,EVENTCODE,TI,AB,CL,IPC,
+		TYPE,CHUZHIREN,ZHIQUANREN,DANGQIANZQR,HETONGZT,HETONGDJH,SHENGXIAORI,BIANGENGRI,JIECHURI,CREATTIME,SIGNTIME)
+		VALUES
+		<foreach collection="list" open="" close="" separator="," item="l">
+		(#{l.idPre},#{l.an},#{l.sysId},#{l.applicantInfo},#{l.strStatusInfo},#{l.strLegalStatus},#{l.strLegalStatusDay},#{l.eventCode},#{l.ti},#{l.ab},#{l.cl},#{l.ipc},
+		#{l.type},#{l.chuZhiRen},#{l.zhiQuanRen},#{l.DangQianZqr},#{l.heTongZt},#{l.heTongDjh},#{l.shengXiaoRi},#{l.bianGenRi},#{l.jieChuRi},#{l.creatTime},#{l.signTime})
+		</foreach>
+	</insert>
+	
+	<insert id="replacePrstransfer" parameterType="com.cnuip.pmes2.domain.inventory.PatprstransferInfo">
+		REPLACE INTO st_patprstransferinfo
+		(IDTRANS,AN,SYSID,APPLICANTINFO,STRSTATUSINFO,STRLEGALSTATUS,STRLEGALSTATUSDAY,EVENTCODE,TI,AB,CL,IPC,
+		TYPE,beforeTransAp,afterTransAp,currentAp,beforeTransAddr,afterTransAddr,currentAddr,areaCode,effectiveDate,CREATTIME,SIGNTIME)
+		VALUES
+		<foreach collection="list" open="" close="" separator="," item="l">
+		(#{l.idTrans},#{l.an},#{l.sysId},#{l.applicantInfo},#{l.strStatusInfo},#{l.strLegalStatus},#{l.strLegalStatusDay},#{l.eventCode},#{l.ti},#{l.ab},#{l.cl},#{l.ipc},
+		#{l.type},#{l.beforeTransAp},#{l.afterTransAp},#{l.currentAp},#{l.beforeTransAddr},#{l.afterTransAddr},#{l.currentAddr},#{l.areaCode},#{l.effectiveDate},#{l.creatTime},#{l.signTime})
+		</foreach>
+	</insert>
+	
+	<insert id="replaceScoreInfo" parameterType="com.cnuip.pmes2.domain.inventory.ScoreInfo">
+		REPLACE INTO st_patprstransferinfo
+		(IDSCORE,AN,SYSID,APPLICANTINFO,STRSTATUSINFO,STRLEGALSTATUS,STRLEGALSTATUSDAY,EVENTCODE,TI,AB,CL,IPC,
+		TYPE,beforeTransAp,afterTransAp,currentAp,beforeTransAddr,afterTransAddr,currentAddr,areaCode,effectiveDate,CREATTIME,SIGNTIME)
+		VALUES
+		<foreach collection="list" open="" close="" separator="," item="l">
+		(#{l.idScore},#{l.an},#{l.sysId},#{l.applicantInfo},#{l.strStatusInfo},#{l.strLegalStatus},#{l.strLegalStatusDay},#{l.eventCode},#{l.ti},#{l.ab},#{l.cl},#{l.ipc},
+		#{l.type},#{l.beforeTransAp},#{l.afterTransAp},#{l.currentAp},#{l.beforeTransAddr},#{l.afterTransAddr},#{l.currentAddr},#{l.areaCode},#{l.effectiveDate},#{l.creatTime},#{l.signTime})
+		</foreach>
+	</insert>
+
+    <select id="findAfterTime" resultMap="basicInfoMap" parameterType="java.util.Date">
+        SELECT IDPATENT,SECTIONNAME,SYSID,TI,
+        AD,AN,PD,PNM,LASTLEGALSTATUS,AB,
+        PA,PIN,CREATTIME,UPDATETIME
+        FROM st_patentinfo_sub1
+        <where>
+            <if test="lastUpdateTime != null">
+            UPDATETIME >= #{lastUpdateTime}
+            </if>
+        </where>
+       	ORDER BY UPDATETIME ASC, IDPATENT ASC
+    </select>
+
+    <select id="findAnAfterTime" resultType="java.lang.String" parameterType="java.util.Date">
+		SELECT DISTINCT an
+		FROM st_patentinfo_sub1
+        <where>
+            <if test="lastUpdateTime != null">
+			UPDATETIME >= #{lastUpdateTime} OR CREATTIME >= #{lastUpdateTime}
+            </if>
+        </where>
+       	ORDER BY UPDATETIME ASC
+    </select>
+
+	<select id="findUndeal" resultType="string" parameterType="int">
+		SELECT DISTINCT an FROM st_patentinfo_sub1 w where  not exists (SELECT * from p_patent n where n.an = w.an ) LIMIT ${limit}
+	</select>
+
+    <select id="findAnAfterTimeWithEndNum" resultType="java.lang.String">
+		SELECT DISTINCT an
+		FROM st_patentinfo_sub1
+        <where>
+			<if test="endNum!=10">
+				RIGHT(an, 1) = #{endNum}
+			</if>
+			<if test="endNum==10">
+				UPPER(RIGHT(an, 1)) = 'X'
+			</if>
+            <if test="lastUpdateTime != null">
+			AND (UPDATETIME >= #{lastUpdateTime})
+            </if>
+        </where>
+       	ORDER BY UPDATETIME ASC
+       	LIMIT ${start},${limit}
+    </select>
+
+    <select id="findSub3AnAfterTimeWithEndNum" resultType="java.lang.String">
+		SELECT DISTINCT an
+		FROM st_patentinfo_sub3
+        <where>
+			<if test="endNum!=10">
+				RIGHT(an, 1) = #{endNum}
+			</if>
+			<if test="endNum==10">
+				UPPER(RIGHT(an, 1)) = 'X'
+			</if>
+            <if test="lastUpdateTime != null">
+			AND (UPDATETIME >= #{lastUpdateTime})
+            </if>
+        </where>
+       	ORDER BY UPDATETIME ASC
+       	LIMIT ${start},${limit}
+    </select>
+    
+    <select id="findAnAfterTimeByType" resultType="java.lang.String">
+		SELECT DISTINCT an
+		FROM st_patentinfo_sub1
+        <where>
+		<if test="type=='1'">
+			(SECTIONNAME = 'FMSQ' OR SECTIONNAME = 'FMZL')
+		</if>
+		<if test="type=='2'">
+			SECTIONNAME = 'WGZL'
+		</if>
+		<if test="type=='3'">
+			SECTIONNAME = 'SYXX'
+		</if>
+        <if test="lastUpdateTime != null">
+        AND UPDATETIME >= #{lastUpdateTime}
+        </if>
+        </where>
+       	ORDER BY UPDATETIME ASC
+       	LIMIT ${start},${limit}
+    </select>
+
+    <select id="getLabelValue" parameterType="string" resultType="string">
+		SELECT ${column} FROM ${table} WHERE an = #{an} ORDER BY UPDATETIME DESC LIMIT 1
+	</select>
+
+    <select id="getLabelRowCount" parameterType="string" resultType="int">
+		SELECT count(*) FROM ${table} WHERE an = #{an}
+	</select>
+
+    <select id="getFeeState" parameterType="string" resultType="string">
+		SELECT state FROM st_patfeeinfo WHERE APPLYNUM = #{applyNum} AND FEETYPE LIKE CONCAT('%', #{feeType})
+		ORDER BY RECEIPTIONDATE DESC
+		LIMIT 1
+	</select>
+
+    <select id="selectTotalAfterTimeNum" resultType="int" parameterType="java.util.Date">
+        SELECT count(DISTINCT an)
+        FROM st_patentinfo_sub1
+        <if test="lastUpdateTime != null">
+        WHERE UPDATETIME >= #{lastUpdateTime} OR CREATTIME >= #{lastUpdateTime}
+        </if>
+    </select>
+    
+    <select id="selectTotalAfterTimeNumWithEndNum" resultType="int">
+        SELECT count(DISTINCT an)
+        FROM st_patentinfo_sub1
+		<where>
+			<if test="endNum!=10">
+				RIGHT(an, 1) = #{endNum}
+			</if>
+			<if test="endNum==10">
+				UPPER(RIGHT(an, 1)) = 'X'
+			</if>
+        <if test="lastUpdateTime != null">
+		AND (UPDATETIME >= #{lastUpdateTime})
+        </if>
+		</where>
+    </select>
+
+	<select id="selectSub3TotalAfterTimeNumWithEndNum" resultType="int">
+		SELECT count(DISTINCT an)
+		FROM st_patentinfo_sub3
+		<where>
+			<if test="endNum!=10">
+				RIGHT(an, 1) = #{endNum}
+			</if>
+			<if test="endNum==10">
+				UPPER(RIGHT(an, 1)) = 'X'
+			</if>
+			<if test="lastUpdateTime != null">
+				AND (UPDATETIME >= #{lastUpdateTime})
+			</if>
+		</where>
+	</select>
+    
+    <select id="selectTotalAfterTimeNumByType" resultType="int">
+        SELECT count(DISTINCT an)
+        FROM st_patentinfo_sub1
+		<where>
+		<if test="type==1">
+			(SECTIONNAME = 'FMSQ' OR SECTIONNAME = 'FMZL')
+		</if>
+		<if test="type==2">
+			SECTIONNAME = 'WGZL'
+		</if>
+		<if test="type==3">
+			SECTIONNAME = 'SYXX'
+		</if>
+        <if test="lastUpdateTime != null">
+		AND UPDATETIME >= #{lastUpdateTime}
+        </if>
+		</where>
+    </select>
+    
+    <select id="findDealError" resultType="String">
+        SELECT an
+        FROM p_batch_update_patent_error
+    </select>
+    
+    <insert id="insertDealError" parameterType="string">
+    	REPLACE INTO p_batch_update_patent_error
+    	(an)
+    	VALUES
+    	(#{an})
+    </insert>
+    
+    <delete id="deleteDealError" parameterType="string">
+    	DELETE FROM p_batch_update_patent_error
+    	WHERE an = #{an}
+    </delete>
+
+    <select id="findRecentInfo" resultMap="patentMap" parameterType="string">
+    	SELECT
+    		MAX(IDPATENT) AS IDPATENT,MIN(SECTIONNAME) AS SECTIONNAME,(SELECT SYSID FROM st_patentinfo_sub1
+	        WHERE an = #{an} ORDER BY IDPATENT DESC LIMIT 1) as SYSID,TI,
+	        AD,AN,MIN(PD) AS OD,PD,MIN(PNM) AS ONM,PNM,LASTLEGALSTATUS,AB,
+	        PA,PIN,CREATTIME,UPDATETIME
+        FROM (
+	        SELECT IDPATENT,SECTIONNAME,SYSID,TI,
+	        AD,AN,PD,PNM,LASTLEGALSTATUS,AB,
+	        PA,PIN,CREATTIME,UPDATETIME
+	        FROM st_patentinfo_sub1
+	        WHERE an = #{an}
+			ORDER BY UPDATETIME DESC,IDPATENT DESC
+        ) AS a
+    </select>
+
+    <select id="selectSub3BySysId" parameterType="string" resultMap="sub3Map">
+		SELECT s3.PATTYPE,s3.EXAMINANT,s3.SIC,s3.PIC,s3.CO,
+		s3.DAN,s3.PR,s3.ABPICPATH,s3.PDFURL,s3.CL
+		FROM st_patentinfo_sub3 AS s3 
+		WHERE s3.SYSID = #{sysId}
+	</select>
+	
+</mapper>

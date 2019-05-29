@@ -1,0 +1,8 @@
+<!-- select -->
+<div class="form-group">
+    <label ng-if="!!meta" ng-bind="meta.name"></label>
+    <select class="form-control {{classes}}" name="{{metaKey}}" ng-model="model" ng-disabled="!!disabled">
+        <option ng-if="!!emptyTitle" value="{{emptyValue}}" ng-selected="model === emptyValue" ng-bind="emptyTitle"></option>
+        <option ng-repeat="meta in meta.values" value="{{meta.value ? meta.value : meta.name}}" ng-selected="model === (meta.value ? meta.value : meta.name)" ng-bind="meta.name"></option>
+    </select>
+</div>

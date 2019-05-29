@@ -1,0 +1,73 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        搜索
+        <small>专利搜索</small>
+    </h1>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box box-default">
+                <div class="box-body">
+                    <form class="sidebar-form">
+                        <div class="input-group">
+                            <input type="text" name="keywords" ng-model="elp.keywords" ng-keyup="elp.onSearch($event);"
+                                   class="form-control" placeholder="搜索专利...">
+                            <span class="input-group-btn">
+                                <button type="buton" name="搜索" id="search-btn" class="btn btn-flat" ng-click="elp.search()">
+                                    <i class="iconfont icon-sousuo"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="box box-default">
+                <div class="box-header">
+                    <h3 class="box-title">搜索结果</h3>
+                    <div class="box-tools">
+                    </div>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-striped" ng-show="!!elp.patents && elp.patents.length > 0">
+                        <tr>
+                            <th>申请号</th>
+                            <th>公开(公告)日</th>
+                            <th>专利名称</th>
+                            <th>法律状态</th>
+                            <th>申请人</th>
+                            <th>发明人</th>
+                            <th>申请日</th>
+                            <th>专利价值</th>
+                            <th>专利详情</th>
+                        </tr>
+                        <tr ng-repeat="p in elp.patents">
+                            <td><span ng-bind="p.an"></span></td>
+                            <td><span ng-bind="(p.pd || p.od) | date: 'yyyy.MM.dd'"></span></td>
+                            <td><span ng-bind="p.ti"></span></td>
+                            <td><span ng-bind="p.lastLegalStatus"></span></td>
+                            <td><span ng-bind="p.pa"></span></td>
+                            <td><span ng-bind="p.pin"></span></td>
+                            <td><span ng-bind="p.ad | date: 'yyyy.MM.dd'"></span></td>
+                            <th><span ng-bind="p.patentValue | labelDisplay: 0"></span></th>
+                            <th><a class="btn btn-primary btn-sm" ui-sref="main.console.search.patent.detail({id: p.id})">查看详情</a></th>
+                        </tr>
+                    </table>
+                    <p ng-show="!!elp.patents && elp.patents.length === 0">暂无专利数据！</p>
+                </div>
+                <div class="box-footer">
+                    <tm-pagination conf="elp.paginationConf" ng-if="!elp.searching"></tm-pagination>
+                </div>
+                <div class="overlay" ng-show="elp.loading">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+

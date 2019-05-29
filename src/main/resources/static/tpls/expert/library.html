@@ -1,0 +1,202 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <ol class="breadcrumb">
+    <li><i class="iconfont icon-zhuanjiaguanli"></i> 专家管理</li>
+    <li class="active">专家库</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="box box-default">
+        <div class="box-body" style="padding-bottom: 0px">
+          <div class="box box-solid" style="padding: 15px;margin-bottom: 0px">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>所属省份：</label>
+                  <select class="form-control" ng-model="ExCtrl.searchCondition.userId">
+                    <option value="" selected="selected">全部</option>
+                    <option value="{{user.id}}" ng-repeat="user in ExCtrl.users">{{user.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>高校：</label>
+                  <input type="text" class="form-control" placeholder="请输入院校"
+                         ng-model="ExCtrl.searchCondition.institutions"/>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>院系：</label>
+                  <select class="form-control" ng-model="ExCtrl.searchCondition.userId">
+                    <option value="" selected="selected">全部</option>
+                    <option value="{{user.id}}" ng-repeat="user in ExCtrl.users">{{user.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>专业：</label>
+                  <select class="form-control" ng-model="ExCtrl.searchCondition.userId">
+                    <option value="" selected="selected">全部</option>
+                    <option value="{{user.id}}" ng-repeat="user in ExCtrl.users">{{user.name}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+             <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>专家姓名：</label>
+                  <input type="text" class="form-control" placeholder="请输入专家姓名" ng-model="ExCtrl.searchCondition.name">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>手机：</label>
+                  <input type="text" class="form-control" placeholder="请输入手机号" ng-model="ExCtrl.searchCondition.name">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>技术关键词：</label>
+                  <input type="text" class="form-control" placeholder="请输入关键词"
+                         ng-model="ExLiCtrl.searchCondition.keyword">
+                </div>
+              </div>
+               <div class="col-md-3">
+                 <div class="form-group">
+                   <label>来源：</label>
+                   <select class="form-control" ng-model="ExCtrl.searchCondition.userId">
+                     <option value="" selected="selected">全部</option>
+                     <option value="" selected="selected">人工录入</option>
+                     <option value="" selected="selected">专利宝</option>
+                     <option value="" selected="selected">中高处理</option>
+                   </select>
+                 </div>
+               </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>IPC：</label>
+                  <button class="btn btn-default form-control" style= "background-color: transparent; text-align: left"
+                          ng-bind="ExLiCtrl.currentNationalEconomyField ? ExCtrl.currentNationalEconomyField.name: '全部'"
+                          ng-click="ExLiCtrl.openIpcDlg()" ></button>
+
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>国民经济领域：</label>
+                  <button class="btn btn-default form-control" style="background-color: transparent; text-align: left"
+                          ng-bind="ExLiCtrl.currentNationalEconomyField ? ExCtrl.currentNationalEconomyField.name: '全部'"
+                          ng-click="ExLiCtrl.openExpertNationalDlg()" ></button>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>八大产业：</label>
+                  <button class="btn btn-default form-control" style="background-color: transparent; text-align: left"
+                          ng-bind="ExLiCtrl.currentNationalEconomyField ? ExCtrl.currentNationalEconomyField.name: '全部'"
+                          ng-click="ExLiCtrl.openIndustryDlg()" ></button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <!-- /.col -->
+        <div class="box-footer">
+          <button type="submit" class="btn btn-warning" style="padding: 3px 12px" ng-disabled="ExCtrl.loading"
+                  ng-click="ExCtrl.search()">查询
+          </button>
+          <button type="reset" class="btn btn-default" ng-click="ExCtrl.reset()">重置</button>
+        </div>
+      </div>
+
+      <div class="box box-default">
+        <div class="box-header">
+          <h3 class="box-title">专家列表</h3>
+          <div class="box-tools">
+            <button class="btn btn-primary btn-sm" style="margin-left: 10px;"
+                    ui-sref="main.console.expert.libraryAdd">添加专家信息
+            </button>
+            <button class="btn btn-primary btn-sm" style="margin-left: 10px;"
+                    ui-sref="main.console.expert.add">导出
+            </button>
+            <button class="btn btn-primary btn-sm" style="margin-left: 10px;"
+                    ui-sref="main.console.expert.add">导入
+            </button>
+          </div>
+        </div>
+        <div class="box-body table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <th width="32px;">
+                <input type="checkbox"
+                       ng-model="ExCtrl.allSelected"
+                       ng-change="ExCtrl.changeAllSelected()">
+              </th>
+              <th>专家姓名</th>
+              <th>性别</th>
+              <th>身份证号</th>
+              <th>高校</th>
+              <th>专业</th>
+              <th>院系</th>
+              <th>学历</th>
+              <th>科研方向</th>
+              <th>手机</th>
+              <th>邮箱</th>
+              <th>操作</th>
+            </tr>
+            <tr ng-repeat="item in ExCtrl.experts">
+              <td>
+                <input type="checkbox"
+                       ng-model="item.selected">
+              </td>
+              <td><span ng-bind="item.name"></span></td>
+              <td>
+                <span ng-bind="item.institutions"></span>
+              </td>
+              <td>
+                <span ng-bind="item.specialties"></span>
+              </td>
+              <td>
+                <span ng-bind="item.ipcField"></span>
+              </td>
+              <td><span ng-bind="item.keyword"></span></td>
+              <td><span ng-bind="item.user.name"></span></td>
+              <td><span ng-bind="item.updateTime | date: 'yyyy.MM.dd'"></span></td>
+              <th>
+                <button class="btn btn-sm btn-primary dropdown-toggle" type="button"
+                        ui-sref="main.console.expert.update({id:item.id})">
+                  修改
+                </button>
+                <button class="btn btn-sm btn-primary dropdown-toggle" type="button"
+                        ui-sref="main.console.expert.detail({id:item.id})">
+                  查看详情
+                </button>
+              </th>
+            </tr>
+          </table>
+        </div>
+        <div class="box-footer">
+          <tm-pagination conf="ExCtrl.paginationConf" ng-if="!ExCtrl.searching"></tm-pagination>
+        </div>
+        <div class="overlay" ng-show="ExCtrl.loading">
+          <i class="fa fa-refresh fa-spin"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /.content -->
+
+

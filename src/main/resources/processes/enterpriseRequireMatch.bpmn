@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1518010784094" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">
+  <process id="enterpriseRequireMatch" isClosed="false" isExecutable="true" name="匹配流程" processType="None">
+    <startEvent id="startevent1" name="Start"/>
+    <endEvent id="endevent1" name="End"/>
+    <userTask activiti:exclusive="true" id="sendOrder25" name="派单">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${distributeCandidateListener.notify(task)}"/>
+      </extensionElements>
+    </userTask>
+    <userTask activiti:exclusive="true" id="artificialSelection" name="匹配结果人工筛选">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${distributeCandidateListener.notify(task)}"/>
+        <activiti:taskListener event="complete" expression="${finishListener.notify(task)}"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="sendOrder25"/>
+    <sequenceFlow id="flow2" sourceRef="sendOrder25" targetRef="artificialSelection"/>
+    <sequenceFlow id="flow3" sourceRef="artificialSelection" targetRef="endevent1"/>
+  </process>
+  <bpmndi:BPMNDiagram documentation="background=#3C3F41;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
+    <bpmndi:BPMNPlane bpmnElement="enterpriseRequireMatch">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="Shape-startevent1">
+        <omgdc:Bounds height="32.0" width="32.0" x="130.0" y="130.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="Shape-endevent1">
+        <omgdc:Bounds height="32.0" width="32.0" x="750.0" y="130.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendOrder25" id="Shape-sendOrder25">
+        <omgdc:Bounds height="55.0" width="105.0" x="300.0" y="120.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="105.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="artificialSelection" id="Shape-artificialSelection">
+        <omgdc:Bounds height="55.0" width="105.0" x="490.0" y="120.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="105.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1" sourceElement="startevent1" targetElement="sendOrder25">
+        <omgdi:waypoint x="162.0" y="146.0"/>
+        <omgdi:waypoint x="300.0" y="147.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2" sourceElement="sendOrder25" targetElement="artificialSelection">
+        <omgdi:waypoint x="405.0" y="147.5"/>
+        <omgdi:waypoint x="490.0" y="147.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3" sourceElement="artificialSelection" targetElement="endevent1">
+        <omgdi:waypoint x="595.0" y="147.5"/>
+        <omgdi:waypoint x="750.0" y="146.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

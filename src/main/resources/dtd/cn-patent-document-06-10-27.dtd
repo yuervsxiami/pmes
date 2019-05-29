@@ -1,0 +1,2006 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!-- edited with XMLSPY v5 U (http://www.xmlspy.com) by et8 (et8) -->
+        <!--cn-patent-document v1.0 2006-03-06
+            http://www.sipo.gov.cn/standards/xml/cn-patent-document.dtd
+            这是一个用于描述中国发明、实用新型专利文献数据的DTD定义。
+            本DTD是WIPO ST36的一个应用，依据的是2005-09-22 的 ST36 的版本，使用的是2005-02-20的
+            ICE和xx-patent-document版本。
+        -->
+        <!--cn-patent-document v1.0 2006-03-06
+            http://www.sipo.gov.cn/standards/xml/cn-patent-document.dtd
+            DTD FOR PUBLISHED CHINA PATENT DATA
+            This DTD is based on WIPO ST36(2005-09-22) and  ICE(2005-02-20) .
+        -->
+        <!--
+          ****************************************************************************
+          * SECTION I - DECLARATION, ENT. REFs, ISO sets, etc                        *
+          ****************************************************************************
+        -->
+        <!--
+          ****************************************************************************
+          * 节 I - 声明, 实体,  引用外部DTD, 字符集等                        	     *
+          ****************************************************************************
+        -->
+        <!--关于引用MATHML2_DTD和TABLE_DTD 的说明:
+          要引用 mathml2.dtd  将 MATHML2_DTD 的值改成  "INCLUDE", 将
+          MATH_PLACEHOLDER 值改成  "IGNORE", 对于 TABLE_DTD
+          TABLE_PLACEHOLDER 以及 WIPO_ENT 和 SIPO_ENT 是同样的
+
+          INCLUDE
+          IGNORE
+        -->
+        <!--
+          to include mathml2.dtd  change MATHML2_DTD value to "INCLUDE", change
+          MATH_PLACEHOLDER value to "IGNORE", the same for the TABLE_DTD and
+          TABLE_PLACEHOLDER
+
+          INCLUDE
+          IGNORE
+        -->
+        <!ENTITY % UNICODE_PLANE1D_ESCAPE "IGNORE">
+        <!ENTITY % WIPO_ENT "IGNORE">
+        <!ENTITY % SIPO_ENT "IGNORE">
+        <!ENTITY % MATHML2_DTD "IGNORE">
+        <!ENTITY % TABLE_DTD "IGNORE">
+        <!ENTITY % MATH_PLACEHOLDER "INCLUDE">
+        <!ENTITY % TABLE_PLACEHOLDER "INCLUDE">
+        <![%UNICODE_PLANE1D_ESCAPE; [
+                <!ENTITY % plane1D  "&#38;#38;#xE">
+                ]]>
+        <!--WIPO SIPO 定义的字符集实体.  可以从以下网址下载:
+        http://pcteasy.wipo.int/efiling_standards/schemaDocs/wipo.ent
+        http://www.sipo.gov.cn/standards/xml/sipo.ent
+        -->
+        <!--  import character entity set.  Download from:
+                http://pcteasy.wipo.int/efiling_standards/schemaDocs/wipo.ent
+                http://www.sipo.gov.cn/standards/xml/sipo.ent
+          Note that nsgmls-based parsers (SP, Near & Far Designer, etc.)
+          may not be able to process this file for reasons described below
+          in MathML comments.
+         -->
+        <![%WIPO_ENT;[
+                <!ENTITY % wipo PUBLIC "-//WIPO//ENTITIES WIPO 1.0//EN" "wipo.ent">
+                %wipo;
+                ]]>
+        <![%SIPO_ENT;[
+                <!ENTITY % sipo PUBLIC "-//SIPO//ENTITIES SIPO 1.0//ZH" "sipo.ent">
+                %sipo;
+                ]]>
+        <!--引用 DTD MathML2,由W3C维护, 从
+               http://www.w3.org/TR/MathML2/DTD-MathML-20010221.zip 下载
+         -->
+        <!--
+          DTD MathML2: maintained by W3C.  Download from:
+            http://www.w3.org/TR/MathML2/DTD-MathML-20010221.zip
+          If using nsgmls-based parser (SP, Near & Far Designer, etc.)
+          Uncomment 'mathml-charent-module' switch below or replace the Referenced
+          MathML2 DTD with the version downloadable from:
+            http://www.w3.org/Math/DTD/dtd-sp.zip
+          This notice copied from: http://www.w3.org/Math/DTD/
+          "DTD for nsgmls
+            Some systems (including the popular nsgmls parser) may not be able to
+            process files using 'plane 1' characters which have Unicode numbers
+            higher than #xFFFF. The versions of the DTD provided here incoprorate
+            the modifications mentioned above, but the high characters are replaced
+            by the equivalent mchar construct <mchar name="..." /> this allows the
+            DTD to be read and for MathML files to be validated using such sytems."
+        -->
+        <![%MATHML2_DTD; [
+                <!--
+                  ENTITY % mathml-charent.module "IGNORE"
+                -->
+                <!ENTITY % MATHML.prefixed "IGNORE">
+                <!ENTITY % MATHML.xmlns "">
+                <!--
+                  import MathML2 dtd
+                -->
+                <!ENTITY % mathml2 PUBLIC "-//W3C//DTD MathML 2.0//EN" "mathml2.dtd">
+                %mathml2;
+                ]]>
+        <!--引用 DTD OASIS Open XML Exchange Table Model ,由OASIS维护, 从
+               http://oasis-open.org/specs/soextblx.dtd 下载
+        -->
+        <!--
+          DTD OASIS Open XML Exchange Table Model.
+          Maintained by OASIS; download from:
+            http://oasis-open.org/specs/soextblx.dtd
+          Note that the FPI in soextblx.dtd refers to itself as 'calstblx'.
+          That convention has been followed here.
+        -->
+        <![%TABLE_DTD; [
+
+                <!--
+                  create content for title element in table
+                -->
+                <!ENTITY % title "<!ELEMENT title (#PCDATA | b | i | u | sup | sub | smallcaps)* > ">
+                %title;
+                <!--
+                  override OASIS Exchange <entry> model
+                -->
+                <!ENTITY % tbl.entry.mdl "(#PCDATA | b | i | u | sup | sub | smallcaps | br | patcit | nplcit | bio-deposit | crossref | img | dl | ul | ol | chemistry | maths)* ">
+                <!--
+                  import OASIS Exchange model
+                -->
+                <!ENTITY % calstblx PUBLIC "-//OASIS//DTD XML Exchange Table Model 19990315//EN"
+                        "soextblx.dtd">
+                <!ENTITY % yesorno  "NMTOKEN" >
+                <!ENTITY % tbl.table.att  " pgwide    %yesorno;      #IMPLIED
+                            orient    (port | land)  #IMPLIED
+                            tabstyle  NMTOKEN        #IMPLIED" >
+                %calstblx;
+                ]]>
+        <![%MATH_PLACEHOLDER; [
+                <!--
+                  (PLACEHOLDER:w3c math dtd)
+                -->
+                <!ELEMENT math (#PCDATA)>
+                ]]>
+        <![%TABLE_PLACEHOLDER; [
+                <!--
+                  (PLACEHOLDER:cals table dtd)
+                -->
+                <!ELEMENT table (#PCDATA)>
+                ]]>
+        <!--通用的名字结构实体-->
+        <!--general name entity -->
+        <!ENTITY % name_group "((name | (prefix? , (last-name | orgname) , first-name?
+                       , middle-name? , suffix? , iid? , role? , orgname?
+                       , department? , synonym*)) , registered-number?)">
+        <!--表示通用的地址结构实体-->
+        <!--general address  entity -->
+        <!ENTITY % address_group "((address-1? , address-2? , address-3? , mailcode?
+                          , pobox? , room? , address-floor? , building?
+                          , street? , city? , county? , state? , postcode?
+                          , country) | text)">
+        <!--  表示公共属性的实体 -->
+        <!--  common attribute entity -->
+        <!-- 属性：
+               id      标号
+               lang    语言
+               status  状态  -->
+        <!--attribute:
+               id      id
+               lang    language
+               status  status-->
+        <!ENTITY % body_sections " id     CDATA  #IMPLIED
+                           lang   CDATA  #IMPLIED
+                           status CDATA  #IMPLIED">
+        <!--
+          ****************************************************************************
+          * SECTION II - cn-patent-document   v1.0 2006-03-06 定义                      *
+          ****************************************************************************
+        -->
+        <!--
+          ****************************************************************************
+          * SECTION II - cn-patent-document   v1.0 2006-03-06 DIFINATION                      *
+          ****************************************************************************
+        -->
+        <!--中国专利文献-->
+        <!--chinese patent document-->
+        <!--属性:
+                  id                  标号
+                  lang                专利文献使用的语言
+                  dtd-version         dtd版本号
+                  country             公布/公告文献的国家
+                  file-reference-id   文献中涉及的文件的编码
+                  correction-code     修正码
+                  doc-number          文献号
+                  kind                文献种类
+                  date-produced       文献产生日期
+                  date-publ           文献公布/公告日期
+                  status              文献状态-->
+        <!--attribute:
+                  id                  id
+                  lang                language
+                  dtd-version         dtd version
+                  country             patent document country
+                  file-reference-id   referenced file id
+                  correction-code     correction code
+                  doc-number          document number
+                  kind                kind of document
+                  date-produced       produced date
+                  date-publ           publication date
+                  status              patent document status-->
+        <!ELEMENT cn-patent-document (doc-page+ | (cn-bibliographic-data, application-body?, sequence-list-doc?, table-external-doc*))>
+        <!ATTLIST cn-patent-document
+                id ID #IMPLIED
+                lang CDATA #REQUIRED
+                dtd-version CDATA #IMPLIED
+                file CDATA #IMPLIED
+                country CDATA #REQUIRED
+                file-reference-id CDATA #IMPLIED
+                correction-code CDATA #IMPLIED
+                doc-number CDATA #IMPLIED
+                kind CDATA #IMPLIED
+                date-produced CDATA #IMPLIED
+                date-publ CDATA #IMPLIED
+                status CDATA #IMPLIED
+                >
+        <!--著录项目数据.-->
+        <!--Bibliographic data-->
+        <!--属性:
+                 id         标号
+                 lang       著录项目使用语言
+                 country    国别
+                 status     状态-->
+        <!--attribute:
+                 id         id
+                 lang       language
+                 country    country
+                 status     stastus-->
+        <!ELEMENT cn-bibliographic-data (cn-publication-reference, correction?, application-reference, priority-claims?, classification-ipc?, classifications-ipcr?, invention-title+, assignees?, references-cited?, abstract?, figures?, cn-abstract-drawing?, cn-related-publication, cn-related-documents, cn-parties, date-pct-article-22-39-fulfilled?, pct-or-regional-filing-data?, pct-or-regional-publishing-data?, text*)>
+        <!ATTLIST cn-bibliographic-data
+                id ID #IMPLIED
+                lang CDATA #IMPLIED
+                country CDATA #IMPLIED
+                status CDATA #IMPLIED
+                >
+        <!--序列表文件-->
+        <!--Sequence list document n-->
+        <!--属性:
+                 id         标号号
+                 lang       语言
+                 status     状态-->
+        <!--attribute:
+                 id         id
+                 lang       language
+                 status     stastus-->
+        <!ELEMENT sequence-list-doc (#PCDATA | doc-page | sequence-list)*>
+        <!ATTLIST sequence-list-doc
+                id ID #IMPLIED
+                lang CDATA #IMPLIED
+                status CDATA #IMPLIED
+                >
+        <!--符合ST.25标准的序列表文件-->
+        <!--
+          SEQUENCE LISTING
+            According to WIPO ST.25: STANDARD FOR THE PRESENTATION OF NUCLEOTIDE AND
+            AMINO ACID SEQUENCE LISTINGS IN PATENT APPLICATIONS:
+              see http://www.wipo.int/scit/en/index.html
+            "The sequence listing as defined in paragraph 2(i) shall, where it is filed
+            together with the application, be placed at the end of the application.
+            This part shall be entitled Sequence Listing, begin on a new page and
+            preferably have independent page numbering. The sequence listing forms an
+            integral part of the description; it is therefore unnecessary, subject to
+            paragraph 36, to describe the sequences elsewhere in the description."
+            Therefore we create here a separate sub-document for sequence listings,
+            it should follow any drawings or the claims.
+            It should follow the format of ST.25 and be an external file
+        -->
+        <!--属性:
+                 id             标号
+                 file           文件名
+                 lang           语言
+                 carriers       序列表载体（国内电子件/国外电子件/纸件）
+                 seq-file-type  序列表文件类型
+                 status         状态-->
+        <!--attribute:
+                 id              Sequence list  id
+                 file            sequence list  file
+                 lang            Sequence list  language
+                 carriers        sequence list carriers(internal-electronic/external-electronic/paper)
+                 seq-file-type   sequence list file type
+                 status          Sequence list  stastus-->
+        <!ELEMENT sequence-list EMPTY>
+        <!ATTLIST sequence-list
+                id ID #IMPLIED
+                file CDATA #REQUIRED
+                lang CDATA #IMPLIED
+                carriers (internal-electronic | external-electronic | paper) #IMPLIED
+                seq-file-type CDATA #FIXED "ST.25"
+                status CDATA #IMPLIED
+                >
+        <!--INID 10 12 19 43 45 48 公布/公告信息(公布/公告号、日期、种类等)-->
+        <!--Publication reference information: publication number, date, etc-->
+        <!--属性：
+                  id           标号
+                  lang         语言
+                  status       状态
+                  country      国别-->
+        <!--attribute:
+                  id           id
+                  lang         language
+                  status       status
+                  country      country-->
+        <!ELEMENT cn-publication-reference (document-id, gazette-reference?)>
+        <!ATTLIST cn-publication-reference
+                id CDATA #IMPLIED
+                lang CDATA #IMPLIED
+                status CDATA #IMPLIED
+                country CDATA #IMPLIED
+                >
+        <!-- INID 21 22 专利申请有关信息 , 属性 appl-type 专利申请的种类 如发明专利、实用新型专利 -->
+        <!--Application reference information: application number, appliction-type
+        （ inventions and utility medels and designs）-->
+        <!--属性：
+                   appl-type   专利申请的种类, 如发明专利、实用新型专利-->
+        <!--attribute:
+                   appl-type   appliction-type: inventions/utility medels/designs-->
+        <!ELEMENT application-reference (document-id)>
+        <!ATTLIST application-reference
+                appl-type CDATA #REQUIRED
+                >
+        <!--INID 15 48 有关更正（公告/公布)的信息-->
+        <!-- Correction information -->
+        <!ELEMENT correction (document-corrected, type-of-correction?, gazette-reference?, text?)>
+        <!--INID 30 优先权声明数据-->
+        <!--priority claims data-->
+        <!ELEMENT priority-claims (priority-claim+)>
+        <!--优先权声明项-->
+        <!--Priority claim-->
+        <!--属性：
+               sequence    序号
+               kind        优先权种类(本国优先权/部分优先权/外国优先权)-->
+        <!--attribute:
+               sequence    sequence
+               kind        priority claim kind(national/regional/international)-->
+        <!ELEMENT priority-claim (country, doc-number?, date, office-of-filing?, (priority-doc-requested | priority-doc-attached)?)>
+        <!ATTLIST priority-claim
+                sequence CDATA #REQUIRED
+                kind (national | regional | international) #REQUIRED
+                >
+        <!--INID 51 国际专利分类数据 -->
+        <!--ipc data -->
+        <!ELEMENT classification-ipc (ipc-version, main-classification, further-classification*, (additional-info | linked-indexing-code-group | unlinked-indexing-code)*, text?)>
+        <!--INID 51 国际专利分类数据 -->
+        <!--ipc data -->
+        <!--属性：
+                     id      标号-->
+        <!--attribute:
+                     id       id -->
+        <!ELEMENT classifications-ipcr (classification-ipcr+)>
+        <!ATTLIST classifications-ipcr
+                id ID #IMPLIED
+                >
+        <!--国际专利分类号-->
+        <!--ipc-->
+        <!--属性;
+                   id        标号
+                   sequence  序号-->
+        <!--attribute:
+                   id        id
+                   sequence  sequence-->
+        <!ELEMENT classification-ipcr ((ipc-version-indicator, classification-level?, section, class, subclass, main-group?, subgroup?, symbol-position?, classification-value?, action-date?, generating-office?, classification-status?, classification-data-source?) | text)>
+        <!ATTLIST classification-ipcr
+                id ID #IMPLIED
+                sequence CDATA #IMPLIED
+                >
+        <!--INID 54  标题-->
+        <!--title-->
+        <!--属性：
+                 id    标号
+                 lang  语言-->
+        <!--attribute:
+                 id     id
+                 lang   language-->
+        <!ELEMENT invention-title (#PCDATA | b | i | u | sup | sub)*>
+        <!ATTLIST invention-title
+                id ID #IMPLIED
+                lang CDATA #IMPLIED
+                >
+        <!--INID 56 引用文献  -->
+        <!--This tag and elements to be used primary to code data on the title page of
+          patents under INID code (56).-->
+        <!ELEMENT references-cited (text | (citation+, date-search-completed?, date-search-report-mailed?, place-of-search?, search-report-publication?, searcher?))>
+        <!--其他参考文献，包括专利文献或非专利文献-->
+        <!-- Reference to other documents, either patent literature (patcit)
+          or non-patent literature (nplcit) -->
+        <!--属性：
+                    id          文献id号建议取值'cit0001', 'cit0002'
+                    srep-phase  文献引用段落-->
+        <!--attribute:
+                    id          document id  Recommended id = 'cit0001', 'cit0002', etc.
+                    srep-phase  cited phase-->
+        <!ELEMENT citation ((patcit | nplcit), corresponding-docs*, rel-passage*, category*, rel-claims*, classification-ipc?, classifications-ipcr?, classification-national?)>
+        <!ATTLIST citation
+                id ID #IMPLIED
+                srep-phase CDATA #IMPLIED
+                >
+        <!--INID 62 分案原申请的有关信息-->
+        <!--Earlier application from which the present document has been divided out.
+            (INID 62, ST.32:B620)-->
+        <!ELEMENT division (relation)>
+        <!--INID 65  同一申请有关的公告/公布  -->
+        <!--Previously published document concerning same application.(INID 65)-->
+        <!ELEMENT cn-related-publication (cn-publication-reference*)>
+        <!--  专利事务中的各方     -->
+        <!--related parties in patent affairs-->
+        <!ELEMENT cn-parties (cn-applicants, cn-inventors?, correspondence-address?, cn-agents?)>
+        <!--INID 85  进入国家阶段日期，仅针对PCT申请  -->
+        <!--  Date of PCT articles 22/39 fulfillment. (INID 85, ST.32:B850)-->
+        <!ELEMENT date-pct-article-22-39-fulfilled (date)>
+        <!--INID 86   PCT 国际申请有关信息  -->
+        <!-- PCT or regional filing information. (INID 86, ST.32:B860)-->
+        <!ELEMENT pct-or-regional-filing-data (document-id, us-371c124-date?)>
+        <!ELEMENT us-371c124-date (date)>
+        <!--INID 87  PCT 国际申请国际公布有关数据-->
+        <!--  PCT or regional publication information.(INID 87, ST.32:B870)-->
+        <!ELEMENT pct-or-regional-publishing-data (document-id, gazette-reference?)>
+        <!--附图信息-->
+        <!--附图信息-->
+        <!ELEMENT figures (number-of-drawing-sheets?, number-of-figures?, figure-to-publish?)>
+        <!--摘要附图-->
+        <!-- Figure of the drawings which should accompany the abstract-->
+        <!ELEMENT figure-to-publish (fig-number+)>
+        <!--摘要附图编号-->
+        <!--the number of the figure which should accompany the abstract.-->
+        <!ELEMENT fig-number (#PCDATA)>
+        <!--附图个数-->
+        <!--  Number of figures-->
+        <!ELEMENT number-of-figures (#PCDATA)>
+        <!--附图页数-->
+        <!--number of drawing sheets-->
+        <!ELEMENT number-of-drawing-sheets (#PCDATA)>
+        <!--更正类型  -->
+        <!-- type of correction -->
+        <!ELEMENT type-of-correction (#PCDATA)>
+        <!--  被更正的文献 -->
+        <!--  Document being corrected.-->
+        <!ELEMENT document-corrected (document-id)>
+        <!--  公报信息  -->
+        <!--  Information about an office's gazette or bulletin - paper, electronic, etc.
+          where, the details of the patent publication are also given.
+          Examples WIPO gazette and EPO Bulletin The date is mandatory. -->
+        <!--属性：
+                    id          标号
+                    country  	国别
+                    lang	语言-->
+        <!--attribute:
+                    id          id
+                    country  	country
+                    lang	language-->
+        <!ELEMENT gazette-reference (gazette-num, date, text?)>
+        <!ATTLIST gazette-reference
+                id ID #IMPLIED
+                country CDATA #IMPLIED
+                lang CDATA #IMPLIED
+                >
+        <!--  公报卷期号  -->
+        <!--  gazette vol   -->
+        <!ELEMENT gazette-num (#PCDATA)>
+        <!--丛书引用数据：描述了整个卷期的信息 -->
+        <!--Serial citation data:
+          This describes the volume or issue as a whole and not a particular article within it.-->
+        <!ELEMENT serial (sertitle, alttitle?, subname?, issue?, imprint?, pubdate?, descrip?, notes?, issn?, isbn?, pubid?, vid?, ino?, cpyrt?)>
+        <!--丛书名称-->
+        <!--Serial title-->
+        <!ELEMENT sertitle (#PCDATA)>
+        <!--丛书的副标题 如 BMJ = British Medical Journal -->
+        <!--Alternate title for serial; e.g. BMJ = British Medical Journal-->
+        <!ELEMENT alttitle (#PCDATA)>
+        <!--除作者外的其他责任者 如编辑、译者-->
+        <!--  Subordinate responsibility;  e.g., editor, translator, etc.-->
+        <!--属性：
+                subname-type     除作者外的其他责任者的类型（编辑，译者，其他类型）默认“编辑”-->
+        <!--attribute:
+                subname-type     subname type(editor,translator,other subname type) default editor-->
+        <!ELEMENT subname (%name_group; | addressbook)>
+        <!ATTLIST subname
+                subname-type (editor | translator | other-subname-type) "editor"
+                >
+        <!-- 名称 可以是机构或者自然人的名称 -->
+        <!-- Name:
+          If no distinction or detail can be given.
+          Also to be used for: personal (natural person) and corporate (legal entity) names-->
+        <!--属性：
+                 name-type    名称类型（法人或自然人）-->
+        <!--attribute:
+                 name-type     name type(legal or natural)-->
+        <!ELEMENT name (#PCDATA)>
+        <!ATTLIST name
+                name-type (legal | natural) #IMPLIED
+                >
+        <!--称谓 如 Mr., Mrs., Dr. etc -->
+        <!--Title: e.g., Mr., Mrs., Dr. etc-->
+        <!ELEMENT prefix (#PCDATA)>
+        <!--姓-->
+        <!--last name-->
+        <!ELEMENT last-name (#PCDATA)>
+        <!--组织机构名称或者公司名称-->
+        <!--Organisation name or company name-->
+        <!ELEMENT orgname (#PCDATA)>
+        <!-- 名 -->
+        <!--First or given name(s), initial(s)-->
+        <!ELEMENT first-name (#PCDATA)>
+        <!-- 中间名  -->
+        <!--  Middle name(s) or initial(s)-->
+        <!ELEMENT middle-name (#PCDATA)>
+        <!--名字中的后缀如  II, Jr., Dip., Ing., BA  -->
+        <!--Name suffix (e.g., II, Jr., Dip., Ing., BA, etc.)-->
+        <!ELEMENT suffix (#PCDATA)>
+        <!--个体代码-->
+        <!--Individual id-->
+        <!ELEMENT iid (#PCDATA)>
+        <!--职位或者角色如 总裁,主席等-->
+        <!--Role; e.g., President, Chairman, etc.-->
+        <!ELEMENT role (#PCDATA)>
+        <!-- 部门 -->
+        <!--Department, division, section, etc. name-->
+        <!ELEMENT department (#PCDATA)>
+        <!--  别名 -->
+        <!--Synonym-->
+        <!ELEMENT synonym (#PCDATA)>
+        <!--注册号码-->
+        <!--Registered number-->
+        <!ELEMENT registered-number (#PCDATA)>
+        <!--用于联系个人或者组织的地址、名称等信息,    属性 lang  表示语言-->
+        <!--  ADDRESSBOOK GROUP:
+          Holds name and contact information for individuals/organizations
+          The LANG attribute is REQUIRED for certain document types,
+          e.g., the JPO PCT Request where names and addresses may be repeated in two
+            different languages. If no structure possible use text.-->
+        <!--属性：id      标号
+                 lang    语言-->
+        <!--attribute:
+                 id      addressbook id
+                 lang    language-->
+        <!ELEMENT addressbook ((%name_group;, address, phone*, fax*, email*, url*, ead*, dtext?) | text)>
+        <!ATTLIST addressbook
+                id ID #IMPLIED
+                lang CDATA #REQUIRED
+                >
+        <!--地址信息-->
+        <!--  Address components:
+          Address formats differ from country to country
+          If no structure possible use text-->
+        <!ELEMENT address (%address_group;)>
+        <!-- 地址（第一行）-->
+        <!--Address, first line-->
+        <!ELEMENT address-1 (#PCDATA)>
+        <!--地址（第二行）-->
+        <!--Address, second line-->
+        <!ELEMENT address-2 (#PCDATA)>
+        <!-- 地址（第三行）-->
+        <!--Address, third line-->
+        <!ELEMENT address-3 (#PCDATA)>
+        <!--组织的在邮局的编码-->
+        <!--Organizational mail code-->
+        <!ELEMENT mailcode (#PCDATA)>
+        <!-- 邮箱号码-->
+        <!--Post Office Box number-->
+        <!ELEMENT pobox (#PCDATA)>
+        <!--房间号码-->
+        <!--Address room; e.g., Room 55B-->
+        <!ELEMENT room (#PCDATA)>
+        <!--层数-->
+        <!--Address floor; e.g., 10th-->
+        <!ELEMENT address-floor (#PCDATA)>
+        <!--建筑物的信息 如 上海大厦-->
+        <!--Building information in address; e.g., Hoffman building-->
+        <!ELEMENT building (#PCDATA)>
+        <!--街道-->
+        <!--Street may contain house number or name-->
+        <!ELEMENT street (#PCDATA)>
+        <!--城、镇  -->
+        <!--City or town name-->
+        <!ELEMENT city (#PCDATA)>
+        <!--县-->
+        <!--County, parish, department, etc (mainly UK, USA)-->
+        <!ELEMENT county (#PCDATA)>
+        <!--地区、州、省 -->
+        <!--Region of country; e.g., state, province, etc.-->
+        <!ELEMENT state (#PCDATA)>
+        <!--邮政编码-->
+        <!--Postal code or zip code-->
+        <!ELEMENT postcode (#PCDATA)>
+        <!--国别 使用 WIPO ST.3 国别代码, 如 DE, FR, GB, NL, 也包括 EP, WO 等组织代码-->
+        <!-- Country: use ST.3 country code; e.g. DE, FR, GB, NL, etc.
+          Also includes EP, WO -->
+        <!ELEMENT country (#PCDATA)>
+        <!--无结构文本 -->
+        <!--If no structure is possible, enter text (without markup)-->
+        <!ELEMENT text (#PCDATA)>
+        <!--电话号码-->
+        <!--Telephone number-->
+        <!ELEMENT phone (#PCDATA)>
+        <!--传真号码 -->
+        <!--Fax number-->
+        <!ELEMENT fax (#PCDATA)>
+        <!-- 电子邮箱地址 -->
+        <!--Email address-->
+        <!ELEMENT email (#PCDATA)>
+        <!--统一资源定位， URL 如 www.wipo.int -->
+        <!--Universal Resource Locator; e.g. www.wipo.int-->
+        <!ELEMENT url (#PCDATA)>
+        <!--非电子邮箱地址的电子地址-->
+        <!--Electronic address use for other than email-->
+        <!ELEMENT ead (#PCDATA)>
+        <!--说明性文本-->
+        <!--Descriptive text-->
+        <!ELEMENT dtext (#PCDATA)>
+        <!--发行有关信息 如  Annual, 1971-, 1890-1972-->
+        <!--Issue designation; e.g., Annual, 1971-, 1890-1972-->
+        <!ELEMENT issue (#PCDATA)>
+        <!-- 出版有关信息，  包括出版/初版时间、出版地点、出版商，通常期刊只使用出版日期-->
+        <!--  Imprint:
+          Publication / creation data
+          Place of publication : publisher, date(s) of publication usually only date of
+          publication is used for journal citations-->
+        <!ELEMENT imprint (text | (address?, name, pubdate*))>
+        <!--非专利引用文献中的公布日期 -->
+        <!--Publication date used in npl citations-->
+        <!ELEMENT pubdate (#PCDATA | sdate | edate | time)*>
+        <!--在 pubdate中的起始日-->
+        <!--Start date used in pubdate-->
+        <!ELEMENT sdate (#PCDATA)>
+        <!--在 pubdate中的结束日-->
+        <!--End date used in pubdate-->
+        <!ELEMENT edate (#PCDATA)>
+        <!--时间 ，格式为 HHMM-->
+        <!--Time; format HHMM-->
+        <!ELEMENT time (#PCDATA)>
+        <!--出版介质的描述 - 专利引用文献中通常不用 -->
+        <!--Physical description - generally NOT used in citations in pats; e.g., v., 27cm-->
+        <!ELEMENT descrip (#PCDATA)>
+        <!--期刊的注释-->
+        <!--  Notes about the journal; e.g. Continues Journal of XYZ 1910-1998, published in
+          French and English, etc.-->
+        <!ELEMENT notes (#PCDATA)>
+        <!--国际标准期刊号-->
+        <!--International Standard Serial Number-->
+        <!ELEMENT issn (#PCDATA)>
+        <!--国际标准图书号-->
+        <!--International Standard Book Number-->
+        <!ELEMENT isbn (#PCDATA)>
+        <!--出版商的唯一标识-->
+        <!--Publisher's unique id-->
+        <!ELEMENT pubid (#PCDATA)>
+        <!--卷号-->
+        <!--Volume id/number-->
+        <!ELEMENT vid (#PCDATA)>
+        <!--发行号-->
+        <!--Issue number-->
+        <!ELEMENT ino (#PCDATA)>
+        <!--版权信息-->
+        <!-- Copyright info.  Copyright of publisher of serial-->
+        <!ELEMENT cpyrt (#PCDATA)>
+        <!--文献标识. 见 WIPO ST.14-->
+        <!-- Document identification refers to patents (and patent applications) only.
+         See WIPO ST.14 -->
+        <!--属性：
+                lang  使用的语言-->
+        <!--attribute:
+                lang    language-->
+        <!ELEMENT document-id (country, doc-number, kind?, name?, date?)>
+        <!ATTLIST document-id
+                lang CDATA #IMPLIED
+                >
+        <!-- 文献号-->
+        <!--The number of the referenced patent (or application) document-->
+        <!ELEMENT doc-number (#PCDATA)>
+        <!--文献种类 如 发明专利公布-->
+        <!--Document kind code; e.g., A1(INID 13, ST.32:B130) -->
+        <!ELEMENT kind (#PCDATA)>
+        <!--日期 建议的格式为 YYYYMMDD-->
+        <!--Date: components of a date.  Format: YYYYMMDD-->
+        <!ELEMENT date (#PCDATA)>
+        <!--早期申请的提交局-->
+        <!-- Where the earlier application is an ARIPO application,indicate at least one
+          country party to the PARIS convention for the protection of industrial property
+          or one member of the WTO for which that earlier application was filed.-->
+        <!ELEMENT office-of-filing ((region, country?) | country)>
+        <!--地区、国家-->
+        <!-- The region for which protection or exclusion (depending upon context) is desired.-->
+        <!ELEMENT region (country)>
+        <!--要求接受局向国际局递交早期申请优先权证明和文件（用作标记的空元素）仅对PCT申请-->
+        <!-- The receiving office is requested to prepare and transmit to the IB a certified
+          copy of the earlier application-->
+        <!ELEMENT priority-doc-requested EMPTY>
+        <!--优先权文件和申请一同递交（用作标记的空元素）-->
+        <!-- The priority document is attached to the application-->
+        <!ELEMENT priority-doc-attached EMPTY>
+        <!--分类代码-->
+        <!-- Classification code; e.g., ipc, dewey etc. -->
+        <!ELEMENT class (#PCDATA)>
+        <!--国际专利分类数据-->
+        <!-- International Patent Classification (IPC) data;  (INID 51,  ST.32:B510)-->
+        <!ELEMENT classification-data-source (#PCDATA)>
+        <!--分类的状态：初始分类，二次分类，多种分类，删除的分类-->
+        <!--Possible status: original-classification, reclassified, various-classification,
+          deleted-classification-->
+        <!ELEMENT classification-status (#PCDATA)>
+        <!--生成的局-->
+        <!--generated office  -->
+        <!ELEMENT generating-office (country)>
+        <!--有效日-->
+        <!--action date-->
+        <!ELEMENT action-date (date)>
+        <!--分类可能的值：发明，非发明-->
+        <!-- Possible values: invention, non-invention -->
+        <!ELEMENT classification-value (#PCDATA)>
+        <!--符号位置-->
+        <!--Possible positions: first-symbol-position, later-symbol-position.-->
+        <!ELEMENT symbol-position (#PCDATA)>
+        <!--小组-->
+        <!--subgroup-->
+        <!ELEMENT subgroup (#PCDATA)>
+        <!-- 主组-->
+        <!--main groupp-->
+        <!ELEMENT main-group (#PCDATA)>
+        <!--子类-->
+        <!--subclass-->
+        <!ELEMENT subclass (#PCDATA)>
+        <!-- 节-->
+        <!--section-->
+        <!ELEMENT section (#PCDATA)>
+        <!--分类级别-->
+        <!--  Levels: ipcr-advanced, ipcr-core    -->
+        <!ELEMENT classification-level (#PCDATA)>
+        <!--版本日期-->
+        <!--ipc version indicator date -->
+        <!ELEMENT ipc-version-indicator (date)>
+        <!--粗体文本-->
+        <!--Bold formatting for text-->
+        <!ELEMENT b (#PCDATA | i | u | smallcaps)*>
+        <!--斜体文本-->
+        <!--Italic formatting for text-->
+        <!ELEMENT i (#PCDATA | b | u | smallcaps)*>
+        <!--下划线-->
+        <!--  Underscore: style - single is default-->
+        <!--属性：
+                 式样   单线，双线，破折线，点线-->
+        <!--attribute:
+                 style  single，double，dash，dots-->
+        <!ELEMENT u (#PCDATA | b | i | smallcaps)*>
+        <!ATTLIST u
+                style (single | double | dash | dots) "single"
+                >
+        <!--小体大写字母-->
+        <!--Small capitals-->
+        <!ELEMENT smallcaps (#PCDATA | b | u | i)*>
+        <!--上标 -->
+        <!--Superscripted text-->
+        <!ELEMENT sup (#PCDATA | b | u | i)*>
+        <!--下标-->
+        <!--Subscripted text-->
+        <!ELEMENT sub (#PCDATA | b | u | i)*>
+        <!--专利引用文献-->
+        <!--PATENT CITATIONS:
+            (ST.32:B561)
+          Patent Citation within abstract, description or claims.
+          For patent citations within Search Report see Search Report DTD
+
+          Notes:
+            Tags arranged according to WIPO ST.14 order.
+            This can be free text data without any structure (text).
+
+          Example:
+            <patcit id='pcit0001' dnum='US4793675A' dnum-type='publication number'>
+              <document-id>
+                <country>US</country>
+                <doc-number>4793675</doc-number>
+                <kind>A</kind>
+                <name>Handa</name>
+                <date>19881227</date>
+              </document-id>
+            </patcit>
+
+          Note:
+            It is NOT expected that the applicant will create the tagged data
+            - it could be generated from a 'pull down' data entry form
+            or generated from internal SR databases-->
+        <!--属性：
+                id         引用文献id号如pcit0001, pcit0002,等
+                num        引用文献编号.如0001, 0002,等
+                dnum       引用文献完整编号，如 "US5401234A";
+                url        专利文献的网络连接
+                file       引用文献的文件名
+                dnum-type  文献编号类型（申请号，公告号等）-->
+        <!--Attributes (recommended):
+                id         pcit0001, pcit0002, etc.
+                num        0001, 0002, etc.
+                dnum       use full number as one string, eg, "US5401234A";
+                url        web lind to the patent citations
+                file       file name eg. if stored on local systems
+                dnum-type  type of document number(e.g., application number, publication number)-->
+        <!ELEMENT patcit (text | (document-id, rel-passage*))>
+        <!ATTLIST patcit
+                id ID #IMPLIED
+                dnum CDATA #IMPLIED
+                file CDATA #IMPLIED
+                url CDATA #IMPLIED
+                num CDATA #REQUIRED
+                dnum-type CDATA #IMPLIED
+                >
+        <!--专利引用文献中相关的若干段落-->
+        <!--Relevant passage group within patent; most used in search  reports
+          - use text in abstract, description and claims-->
+        <!ELEMENT rel-passage (text | (passage+, category?, rel-claims?)+)>
+        <!--专利引用文献中的段-->
+        <!--Passage within the cited patent literature-->
+        <!ELEMENT passage (#PCDATA)>
+        <!--种类 -->
+        <!--Category  -->
+        <!ELEMENT category (#PCDATA)>
+        <!--相关的权利要求项-->
+        <!--Relevant claims-->
+        <!ELEMENT rel-claims (#PCDATA)>
+        <!--非专利引用文献
+            注意：
+            非专利文献的引用也可以全部用无结构的文本来描述，但是建议不要这样做，
+            建议采用以下根据ST.14和IDO690标准定义的高度格式化的描述方式。
+            这部分DTD使用了许多不同来源的元素名、DTD结构和引用，包括：
+            AACR2 / MARC ISO 12083 - 电子手稿标记DTD
+            美国出版联盟（Association of American Publishers —— AAP） Z39.59 DTD
+            欧洲SGML工作组（European Working Group for SGML —— EWS） MAJOUR DTD
+            SuperJournal 全文DTD www.superjournal.ac.uk/sj
+            Elsevier DTD
+            （美）联机医学分析和检索系统 dtd Medline DTD (NLM)-->
+        <!--Non-Patent Literature (NPL) CITation;
+          Notes:
+            This can be free text data without any structure (#PCDATA) which is NOT
+            recommended
+            or it can be highly structured data which is marked up according to ST.14 and
+            ISO 690 layout;
+            This part of the DTD has used many different sources for element names and DTD
+            structure and reference:
+            AACR2 / MARC
+            ISO 12083 - Electronic manuscript prep. and markup. DTD
+            Association of American Publishers (AAP) Z39.59 DTD
+            European Working Group for SGML (EWS) MAJOUR DTD
+            SuperJournal Full Article DTD
+              www.superjournal.ac.uk/sj
+            Elsevier DTD
+            Medline DTD (NLM) -->
+        <!--属性（建议）：
+                id       引用非专利文献的id号如ncit0001, ncit0002,
+            num      非专利文献编号如0001, 0002
+            npl-type 非专利文献类型
+                A - 不属于特殊类型的摘要引用
+                    B - 书籍引用
+                    I - 生物摘要引用
+                    C - 化学摘要引用
+                    E - 数据库引用
+                    D - 德文特引用
+                    P - 非专利文献中引用的专利
+                    J - 日本引用的专利摘要
+                    S - 期刊杂志引用
+                    W - 互联网检索引用
+               medium   介质类型如CD (CD-ROM), MT (磁带Magnetic Tape), DISK, ONLINE
+               file     本地系统中的文件名，如EPO中的XP number
+               url      连接到该文献的URL-->
+        <!--Attributes (recommended):
+               id         ncit0001, ncit0002, etc
+               num        0001, 0002
+               npltype    The TYPE of citation is office specific (recommended):;
+                  A - Abstract citation of no specific kind
+                  B - Book citation
+                  I - Bilogical abstract citation
+                  C - Chemical abstracts citation
+                  E - Database citation
+                  D - Derwent citation
+                  P - Patent cited within NPL group
+                  J - Patent Abstracts of Japan citation (REC 067)
+                  S - Serial / Journal / Periodical citation
+                  W - World Wide Web / Internet search citation
+              medium     the type of medium  e.g., CD (CD-ROM), MT (Magnetic Tape), DISK, ONLINE
+              file       file name on local systems eg. XP number in EPO
+              url        where possible give full web link to document-->
+        <!ELEMENT nplcit (text | (article | book | online | othercit)*)>
+        <!ATTLIST nplcit
+                id ID #IMPLIED
+                num CDATA #REQUIRED
+                npl-type CDATA #IMPLIED
+                medium CDATA #IMPLIED
+                file CDATA #IMPLIED
+                url CDATA #IMPLIED
+                >
+        <!--论文-->
+        <!-- Article citations within a 'host' document
+
+          After patent citations the most common citations are articles within serials
+          (periodicals, magazines), books and electronic (eg. internet) sources.
+          This is a very complex and varied area to standardise. The tag set below is drawn
+          from a number of sources as is the order of the tags (which in any case can be
+          changed depending on the stylesheet used).;
+          The order of tags is that of WIPO ST.14 / ISO 690 layout.
+            DROP, J.G.  Integrated Circuit Personalization at the Module Level. IBM Tech.
+            Dis. Bull.  October 1974, Vol. 17, No. 5, p. 1344 and 1345.
+            [XPnnnnnnnnnnn].
+              <nplcit id='ncit1' num='0012' type='S' file='XP1234456'>
+                <article>
+                  <author>
+                    <name>DROP, J.G.</name>
+                  </author>
+                  <atl>Integrated Circuit Personalization at the Module Level</atl>
+                  <serial>
+                  <sertitle>IBM Tech. Dis. Bull.</sertitle>
+                  <pubdate>19741000</pubdate>
+                  <vid>17</vid>
+                  <ino>5</ino>
+                  </serial>
+                  <location>
+                    <pp>1344 and 1345</pp>
+                  </location>
+                  <refno id='XP1'>XP1234456</refno>
+                </article>
+              </nplcit>
+          Note: it is NOT expected that the applicant will create the tagged data
+          - it can be generated from a 'pull down' data entry form (eg. in Word) or
+            generated from internal SR databases-->
+        <!ELEMENT article (text | (author*, atl?, subname?, (serial | book), absno?, location?, class*, keyword*, cpyrt?, artid?, refno*))>
+        <!--   作者     -->
+        <!--  Author
+          Prime responsibility for the work
+          there is no distinguishing between personal and corporate authors
+          <author> followed by name or addressbook information
+          use the ID attribute if, for example, there is a need to distinguish between
+          multiple authors.
+          Can also include affiliation details-->
+        <!--属性：
+              id     作者id号如：auth0001, auth0002等-->
+        <!--attribute:
+              id     auth0001, auth0002, etc-->
+        <!ELEMENT author (%name_group; | addressbook)>
+        <!ATTLIST author
+                id ID #IMPLIED
+                >
+        <!-- 论文标题  -->
+        <!--Article title-->
+        <!ELEMENT atl (#PCDATA)>
+        <!-- 书籍的描述 -->
+        <!--  Book citation
+          In the order specified by WIPO ST.14 and ISO 690 and AACR2 rules for layout
+          WALTON, Herrmann. Microwave quantum theory.
+          London : Sweet and Maxwell, 1973. ISBN 0123456789.
+          Vol.2, p. 138 to 192.
+            <nplcit id='ncit12' num='0013' type='b'>
+              <book>
+                <author>
+                  <name>WALTON, Herrman</name>
+                </author>
+                <book-title>Microwave quantum theory</book-title>
+                <imprint>
+                  <address>
+                    <text>London</text>
+                  </address>
+                  <name>Sweet and Maxwell</name>
+                  <pubdate>19730000</pubdate>
+                </imprint>
+                <location>
+                  <pp>138 to 192</pp>
+                </location>
+                <isbn>0-1234-568-9</isbn>
+              </book>
+            </nplcit> -->
+        <!ELEMENT book (text | (author*, (book-title+ | conference), (subtitle?, subname*, edition?, imprint?, descrip?, series?, absno?, location*, isbn*, pubid?, vid?, bookno?, notes?, class*, keyword*, cpyrt?, refno*)))>
+        <!--    书籍的标题    -->
+        <!--The title of the cited book-->
+        <!ELEMENT book-title (#PCDATA)>
+        <!--  会议的有关信息 -->
+        <!--  CONFERENCE GROUP / CITATION
+          There is no standard way of citing conference proceedings; date of the conf. may
+          come before or after place, for example. The tags are specified in a set order
+          where it is not possible or correct then simply use <text>-->
+        <!ELEMENT conference (text | (conftitle, date?, confno?, confplace?, confsponsor*))>
+        <!--会议名称-->
+        <!--Conference title-->
+        <!ELEMENT conftitle (#PCDATA)>
+        <!--会议代号-->
+        <!--Conference number-->
+        <!ELEMENT confno (#PCDATA)>
+        <!--会议地点-->
+        <!--Conference place-->
+        <!ELEMENT confplace (#PCDATA | address)*>
+        <!--会议发起者-->
+        <!--conference sponsor-->
+        <!ELEMENT confsponsor (#PCDATA | addressbook)*>
+        <!--书籍的副标题-->
+        <!--Book subtitle-->
+        <!ELEMENT subtitle (#PCDATA)>
+        <!--编辑说明-->
+        <!--Edition statement-->
+        <!ELEMENT edition (#PCDATA)>
+        <!--丛书说明-->
+        <!--Series statement-->
+        <!ELEMENT series (text | (mst, msn?, issn?))>
+        <!--专题论文集名称-->
+        <!--Monographic series title-->
+        <!ELEMENT mst (#PCDATA)>
+        <!--专题论文集编号 -->
+        <!--Monographic series number-->
+        <!ELEMENT msn (#PCDATA)>
+        <!--摘要编号-->
+        <!--Abstract number-->
+        <!ELEMENT absno (#PCDATA)>
+        <!--引用文献中的位置描述-->
+        <!--Location within the cited work-->
+        <!ELEMENT location (text | (serpart?, sersect?, chapter?, pp?, column?, para?, line?))>
+        <!--连续的部分-->
+        <!--Part within a serial-->
+        <!ELEMENT serpart (#PCDATA)>
+        <!--连续的节-->
+        <!--Serial section-->
+        <!ELEMENT sersect (#PCDATA)>
+        <!--章-->
+        <!--Chapter; e.g., in a book.  Example: Chapter 2-->
+        <!ELEMENT chapter (#PCDATA)>
+        <!-- 页码（范围）-->
+        <!--Cited document page numbers-->
+        <!ELEMENT pp (#PCDATA | ppf | ppl)*>
+        <!--开始页-->
+        <!--Cited  document page , first-->
+        <!ELEMENT ppf (#PCDATA)>
+        <!--结束页-->
+        <!--Cited document page, last-->
+        <!ELEMENT ppl (#PCDATA)>
+        <!--栏-->
+        <!--Cited document column numbers-->
+        <!ELEMENT column (#PCDATA | colf | coll)*>
+        <!--开始栏-->
+        <!--Cited document column, first-->
+        <!ELEMENT colf (#PCDATA)>
+        <!--结束栏-->
+        <!--Cited document column, last-->
+        <!ELEMENT coll (#PCDATA)>
+        <!--文献内的段-->
+        <!--Referenced paragraph within cited work-->
+        <!ELEMENT para (#PCDATA | paraf | paral)*>
+        <!--开始段-->
+        <!--Cited paragraph, first-->
+        <!ELEMENT paraf (#PCDATA)>
+        <!--结束段 -->
+        <!--cited paragraph,last-->
+        <!ELEMENT paral (#PCDATA)>
+        <!--文献内的行（范围）-->
+        <!--Referenced line within cited work-->
+        <!ELEMENT line (#PCDATA | linef | linel)*>
+        <!--开始行-->
+        <!--Cited document line, first-->
+        <!ELEMENT linef (#PCDATA)>
+        <!--结束行-->
+        <!--Cited document line, last-->
+        <!ELEMENT linel (#PCDATA)>
+        <!--书号-->
+        <!--Book number-->
+        <!ELEMENT bookno (#PCDATA)>
+        <!--关键词-->
+        <!--Keyword; e.g., from a Thesaurus or class. scheme-->
+        <!ELEMENT keyword (#PCDATA)>
+        <!--一般参考编号 -->
+        <!--Reference number (general); for the EPO this is the XP number-->
+        <!--属性：
+              id   id号-->
+        <!--attribute:
+              id    reference number id-->
+        <!ELEMENT refno (#PCDATA)>
+        <!ATTLIST refno
+                id ID #IMPLIED
+                >
+        <!--论文出版者给论文的唯一编号-->
+        <!--Article unique ID - assigned by a publisher to an article-->
+        <!ELEMENT artid (#PCDATA)>
+        <!--网上电子文件有关信息-->
+        <!-- Online citation
+            Revised according to ISO-690-2 - Electronic documents and parts thereof.
+            Please refer to this standard for definitions and examples.
+            See: http://www.nlc-bnc.ca/iso/tc46sc9/standard/690-2e.htm#Contents
+            The tagging in fact is a mixture of article and book tags together with
+            specific electronic source tags.
+            'Online' is taken to mean any kind of electronic documentation:
+              databases, internet, CD-Roms, DVD, email, etc
+           EXAMPLES:;
+            Kirk-Othmer Encyclopedia of Chemical Technology [online].
+            3rd ed. New York : John Wiley, 1984 [cited 3 January 1990].
+            Available from: DIALOG Information Services, Palo Alto (Calif.).
+
+              <nplcit id='ncit1' num='0001' type='E' medium='online'>
+                <online>
+                  <online-title>Kirk-Othmer Encyclopedia of Chemical Technology
+                  </online-title>
+                  <edition>3rd ed.</edition>
+                  <imprint>
+                    <address>
+                      <text>New York</text>
+                    </address>
+                    <name>John Wiley</name>
+                    <pubdate>19840000</pubdate>
+                  </imprint>
+                  <avail>dialog information services, palo alto (calif.).</avail>
+                  <datecit>
+                    <date>19900103</date>
+                  </datecit>
+                </online>
+              </nplcit>
+          * Article on Internet:
+            Clark, Carol. On the Threshold of a Brave New World.
+            In Blueprint of the Body [online].
+            CNN.com, 2000. [cited 24 August 2000;10:25 EST]. In-depth specials.
+            Available from: [http://www.cnn.com/SPECIALS/2000/genome/story/overview/]
+
+              <nplcit id='ncit1' num='0002' type='E' medium='online'>
+                <online>
+                  <author>
+                    <name>Clark, Carol</name>
+                  </author>
+                  <online-title>On the Threshold of a Brave New World</online-title>
+                  <imprint>
+                    <name>CNN.com, 2000</name>
+                  </imprint>
+                  <series>
+                    <text>In-depth specials</text>
+                  </series>
+                  <avail>http://www.cnn.com/SPECIALS/2000/genome/story/</avail>
+                  <datecit>
+                    <date>20000824; 10:25 est</date>
+                  </datecit>
+                </online>
+              </nplcit>
+          * Personal communication (e-mail)
+             Thacker, Jane. MPEG-21 project stream on digital item identification [online].
+            Message to: [iso.tc46.sc9@nlc-bnc.ca]. 3 October 2000; 13:33 EST [cited 6
+            October 2000; 13:10 EST].
+            Message-ID: [002f01c02d60$051a64a0$22a2580c@vaio]. Personal communication.
+              <nplcit id='ncit3' num='0003' type='E' medium='online'>
+                <online>
+                  <author>
+                    <name>Thacker, Jane</name>
+                  </author>
+                  <online-title>MPEG-21 project stream on digital item identification
+                  </online-title>
+                  <subname>
+                    <name>Message to: <iso.tc46.sc9@nlc-bnc.ca></name>
+                  </subname>
+                  <pubdate>3 October 2000; 13:33 EST</pubdate>
+                  <notes>Personal communication</notes>
+                  <avail>Message-ID: <002f01c02d60$051a64a0$22a2580c@vaio></avail>
+                  <datecit><date>6 october 2000; 13:10 EST</date></datecit>
+                </online>
+              </nplcit> -->
+        <!ELEMENT online (text | (author*, online-title*, hosttitle?, subname?, edition?, (serial | book)?, imprint?, pubdate?, history?, series?, hostno?, location?, notes?, avail, class*, keyword*, cpyrt?, issn?, isbn?, datecit?, srchterm*, srchdate?, refno*))>
+        <!--电子资源标题-->
+        <!--The title of the electronic resource-->
+        <!ELEMENT online-title (#PCDATA)>
+        <!--数据库或者文档集标题 -->
+        <!--Title of the host document/database-->
+        <!ELEMENT hosttitle (#PCDATA)>
+        <!--论文的历史信息-->
+        <!--History of the article (not serial)-->
+        <!ELEMENT history (text | (received | accepted | revised | misc))>
+        <!--论文收到日-->
+        <!--Date article was received-->
+        <!ELEMENT received (date)>
+        <!--论文被采纳日-->
+        <!--Date article was accepted-->
+        <!ELEMENT accepted (date)>
+        <!--论文修订日-->
+        <!--Date article was revised-->
+        <!ELEMENT revised (date)>
+        <!--论文的其他历史信息-->
+        <!--Miscellaneous information relating to the history of the article; see ISO 12083-->
+        <!ELEMENT misc (#PCDATA | date)*>
+        <!--在文档集中的标号-->
+        <!--Numeration within host document-->
+        <!ELEMENT hostno (#PCDATA)>
+        <!--获取途径，需要使用 如 URL, 联机数据库, FTP 地址等,-->
+        <!--  Availability and access - REQUIRED use for URL, online database, ftp address,
+          email, etc.;
+          e.g., Available from Internet: http://www.epoline.org
+            Available from DIALOG Information Systems, Palo Alto (Calif.)-->
+        <!ELEMENT avail (#PCDATA)>
+        <!--引用日期-->
+        <!--  Date cited - date on which the citation was cited.
+          May be different from srchdate below-->
+        <!ELEMENT datecit (date)>
+        <!--检索项-->
+        <!--Search terms-->
+        <!ELEMENT srchterm (#PCDATA)>
+        <!--检索/查询日-->
+        <!--Date of search/retrieval  YYYYMMDD-->
+        <!ELEMENT srchdate (date)>
+        <!--其他引用文献-->
+        <!--Other citations - free form-->
+        <!ELEMENT othercit (#PCDATA)>
+        <!--完成检索报告日期-->
+        <!--Date of completion of search report.-->
+        <!ELEMENT date-search-completed (date)>
+        <!--寄出检索报告日-->
+        <!--Date of mailing of search report.-->
+        <!ELEMENT date-search-report-mailed (date)>
+        <!--检索地点-->
+        <!--Place of search - international search authority.-->
+        <!ELEMENT place-of-search (country)>
+        <!--检索报告公布信息-->
+        <!--search report publication information -->
+        <!ELEMENT search-report-publication (document-id+)>
+        <!--完成检索报告的审查员-->
+        <!--Search report examiner.-->
+        <!ELEMENT searcher (addressbook)>
+        <!--IPC版本号-->
+        <!--ipc version-->
+        <!ELEMENT ipc-version (#PCDATA)>
+        <!--主分类-->
+        <!--Main classification.-->
+        <!ELEMENT main-classification (#PCDATA)>
+        <!--其他分类-->
+        <!--Further/secondary classification-->
+        <!ELEMENT further-classification (#PCDATA)>
+        <!--附加信息-->
+        <!--Additional information.-->
+        <!ELEMENT additional-info (#PCDATA)>
+        <!--引得码-->
+        <!--Linked indexing code.-->
+        <!ELEMENT linked-indexing-code-group (main-linked-indexing-code, sub-linked-indexing-code+)>
+        <!--主连接的引得码-->
+        <!--Main Linked Indexing Code.-->
+        <!ELEMENT main-linked-indexing-code (#PCDATA)>
+        <!--子连接的引得码-->
+        <!--sub/further linked indexing code-->
+        <!ELEMENT sub-linked-indexing-code (#PCDATA)>
+        <!--非连接的引得码-->
+        <!--Unlinked indexing code.-->
+        <!ELEMENT unlinked-indexing-code (#PCDATA)>
+        <!--专利相关文献-->
+        <!--Patent family and corresponding-docs-->
+        <!ELEMENT corresponding-docs (document-id | nplcit)*>
+        <!--国内国际分类-->
+        <!--Domestic or national classification.-->
+        <!ELEMENT classification-national (country, edition?, main-classification, further-classification*, (additional-info | linked-indexing-code-group | unlinked-indexing-code)*, text?)>
+        <!ATTLIST classification-national
+                id ID #IMPLIED
+                >
+        <!--INID 66 SIPO 的国内优先权-->
+        <!--Document for which this is a substitute.  (INID 66)-->
+        <!ELEMENT substitution (relation)>
+        <!--INID 66 SIPO 的国内优先权声明-->
+        <!--SIPO domestic priority claim   (INID 66)-->
+        <!ELEMENT cn-domestic-priority-claim (substitution)>
+        <!--INID 66 SIPO 的国内优先权声明数据-->
+        <!--SIPO domestic priority claim data    (INID 66)-->
+        <!ELEMENT cn-domestic-priority-claims (cn-domestic-priority-claim+)>
+        <!--文献关系-->
+        <!--docoment relation-->
+        <!ELEMENT relation (parent-doc?, child-doc*)>
+        <!--父文献-->
+        <!--Describes parent document.-->
+        <!ELEMENT parent-doc (document-id, parent-status?, parent-grant-document?, parent-pct-document?)>
+        <!--父PCT文献-->
+        <!--parent pct document文献-->
+        <!ELEMENT parent-pct-document (document-id)>
+        <!--父文献状态-->
+        <!--parent document status-->
+        <!ELEMENT parent-status (#PCDATA)>
+        <!--父文献的授权文献-->
+        <!--parent granted document-->
+        <!ELEMENT parent-grant-document (document-id)>
+        <!--子文献-->
+        <!--child document-->
+        <!ELEMENT child-doc (document-id)>
+        <!--INID 71 申请人数据 -->
+        <!--INID 71applicants information-->
+        <!--属性：
+               cn-representative-is   代表人-->
+        <!--attribute:
+               cn-representative-is   applicant's representative-->
+        <!ELEMENT cn-applicants (cn-applicant+)>
+        <!ATTLIST cn-applicants
+                cn-representative-is CDATA #REQUIRED
+                >
+        <!-- INID 71  申请人 -->
+        <!--INID 71 applicant-->
+        <!-- 属性：
+               sequence    申请人序号-->
+        <!-- attribute:
+               sequence     applicant sequence-->
+        <!ELEMENT cn-applicant ( (%name_group; | addressbook+) , nationality?, residence? )>
+        <!ATTLIST cn-applicant
+                sequence CDATA #REQUIRED
+                >
+        <!--国籍-->
+        <!--Country of nationality-->
+        <!ELEMENT nationality (country)>
+        <!--居住国-->
+        <!--Country of residence-->
+        <!ELEMENT residence (country)>
+        <!--INID 72  发明人数据-->
+        <!--INID 72 inventors information  -->
+        <!ELEMENT cn-inventors (cn-inventor)*>
+        <!--发明人-->
+        <!--inventor-->
+        <!-- 属性：
+               sequence    发明人序号
+               cn-not-to-be-published-request-by-inventor 发明人要求不公开其姓名-->
+        <!-- attribute:
+               sequence     inventor sequence
+               cn-not-to-be-published-request-by-inventor not to be published request by inventor-->
+        <!ELEMENT cn-inventor (%name_group; | addressbook+) >
+        <!ATTLIST cn-inventor
+                sequence CDATA #REQUIRED
+                cn-not-to-be-published-request-by-inventor (yes | no) #REQUIRED
+                >
+        <!--联系人地址、名称 -->
+        <!--Address used for general correspondence-->
+        <!ELEMENT correspondence-address (customer-number? | addressbook+)>
+        <!--专利局赋予的代理机构代码-->
+        <!--Customer number for agents by office-->
+        <!ELEMENT customer-number (#PCDATA)>
+        <!--INID 74 专利代理有关信息-->
+        <!--INID 74 Information regarding Agents or common representatives-->
+        <!ELEMENT cn-agents (customer-number | cn-agent+)>
+        <!--代理人-->
+        <!--Agent or common representative -->
+        <!--属性：
+                sequence    序号
+                rep-type    类型 （代理人/律师/一般委托人）-->
+        <!--attribute:
+                sequence    agent sequence
+                rep-type    representative type(agent/attorney/common-representative)-->
+        <!ELEMENT cn-agent  (cn-agency , (%name_group; | addressbook+) ) >
+        <!ATTLIST cn-agent
+                sequence CDATA #REQUIRED
+                rep-type (agent | attorney | common-representative) #REQUIRED
+                >
+        <!--专利代理机构-->
+        <!--agency-->
+        <!ELEMENT cn-agency  (%name_group; | addressbook+)>
+        <!--专利申请体（专利申请的主体）-->
+        <!--application body-->
+        <!--属性：
+              lang        	    申请所使用的语言  - 使用ISO639语言代码
+              dtd-version 	    dtd版本号
+              file       	    整个申请的文件名
+              id          	    该申请的唯一id - 可以使用文件名
+              status     	    申请的状态（ 值 n 表示新申请）
+              country     	    申请所在的国家 - 使用WIPO ST.3代码
+              file-reference-id     申请人或代理人对申请的编码   -->
+        <!--attribute：
+              lang        	    application language
+              dtd-version 	    dtd  version
+              file       	    application file name
+              id          	    application id
+              status     	    application status
+              country     	    application country-use  WIPO ST.3 code
+              file-reference-id     file reference id-->
+        <!ELEMENT application-body (doc-page+ | (description, claims, abstract?, drawings?))>
+        <!ATTLIST application-body
+                lang CDATA #REQUIRED
+                dtd-version CDATA #IMPLIED
+                file CDATA #IMPLIED
+                status CDATA #IMPLIED
+                id ID #IMPLIED
+                country CDATA #REQUIRED
+                file-reference-id CDATA #IMPLIED
+                >
+        <!--一幅图形/图像，它对于理解该申请是必须的。 -->
+        <!--A drawing (figure), necessary for the understanding of the invention-->
+        <!--属性：
+                id            标号建议取值为f01, f02等
+                num           图形/图像图像编号
+                figure-labels 图像标签-->
+        <!--attribute:
+                id              figure id Recommended id = f0001, f0002, etc.
+                num             figure number
+                figure-labels   figure labels-->
+        <!ELEMENT figure (img)>
+        <!ATTLIST figure
+                id ID #IMPLIED
+                num CDATA #REQUIRED
+                figure-labels CDATA #IMPLIED
+                >
+        <!--摘要中“该发明针对的问题的解决方案”部分-->
+        <!--The solution to the alleged problem that the invention  purports to solve.-->
+        <!--属性：
+               id      标号建议取值为“abss”  -->
+        <!--attribute:
+               id      Recommended id = 'abss'-->
+        <!ELEMENT abst-solution (p+)>
+        <!ATTLIST abst-solution
+                id ID #IMPLIED
+                >
+        <!--摘要中“该发明针对的问题”部分-->
+        <!--The alleged problem that the invention purports to solve-->
+        <!--  属性:
+               id     发明针对问题id号建议取值为“absp”  -->
+        <!--attribute:
+               id      Recommended id = 'absp'-->
+        <!ELEMENT abst-problem (p+)>
+        <!ATTLIST abst-problem
+                id ID #IMPLIED
+                >
+        <!--一个权利要求-->
+        <!--Defines the matter for which protection is sought
+          Recommended id values
+            If parent element is claims and there is only ONE set of claims:
+              id = c0001, c0002, etc.;num = 0001, 0002, etc.
+            If parent element is amended-claims and there is only ONE set then;
+              id = ac0001, ac0002, etc.;num = 0001, 0002, etc.
+            If parent element is claims and there are MULTIPLE sets of claims then:
+              id = c01.0001, c01.0002, etc.;num = 0001, 0002, etc.
+              id = c02.0001, c02.0002, etc.;num = 0001, 0002, etc.
+            If parent element is amended-claims and there are MULTIPLE sets of
+            amended-claims then:
+              id = ac01.0001, ac01.0002, etc.;num = 0001, 0002, etc. -->
+        <!--属性：
+                id          标号，建议取值为c01, c02等
+            num         权利要求编号，建议取值为001, 002等
+            claim-tpye  权利要求类型-->
+        <!--attribute:
+                id          id
+                num         claim number
+                claim-type  claim type  -->
+        <!ELEMENT claim (claim-text+)>
+        <!ATTLIST claim
+                id ID #IMPLIED
+                num CDATA #REQUIRED
+                claim-type CDATA #IMPLIED
+                >
+        <!--   对一个权项的引用  -->
+        <!--Reference to a claim-->
+        <!--属性：
+                idref    引用的权项的标号-->
+        <!--attribute:
+                idref    reference id-->
+        <!ELEMENT claim-ref (#PCDATA)>
+        <!ATTLIST claim-ref
+                idref IDREFS #REQUIRED
+                >
+        <!--  符合ST.25标准的文本形式的序列表,  属性 id 建议取值为'seqt'  -->
+        <!--Sequence listing free text
+          WIPO ST.25:
+          "36. Where the sequence listing part of the description contains free text,
+               any such free text shall be repeated in the main part of the description
+               in the language thereof.
+               It is recommended that the free text in the language of the main part of the
+               description be put in a specific section of the description called "Sequence
+               Listing Free Text".
+
+          Recommended id = 'seqt'
+        -->
+        <!--属性:
+              id     标号建议取值为'seqt'  -->
+        <!--attribute:
+              id     Recommended id = 'seqt'-->
+        <!ELEMENT sequence-list-text (heading*, p+)+>
+        <!ATTLIST sequence-list-text
+                id ID #IMPLIED
+                >
+        <!--  说明书中“工业实用性”的部分,	属性id 建议取值为“inap”	  -->
+        <!--  For purposes of the international preliminary examination,
+          a claimed invention shall be considered industrially applicable if, according to
+          its nature, it can be made or used (in the technological sense) in any kind of
+          industry.
+          Recommended id = 'inap'
+        -->
+        <!--属性:
+               id      标号建议取值为“inap”	  -->
+        <!--attribute:
+               id      Recommended id = 'inap'-->
+        <!ELEMENT industrial-applicability (heading*, p+)+>
+        <!ATTLIST industrial-applicability
+                id ID #IMPLIED
+                >
+        <!--  说明书中“发明的应用模式或应用方法”的部分,	属性id 建议取值为“mode”	  -->
+        <!--The description shall...indicate explicitly, when it is not
+          obvious from the description or nature of the invention, the way in which the
+          invention is capable of exploitation in industry and the way in which it can be
+          made and used...
+          Recommended id = 'mode'-->
+        <!-- 属性:
+                id       标号建议取值为“mode”
+                mode-num 模式编号 -->
+        <!--attribute:
+                id       Recommended id = 'mode'
+                mode-num mode number-->
+        <!ELEMENT mode-for-invention (heading*, p+)+>
+        <!ATTLIST mode-for-invention
+                id ID #IMPLIED
+                mode-num CDATA #IMPLIED
+                >
+        <!--  说明书中“发明的最佳应用模式或应用方法”的部分,属性id 建议取值为“bmod”	  -->
+        <!-- The best mode contemplated by the applicant for carrying out the invention
+          claimed.
+          Recommended id = 'bmod'-->
+        <!--属性:
+               id        标号建议取值为“bmod”	  -->
+        <!--attribute:
+               id         Recommended id = 'bmod'-->
+        <!ELEMENT best-mode (heading*, p+)+>
+        <!ATTLIST best-mode
+                id ID #IMPLIED
+                >
+        <!--说明书中“发明的详细说明”部分，通常应当包括下列主题：发明针对的技术问题,发明提出的解决方案,发明的先进性 -->
+        <!--Disclosure of the invention with sub-headings:
+            technical problem;
+            technical solution;
+            advantageous effects (of the invention);
+            Recommended id = 'disc' -->
+        <!--属性:
+                id       标号建议取值为 “disc”  -->
+        <!--attribute:
+                id       Recommended id = 'disc'-->
+        <!ELEMENT disclosure ((tech-problem | tech-solution | advantageous-effects)* | (heading*, p+)+)>
+        <!ATTLIST disclosure
+                id ID #IMPLIED
+                >
+        <!--发明的先进性,   属性 id 建议取值为“adve”	  -->
+        <!--  advantageous effects of the invention (PCT Rule 5.1(a)(iii)
+          Recommended id = 'adve'-->
+        <!--属性:
+             id       标号建议取值为“adve”	  -->
+        <!--attribute:
+             id       Recommended id = 'adve'-->
+        <!ELEMENT advantageous-effects (heading*, p+)+>
+        <!ATTLIST advantageous-effects
+                id ID #IMPLIED
+                >
+        <!--发明的技术解决方案-->
+        <!--
+          The solution to the problem that the invention purports to solve.  -->
+        <!--属性：
+               id      标号-->
+        <!--attribute：
+               id      technology solution id-->
+        <!ELEMENT tech-solution (heading*, p+)+>
+        <!ATTLIST tech-solution
+                id ID #IMPLIED
+                >
+        <!-- 发明针对的技术问题  -->
+        <!--The problem the invention purports to solve -->
+        <!--属性：
+               id      标号-->
+        <!--attribute：
+               id      technology problem id-->
+        <!ELEMENT tech-problem (heading*, p+)+>
+        <!ATTLIST tech-problem
+                id ID #IMPLIED
+                >
+        <!--说明书中“图像的简要说明”部分,   -->
+        <!--Brief description of the drawings
+          Recommended id = 'desd'-->
+        <!--属性：
+               id      标号建议取值为“desd” -->
+        <!--attribute：
+               id      Recommended id = 'desd'-->
+        <!ELEMENT description-of-drawings (heading*, p+)+>
+        <!ATTLIST description-of-drawings
+                id ID #IMPLIED
+                >
+        <!--说明书中“发明的背景技术”部分,  属性 id 建议取值为“bart”  -->
+        <!-- Background art, background of the invention.
+          Recommended id = 'bart'-->
+        <!--属性：
+               id      标号建议取值为“bart” -->
+        <!--attribute：
+               id      Recommended id = 'bart'-->
+        <!ELEMENT background-art (heading*, p+)+>
+        <!ATTLIST background-art
+                id ID #IMPLIED
+                >
+        <!--说明书中“发明的技术领域”部分  -->
+        <!--   The description shall first state the title of the invention as appearing
+               in the request and shall:
+               specify the technical field to which the invention relates-->
+        <!--属性：
+               id      标号 -->
+        <!--attribute：
+               id      technical field id-->
+        <!ELEMENT technical-field (heading*, p+)+>
+        <!ATTLIST technical-field
+                id ID #IMPLIED
+                >
+        <!--保持原有格式,  属性 listing-type 表示了该结构的内容是什么数据  -->
+        <!--  This element is one method to identify content consisting of text objects that
+          require preservation (pre) of their whitespace in order to preserve internal
+          logical relationships.
+          (e.g., sequence listing fragments, computer program listings)-->
+        <!--属性：
+                id            标号
+                xml
+                listing-type  表示了该结构的内容是什么数据-->
+        <!--attribute：
+               id             preservation id
+               xml
+               listing-type   -->
+        <!ELEMENT pre (#PCDATA)>
+        <!ATTLIST pre
+                id ID #IMPLIED
+                xml:space (preserve | default) #FIXED "preserve"
+                listing-type (sequence | program-listing | other) #REQUIRED
+                >
+        <!--段落  -->
+        <!--Paragraph
+          Recommended id  = p0001, p0002, etc.  num = 0001, 0002, etc.
+          Note: paragraphs may occur in sections other than the description and at
+          different times  eg. for the abstract, in this case use for example "p0001a";
+          amended claims: "p0001ac", etc. -->
+        <!--属性：
+               id      标号建议取值为p01, p02等
+               num     建议取值为001, 002等-->
+        <!--attribute：
+               id      Recommended id  = p0001, p0002, etc.
+               num     Recommended num = 0001, 0002, etc.-->
+        <!ELEMENT p (#PCDATA | b | i | u | sup | sub | smallcaps | br | dl | ul | ol | figref | patcit | nplcit | crossref | img | chemistry | maths | tables | table-external-doc | pre | bio-deposit)*>
+        <!ATTLIST p
+                id ID #IMPLIED
+                num CDATA #REQUIRED
+                >
+        <!--对符合table-external DTD外部独立表格的XML文件的引用-->
+        <!--References a stand-alone table authored with the table-external DTD.-->
+        <!--属性：
+               id            标号
+               file          引用的文件名
+               lang          使用的语言
+               external-type 外部表格的类型
+               status        外部表格的状态
+               carriers      载体类型-->
+        <!--attribute：
+               id            table external document id
+               file          file name
+               lang          language
+               external-type table external document type
+               status        table external document status
+               carriers      table external document carriers-->
+        <!ELEMENT table-external-doc (#PCDATA)>
+        <!ATTLIST table-external-doc
+                id ID #IMPLIED
+                file CDATA #REQUIRED
+                lang CDATA #IMPLIED
+                external-type (math | chemistry | program-listing | other) #IMPLIED
+                status CDATA #IMPLIED
+                carriers (internal-electronic | external-electronic | paper) #IMPLIED
+                >
+        <!--表格，可以是图像数据，也可以是根据OASIS Exchange model编制的表格 -->
+        <!--TABLES
+          This is image data or coded according to OASIS Exchange model with modified cell
+          'entry' content.
+           Recommended id = tabl0001, tabl0002, etc.-->
+        <!--属性:
+             id       标号建议取值为tabl01, tabl02等
+             num      表格编号  -->
+        <!--attribute:
+             id       Recommended id = tabl0001, tabl0002, etc.
+             num      table number-->
+        <!ELEMENT tables (img | table)>
+        <!ATTLIST tables
+                id ID #IMPLIED
+                num CDATA #REQUIRED
+                >
+        <!--对一幅图形/图像的引用  -->
+        <!--A reference to a figure;
+          e.g., "...as shown in <figref idref='f0001'>figure<b>1</b></figref>..."-->
+        <!--属性:
+             id       引用的图形/图像的标号
+             num      编号  -->
+        <!--attribute:
+             id       figure reference id
+             num      figure number-->
+        <!ELEMENT figref (#PCDATA | b | i | u | sup | sub | smallcaps)*>
+        <!ATTLIST figref
+                idref IDREFS #IMPLIED
+                num CDATA #IMPLIED
+                >
+        <!--定义（术语）列表, 建议id取值为dlis01, dlis02等  -->
+        <!-- Definition list
+          Recommended id = dlis0001, dlis0002, etc.-->
+        <!--属性:
+             tsize
+             compact
+             id       标号建议取值为dlis01, dlis02等-->
+        <!--attribute:
+             tsize
+             compact
+             id       Recommended id = dlis0001, dlis0002, etc.-->
+        <!ELEMENT dl (dt, dd)+>
+        <!ATTLIST dl
+                tsize NMTOKEN #IMPLIED
+                compact (compact) #IMPLIED
+                id ID #IMPLIED
+                >
+        <!--被定义的术语,  属性 id建议取值为dtrm01, dtrm02等  -->
+        <!--
+          Term to be defined
+          Recommended id = dtrm0001, dtrm0002, etc.  -->
+        <!--属性:
+             id       标号建议取值为dtrm01, dtrm02等-->
+        <!--attribute:
+             id       Recommended id = dtrm0001, dtrm0002, etc.-->
+        <!ELEMENT dt (#PCDATA | b | i | u | sup | sub | smallcaps)*>
+        <!ATTLIST dt
+                id ID #IMPLIED
+                >
+        <!-- 无序列表 -->
+        <!-- Unordered Lists
+            list-style may be empty for lists with no bullet or other symbol default
+            list-style is 'bullets'
+            Recommended id = ulis0001, ulis0002, etc.  -->
+        <!--属性:
+                id           标号建议取值为ulis01, ulis02等
+                list-style   列表类型可¯¯以为空，缺省为'bullets'
+                compact       -->
+        <!--attribute：
+                id           Recommended id = ulis0001, ulis0002, etc.
+                list-style   list-style may be empty for lists with no bullet or other symbol default
+                             list-style is 'bullets'
+                compact       -->
+        <!ELEMENT ul (li+)>
+        <!ATTLIST ul
+                id ID #IMPLIED
+                list-style (bullet | dash | none) "bullet"
+                compact (compact) #IMPLIED
+                >
+        <!-- 列表表项,  属性 id 建议取值为list01, list02等  -->
+        <!--List item
+          Recommended id = list0001, list0002, etc.      -->
+        <!--属性:
+               id         标号建议取值为list01, list02等-->
+        <!--attribute:
+               id         Recommended id = list0001, list0002, etc.-->
+        <!ELEMENT li (#PCDATA | b | i | u | sup | sub | smallcaps | br | pre | patcit | nplcit | bio-deposit | crossref | figref | img | dl | ul | ol | chemistry | maths)*>
+        <!ATTLIST li
+                id ID #IMPLIED
+                >
+        <!--数学公式 可以使用图像数据表示，也可以使用根据mathml的XML结构数据 -->
+        <!--
+          MATHEMATICS
+          This is image data or coded according to mathml, version 2
+          Recommended id = math0001, math0002, etc.     -->
+        <!-- 属性:
+              id       标号建议取值为math01, math02等
+              num      数学公式编号 -->
+        <!--attribute:
+              id       Recommended id = math0001, math0002, etc.
+              num      mathematics number-->
+        <!ELEMENT maths (img | (math, img?))>
+        <!ATTLIST maths
+                id ID #IMPLIED
+                num CDATA #REQUIRED
+                >
+        <!--化学公式、方程式、结构式等,可以作为图像数据处理，也可以使用外部独立化学式（使用chemML、CML等XML结构）-->
+        <!--  属性 id 建议取值为chem01, chem02等  -->
+        <!--   Chemistry
+          Chemical formulae, ring structures, Markush structures, etc.
+          For now treat as image data.
+          Depending on industry support we may use, e.g., chemML, CML later
+          Recommended id = chem0001, chem0002, etc
+        -->
+        <!--属性:
+               id       标号建议取值为chem01, chem02等
+               num      化学式编号-->
+        <!--attribute:
+               id       Recommended id = chem0001, chem0002, etc
+               num      chemistry number-->
+        <!ELEMENT chemistry (img | (chem, img?))>
+        <!ATTLIST chemistry
+                id ID #IMPLIED
+                num CDATA #REQUIRED
+                >
+        <!--外部化学式 xml 文件 ，可以使用CML 等-->
+        <!--   This is a pointer to an external xml file for chemical markup - to be determined.
+          For EPO probably CML; http://www.xml-cml.org/-->
+        <!--属性：
+                   id           标记
+                   file         文件名称
+                   chem-type    类型-->
+        <!--attribute:
+                id          id
+                file	    file
+                chem-type   type
+        -->
+        <!ELEMENT chem EMPTY>
+        <!ATTLIST chem
+                id ID #IMPLIED
+                file CDATA #REQUIRED
+                chem-type CDATA #IMPLIED
+                >
+        <!--有序列表: -->
+        <!-- Ordered Lists: -->
+        <!--属性:
+               id           标号
+               compact
+               'ol-style' - 建议值及含义如下:
+                    1   阿拉伯数字     1, 2, 3, ...
+                    a   小写字母       a, b, c, ...
+                    A   大写字母       A, B, C, ...
+                    i   小写罗马字母   i, ii, iii, ...
+                    I   大写罗马字母   I, II, III, ...-->
+        <!--attribute:
+               id           有序列表id号
+               compact
+               'ol-style'   Recommded use:
+                   1   arablic numbers     1, 2, 3, ...
+                   a   lower alpha         a, b, c, ...
+                   A   upper alpha         A, B, C, ...
+                   i   lower roman         i, ii, iii, ...
+                   I   upper roman         I, II, III, ...-->
+        <!ELEMENT ol (li+)>
+        <!ATTLIST ol
+                id ID #IMPLIED
+                compact (compact) #IMPLIED
+                ol-style CDATA #IMPLIED
+                >
+        <!-- 图像数据,图像数据可以是绘画、图形或者复杂的元素（数学式、表格、化学式）等-->
+        <!--
+          Image data
+          Image is used for any kind of image: art work, figures,  complex work units
+          (math, tables, chemistry), etc.-->
+        <!--  属性:
+                id                     标号建议取值 i01, i02等
+                he, wi                 建议取值 "11" - 以毫米为单位 - 高，宽;
+                file                   文件名和位置;
+                alt                    图像不显示时的替代文字
+                img-content            缺省为drawing;
+                img-format             图像格式，通常为tiff、st33或st35
+                orientation            图像的方向 (portrait | landscape).  缺省为portrait
+                inline = (yes | no).   图像是否为行内图. 缺省为no  -->
+        <!--attribute:
+                id             Recommended i0001, i0002, etc.
+                he, wi         Recommended "11" - milimeters - height, width;
+                file           file name,location;
+                alt            alternate text if image not shown;
+                img-content    drawing is the default;
+                img-format     common will be tiff, st33 and st35 in for backward compatibilty
+                               and, later, publication.
+                orientation    orientation of the image (portrait | landscape).
+                               Default is portrait
+                inline         (yes | no).
+                                Whether the image is to be presented inline or separated by line
+                                breaks.  Default is no.-->
+        <!ELEMENT img EMPTY>
+        <!ATTLIST img
+                id ID #IMPLIED
+                he NMTOKEN #REQUIRED
+                wi NMTOKEN #REQUIRED
+                file CDATA #REQUIRED
+                alt CDATA #IMPLIED
+                img-content (drawing | photograph | character | dna | undefined) "drawing"
+                img-format (jpg | tif | st33 | st35) #REQUIRED
+                orientation (portrait | landscape) "portrait"
+                inline (yes | no) "no"
+                >
+        <!--对任何具有id属性的其他元素的引用  -->
+        <!--Cross reference to any other element with an identifier (id)-->
+        <!--属性：
+               idref      被引用的id号-->
+        <!--attribute :
+               idref      reference id-->
+        <!ELEMENT crossref (#PCDATA)>
+        <!ATTLIST crossref
+                idref CDATA #REQUIRED
+                >
+        <!--  标题; 建议id取值为h01, h02等  ,   属性 level 表示 标题的层次  -->
+        <!--Heading text; Recommended id = h0001, h0002, etc.-->
+        <!--属性:
+                  id      建议取值为h01, h02等
+                  level   表示 标题的层次  -->
+        <!--attribute:
+                  id      Recommended id = h0001, h0002, etc.
+                  level   heading level-->
+        <!ELEMENT heading (#PCDATA | b | i | u | sup | sub | smallcaps)*>
+        <!ATTLIST heading
+                level (1 | 2 | 3) #IMPLIED
+                id ID #IMPLIED
+                >
+        <!--  文档页，主要使用在所有或者大部分的数据都是以图像格式或是诸如PDF等格式存储的情况下。
+            "img"也可以是整个文档页，如附图。-->
+        <!--	建议属性id取值为docp01, docp02等。  -->
+        <!--
+          doc-page - DOCument or PAGE
+
+          This is primarily to be used when data for the whole or major sections of an
+          application are in image format OR other formats such as pdf.
+          Page range attributes are given when required
+            pp  - page range
+            ppf - first page
+            ppl - last page (for pdf).
+          The 'img' may also be used for complete pages, e.g. in drawings
+
+          Recommended id = docp0001, docp0002, etc.-->
+        <!--  属性:
+                id                     建议取值 docp01, docp02等。
+                he, wi                 高，宽;
+                type                   文档类型（jpg,pdf,tif）
+                alt                    图像不显示时的替代文字
+                pp                     页码范围;
+                ppf                    起始页
+                ppl                    结束页
+                file                   文件名
+                ocr
+                color                  颜色
+                orientation            图像的方向 (portrait | landscape).  缺省为portrait -->
+        <!--attribute:
+                id                     Recommended id = docp0001, docp0002, etc.
+                he, wi                 height width
+                type                   document type(jpg,pdf,tif）
+                alt                    alternate text if image not shown
+                pp                     page range;
+                ppf                    first page
+                ppl                    last page
+                file                   file name
+                ocr
+                color                  color
+                orientation            orientation of the image (portrait | landscape).
+                                       Default is portrait-->
+        <!ELEMENT doc-page EMPTY>
+        <!ATTLIST doc-page
+                id ID #IMPLIED
+                he NMTOKEN #REQUIRED
+                wi NMTOKEN #REQUIRED
+                type (jpg | pdf | tif) #REQUIRED
+                alt CDATA #IMPLIED
+                pp CDATA #IMPLIED
+                ppf CDATA #IMPLIED
+                ppl CDATA #IMPLIED
+                file CDATA #REQUIRED
+                ocr CDATA #IMPLIED
+                color (color | bw) #IMPLIED
+                orientation (portrait | landscape) "portrait"
+                >
+        <!-- 附图,  建议标号id取值为'draw' -->
+        <!--
+          Drawings shall be required when they are necessary for the understanding of the
+          invention.
+          Recommended id = 'draw'-->
+        <!ELEMENT drawings (doc-page+ | figure+)>
+        <!ATTLIST drawings
+                %body_sections;
+                >
+        <!-- 摘要附图 -->
+        <!-- abstract drawing-->
+        <!ELEMENT cn-abstract-drawing (doc-page | figure)>
+        <!ATTLIST cn-abstract-drawing
+                %body_sections;
+                >
+        <!-- INID 57 摘要,  建议标号id取值为'abst'  -->
+        <!-- INID 57 A concise summary of the disclosure.
+          Recommended id = 'abst' or 'abst0001' for multiple abstracts-->
+        <!ELEMENT abstract (doc-page+ | (abst-problem, abst-solution) | p+)>
+        <!ATTLIST abstract
+                %body_sections;
+                >
+        <!--权利要求,  建议id取值为'claim'  -->
+        <!--Claims:
+          the claims shall define the matter sought for patent and be supported by the
+          description.
+          Recommended id = 'claim' or 'claim0001' for multiple claims-->
+        <!ELEMENT claims (doc-page+ | claim+)>
+        <!ATTLIST claims
+                %body_sections;
+                >
+        <!-- 一个权利要求项的文本  -->
+        <!--The text of the claim; also used for for sub-para indentation-->
+        <!ELEMENT claim-text (#PCDATA | claim-text | claim-ref | b | i | u | sup | sub | smallcaps | br | pre | crossref | figref | img | chemistry | maths | tables)*>
+        <!--一个段落中的换行  -->
+        <!--br - break, line break within a paragraph-->
+        <!ELEMENT br EMPTY>
+        <!-- 说明书，  属性 id 建议取值为'desc'  -->
+        <!--Description:
+          The description must disclose the invention in a manner sufficiently clear and
+          complete for it to be carried out by a person skilled in the art (Rule 5).
+          Recommended id = 'desc'-->
+        <!ELEMENT description (doc-page+ | (invention-title?, (technical-field | background-art | disclosure | description-of-drawings | best-mode | mode-for-invention | industrial-applicability | sequence-list-text | (heading*, p+)+)+))>
+        <!ATTLIST description
+                %body_sections;
+                >
+        <!--定义的内容（定义列表中使用）  -->
+        <!--Definition description-->
+        <!ELEMENT dd (#PCDATA | b | i | u | sup | sub | smallcaps | br | pre | patcit | nplcit | bio-deposit | crossref | figref | img | ul | ol | chemistry | maths)*>
+        <!--微生物样本保藏有关信息 -->
+        <!-- (INID 83, ST.32:B830)
+          Recommended id = biod0001, biod0002, etc.-->
+        <!ELEMENT bio-deposit (depositary, bio-accno, date?, term?, dtext?)>
+        <!ATTLIST bio-deposit
+                id ID #IMPLIED
+                num CDATA #REQUIRED
+                url CDATA #IMPLIED
+                dnum CDATA #IMPLIED
+                >
+        <!--微生物样本保藏地点的信息-->
+        <!-- Information regarding the facility storing the biological deposit.-->
+        <!ELEMENT depositary (#PCDATA | address)*>
+        <!--微生物样本保藏编号-->
+        <!--  Biological accession number:
+          The identification assigned to the biological material by the depository-->
+        <!ELEMENT bio-accno (#PCDATA)>
+        <!--Identifies the period of time during which the depository must be able to furnish
+          samples of the biological material.-->
+        <!--微生物样本保藏期限  -->
+        <!ELEMENT term (#PCDATA)>
+        <!--和本申请有关的其他国内申请 -->
+        <!--  References to other legally or procedurally related domestic patent documents.-->
+        <!ELEMENT cn-related-documents (division?, cn-domestic-priority-claims?)>
+        <!--INID 73 被授予专利权人/专利权受让人信息.-->
+        <!--INID 73 Grantee/assignee information.-->
+        <!ELEMENT assignees (assignee+)>
+        <!--INID 73 Grantee/assignee information.-->
+        <!--INID 73 Grantee/assignee information.-->
+        <!ELEMENT assignee (%name_group; | addressbook)>

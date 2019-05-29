@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.ProcessTaskMapper">
+
+    <resultMap type="com.cnuip.pmes2.domain.core.ProcessTask" id="baseMap">
+        <id property="id" column="id"/>
+        <result property="processId" column="process_id"/>
+        <result property="name" column="name"/>
+        <result property="taskType" column="task_type"/>
+        <result property="alertTime" column="alert_time"/>
+        <result property="dueTime" column="due_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="userId" column="user_id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="state" column="state"/>
+    </resultMap>
+    
+    <resultMap type="com.cnuip.pmes2.domain.core.ProcessTask" id="processTaskMap" extends="baseMap">
+        <association property="role" column="role_id" select="com.cnuip.pmes2.repository.core.RoleMapper.selectByPrimaryKey"></association>
+        <association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+        <association property="process" column="process_id" select="com.cnuip.pmes2.repository.core.ProcessMapper.selectSimpleByPrimaryKey"></association>
+        <!--<collection property="labels" column="id" select="selectProcessTaskLabels"></collection>-->
+    </resultMap>
+
+    <resultMap type="com.cnuip.pmes2.domain.core.ProcessTaskLabel" id="processTaskLabelMap">
+        <result property="taskId" column="task_id"/>
+        <result property="labelId" column="label_id"/>
+        <association property="label" column="label_id" select="com.cnuip.pmes2.repository.core.LabelMapper.selectByPrimaryKey"></association>
+    </resultMap>
+
+    <select id="selectSimpleByPrimaryKey" parameterType="long" resultMap="baseMap">
+        SELECT id,process_id,name,task_type,alert_time,due_time,create_time,update_time,user_id,role_id,state
+        FROM p_process_task
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectByPrimaryKey" parameterType="long" resultMap="processTaskMap">
+        SELECT id,process_id,name,task_type,alert_time,due_time,create_time,update_time,user_id,role_id,state
+        FROM p_process_task
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByProcessId" parameterType="long" resultMap="processTaskMap">
+        SELECT id,process_id,name,task_type,alert_time,due_time,create_time,update_time,user_id,role_id,state
+        FROM p_process_task
+        WHERE process_id = #{processId}
+    </select>
+
+    <select id="selectAll" parameterType="int" resultMap="processTaskMap">
+        SELECT id,process_id,name,task_type,alert_time,due_time,create_time,update_time,user_id,role_id,state
+        FROM p_process_task
+    </select>
+
+    <select id="selectByType" parameterType="int" resultMap="processTaskMap">
+        SELECT id,process_id,name,task_type,alert_time,due_time,create_time,update_time,user_id,role_id,state
+        FROM p_process_task
+        WHERE type = #{type}
+    </select>
+
+    <select id="selectProcessTaskLabels" parameterType="long" resultMap="processTaskLabelMap">
+        SELECT task_id,label_id
+        FROM p_process_task_label
+        WHERE task_id = #{id} and labelset_id = #{labelsetId}
+    </select>
+
+    <select id="selectProcessTaskLabelsByLabelsetId" parameterType="long" resultMap="processTaskLabelMap">
+        SELECT task_id,label_id
+        FROM p_process_task_label
+        WHERE labelset_id = #{labelsetId}
+    </select>
+
+    <insert id="addProcessTask" parameterType="com.cnuip.pmes2.domain.core.ProcessTask" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO p_process_task
+        (process_id,name,task_type,alert_time,due_time,user_id,role_id,state)
+        VALUES
+        (#{processId},#{name},#{taskType},#{alertTime},#{dueTime},#{userId},#{roleId},#{state})
+    </insert>
+
+    <insert id="addTaskLabel" parameterType="com.cnuip.pmes2.domain.core.ProcessTaskLabel">
+        INSERT INTO p_process_task_label
+        (task_id,label_id,labelset_id)
+        VALUES
+        (#{taskId},#{labelId},#{labelsetId})
+    </insert>
+
+    <insert id="addTaskLabels">
+        REPLACE INTO p_process_task_label
+        (task_id,label_id,labelset_id)
+        VALUES
+        <foreach collection="list" separator="," item="v">
+          (#{v.taskId},#{v.labelId},#{labelsetId})
+        </foreach>
+    </insert>
+
+    <insert id="copyProcessTaskLabels">
+        INSERT INTO p_process_task_label
+        (task_id,label_id,labelset_id)
+        VALUES
+        <foreach collection="processTaskLabels" separator="," item="v">
+            (#{v.taskId},#{v.labelId},#{labelSetId})
+        </foreach>
+    </insert>
+
+
+    <insert id="deleteTaskLabel">
+        DELETE FROM p_process_task_label
+        WHERE task_id=#{taskId} AND label_id=#{labelId} and labelset_id = #{labelsetId}
+    </insert>
+
+    <insert id="deleteTaskLabels">
+        DELETE FROM p_process_task_label
+        WHERE task_id=#{taskId} and labelset_id = #{labelsetId}
+    </insert>
+
+    <select id="existsLabel" resultType="java.lang.Boolean">
+        SELECT COUNT(1)>0 FROM p_process_task_label WHERE task_id=#{taskId} AND label_id=#{labelId} and labelset_id = #{labelsetId}
+    </select>
+
+    <update id="updateProcessTask" parameterType="com.cnuip.pmes2.domain.core.ProcessTask">
+        UPDATE p_process_task
+        <set>
+            <if test="name!=null">name=#{name},</if>
+            process_id=#{processId},
+            <if test="taskType!=null">task_type=#{taskType},</if>
+            <if test="userId!=null">user_id=#{userId},</if>
+            role_id=#{roleId},
+            alert_time=#{alertTime},
+            due_time=#{dueTime}
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="changeState">
+        UPDATE p_process_task
+        SET state = #{state}
+        WHERE id = #{id}
+    </update>
+
+    <update id="changeTime">
+        UPDATE p_process_task
+        SET alert_time = #{alertTime},due_time = #{dueTime}
+        WHERE id = #{id}
+    </update>
+
+    <update id="changeRole">
+        UPDATE p_process_task
+        SET role_id = #{roleId}
+        WHERE id = #{id}
+    </update>
+
+    <select id="search" parameterType="com.cnuip.pmes2.controller.api.request.ProcessTaskSearchCondition" resultMap="processTaskMap">
+        SELECT t.id,t.process_id,t.name,t.task_type,t.alert_time,t.due_time,t.create_time,t.update_time,t.user_id,t.role_id,t.state
+        FROM p_process_task AS t
+        LEFT JOIN p_user AS u ON t.user_id = u.id
+        <where>
+            <if test="condition.processId!=null">t.process_id = #{condition.processId}</if>
+            <if test="condition.name!=null">AND t.name like CONCAT('%',#{condition.name},'%')</if>
+            <if test="condition.state!=null">AND t.state = #{condition.state}</if>
+            <if test="condition.fromTime!=null">AND UNIX_TIMESTAMP(t.update_time) &gt;= UNIX_TIMESTAMP(#{condition.fromTime})</if>
+            <if test="condition.toTime!=null">AND UNIX_TIMESTAMP(t.update_time) &lt;= UNIX_TIMESTAMP(#{condition.toTime})</if>
+            <if test="condition.username!=null">AND u.name like CONCAT('%',#{condition.username},'%')</if>
+        </where>
+    </select>
+	
+	<select id="selectRoleIdByTaskKey" parameterType="string" resultType="long">
+		SELECT role_id FROM p_process_task
+		WHERE task_key = #{key} and state = 1
+	</select>
+	
+	<select id="selectIdByTaskKey" parameterType="string" resultType="long">
+		SELECT id FROM p_process_task
+		WHERE task_key = #{key} and state = 1
+	</select>
+	
+</mapper>

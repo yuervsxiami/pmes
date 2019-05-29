@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cnuip.pmes2.repository.core.ExpertMapper">
+    <!--auto generated Code-->
+    <resultMap id="BaseResultMap" type="com.cnuip.pmes2.domain.core.Expert">
+        <result column="id" property="id"/>
+        <result column="institutions" property="institutions"/>
+        <result column="name" property="name"/>
+        <result column="ipc_field" property="ipcField"/>
+        <result column="keyword" property="keyword"/>
+        <result column="user_id" property="userId"/>
+        <result column="id_number" property="idNumber"/>
+        <result column="gender" property="gender"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="introduce" property="introduce"/>
+        <result column="specialties" property="specialties"/>
+        <association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+    </resultMap>
+
+    <resultMap id="extendMap" type="com.cnuip.pmes2.domain.core.Expert" extends="BaseResultMap">
+        <association property="specialtyList" column="specialties" select="com.cnuip.pmes2.repository.core.NationalEconomyMapper.findBySpecialties"></association>
+        <association property="ipcFieldList" column="ipc_field" select="com.cnuip.pmes2.repository.core.IPCFieldMapper.search"></association>
+    </resultMap>
+
+    <!--auto generated Code-->
+    <sql id="Base_Column_List">
+        id,
+        institutions,
+        name,
+        ipc_field,
+        keyword,
+        user_id,
+        id_number,
+        gender,
+        introduce,
+        specialties,
+        phone
+    </sql>
+
+    <!--auto generated Code-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="expert.id">
+        INSERT INTO p_expert (
+            id,
+            institutions,
+            name,
+            ipc_field,
+            keyword,
+            user_id,
+            id_number,
+            gender,
+            introduce,
+            specialties,
+          phone
+        ) VALUES (
+            #{expert.id},
+            #{expert.institutions},
+            #{expert.name},
+            #{expert.ipcField},
+            #{expert.keyword},
+            #{expert.userId},
+            #{expert.idNumber},
+            #{expert.gender},
+            #{expert.introduce},
+            #{expert.specialties},
+            #{expert.phone}
+        )
+    </insert>
+
+    <!--auto generated Code-->
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="expert.id">
+        INSERT INTO p_expert
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="expert.id!=null"> id,</if>
+            <if test="expert.institutions!=null"> institutions,</if>
+            <if test="expert.name!=null"> name,</if>
+            <if test="expert.ipcField!=null"> ipc_field,</if>
+            <if test="expert.keyword!=null"> keyword,</if>
+            <if test="expert.userId!=null"> user_id,</if>
+            <if test="expert.idNumber!=null"> id_number,</if>
+            <if test="expert.gender!=null"> gender,</if>
+            <if test="expert.introduce!=null"> introduce,</if>
+            <if test="expert.specialties!=null"> specialties,</if>
+            <if test="expert.phone!=null"> phone,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="expert.id!=null">#{expert.id},</if>
+            <if test="expert.institutions!=null">#{expert.institutions},</if>
+            <if test="expert.name!=null">#{expert.name},</if>
+            <if test="expert.ipcField!=null">#{expert.ipcField},</if>
+            <if test="expert.keyword!=null">#{expert.keyword},</if>
+            <if test="expert.userId!=null">#{expert.userId},</if>
+            <if test="expert.idNumber!=null">#{expert.idNumber},</if>
+            <if test="expert.gender!=null">#{expert.gender},</if>
+            <if test="expert.introduce!=null">#{expert.introduce},</if>
+            <if test="expert.specialties!=null">#{expert.specialties},</if>
+            <if test="expert.phone!=null">#{expert.phone},</if>
+        </trim>
+    </insert>
+
+    <!--auto generated Code-->
+    <insert id="insertList">
+        INSERT INTO p_expert (
+        <include refid="Base_Column_List"/>
+        )VALUES
+        <foreach collection="experts" item="expert" index="index" separator=",">
+            (
+            #{expert.id},
+            #{expert.institutions},
+            #{expert.name},
+            #{expert.ipcField},
+            #{expert.keyword},
+            #{expert.userId},
+            #{expert.idNumber},
+            #{expert.gender},
+            #{expert.introduce},
+            #{expert.specialties},
+            #{expert.phone}
+            )
+        </foreach>
+    </insert>
+
+    <!--auto generated Code-->
+    <update id="update">
+        UPDATE p_expert
+        <set>
+            <if test="expert.id != null"> id = #{expert.id}, </if>
+            <if test="expert.institutions != null"> institutions = #{expert.institutions}, </if>
+            <if test="expert.name != null"> name = #{expert.name}, </if>
+            <if test="expert.ipcField != null"> ipc_field = #{expert.ipcField}, </if>
+            <if test="expert.keyword != null"> keyword = #{expert.keyword}, </if>
+            <if test="expert.userId != null"> user_id = #{expert.userId}, </if>
+            <if test="expert.idNumber != null"> id_number = #{expert.idNumber}, </if>
+            <if test="expert.gender != null"> gender = #{expert.gender}, </if>
+            <if test="expert.introduce != null"> introduce = #{expert.introduce}, </if>
+            <if test="expert.specialties != null"> specialties = #{expert.specialties}, </if>
+            <if test="expert.phone != null"> phone = #{expert.phone} </if>
+        </set>
+        WHERE id = #{expert.id}
+    </update>
+
+    <select id="selectByPrimaryKey" parameterType="long" resultMap="extendMap">
+        SELECT
+        id,
+        institutions,
+        name,
+        ipc_field,
+        keyword,
+        user_id,
+        id_number,
+        gender,
+        introduce,
+        specialties,
+        create_time,
+        update_time,
+        phone
+        FROM p_expert
+        WHERE id = #{id}
+    </select>
+
+    <select id="search" parameterType="com.cnuip.pmes2.domain.core.Expert" resultMap="BaseResultMap">
+        SELECT
+        id,
+        institutions,
+        name,
+        ipc_field,
+        keyword,
+        user_id,
+        id_number,
+        gender,
+        introduce,
+        specialties,
+        create_time,
+        update_time,
+        phone
+        FROM p_expert
+        <where>
+            <if test="expert.institutions!=null and expert.institutions!=''">institutions = #{expert.institutions}</if>
+            <if test="expert.name!=null and expert.name!=''">AND name = #{expert.name}</if>
+            <if test="expert.phone!=null and expert.phone!=''">AND name = #{expert.phone}</if>
+            <if test="expert.userId!=null and expert.userId!=''">AND user_id = #{expert.userId}</if>
+            <if test="expert.keyword!=null and expert.keyword!=''">AND keyword LIKE '%${expert.keyword}%'</if>
+            <if test="expert.specialties!=null and expert.specialties!=''">AND FIND_IN_SET(#{expert.specialties},specialties) </if>
+            <if test="expert.ipcField!=null and expert.ipcField!=''">AND FIND_IN_SET(#{expert.ipcField},ipc_field) </if>
+            <if test="expert.optDateFrom != null">AND update_time >= #{expert.optDateFrom}</if>
+            <if test="expert.optDateTo != null">AND update_time &lt;= #{expert.optDateTo}</if>
+        </where>
+    </select>
+
+</mapper>
+

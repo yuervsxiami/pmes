@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.TKMapper">
+
+	<select id="findAll" resultType="com.cnuip.pmes2.domain.TK">
+		SELECT id id,an an,similar_total similarTotal,similar_avg similarAvg,quote_total quoteTotal,by_quote_total byQuoteTotal
+		FROM etl_an_info  where similar_total IS NULL
+	</select>
+
+	<update id="updateTk" parameterType="com.cnuip.pmes2.domain.TK">
+		UPDATE etl_an_info
+		<set>
+			<if test="similarTotal != null">similar_total = #{similarTotal},</if>
+			<if test="similarAvg != null">similar_avg = #{similarAvg},</if>
+			<if test="quoteTotal != null">quote_total = #{quoteTotal},</if>
+			<if test="byQuoteTotal != null">by_quote_total = #{byQuoteTotal}</if>
+		</set>
+		WHERE an = #{an}
+	</update>
+
+
+</mapper>

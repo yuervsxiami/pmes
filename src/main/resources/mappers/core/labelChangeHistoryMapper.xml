@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.LabelChangeHistoryMapper">
+
+	<resultMap id="baseMap" type="com.cnuip.pmes2.domain.core.LabelChangeHistory">
+		<result property="id" column="id"></result>
+		<result property="patentId" column="patent_id"></result>
+		<result property="labelId" column="label_id"></result>
+		<result property="beforeStrValue" column="before_str_value"></result>
+		<result property="afterStrValue" column="after_str_value"></result>
+		<result property="beforeTextValue" column="before_text_value"></result>
+		<result property="afterTextValue" column="after_text_value"></result>
+		<result property="userId" column="user_id"></result>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+	</resultMap>
+
+	<insert id="insert" parameterType="com.cnuip.pmes2.domain.core.LabelChangeHistory">
+		INSERT INTO p_label_change_history
+		(patent_id,label_id,before_str_value,after_str_value,before_text_value,after_text_value,user_id)
+		VALUES
+		(#{patentId},#{labelId},#{beforeStrValue},#{afterStrValue},#{beforeTextValue},#{afterTextValue},#{userId})
+	</insert>
+
+	<select id="select" parameterType="long" resultMap="baseMap">
+		SELECT id,patent_id,label_id,before_str_value,after_str_value,before_text_value,after_text_value,user_id,create_time,update_time
+		FROM p_label_change_history
+		WHERE patent_id = #{patentId} and label_id = #{labelId}
+	</select>
+
+</mapper>

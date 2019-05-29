@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.InstanceLabelMapper">
+
+	<resultMap id="baseMap" type="com.cnuip.pmes2.domain.core.InstanceLabel">
+		<id property="id" column="id"/>
+		<result property="instanceId" column="instance_id"/>
+		<result property="instanceType" column="instance_type"/>
+		<result property="labelId" column="label_id"/>
+		<result property="strValue" column="str_value"/>
+		<result property="textValue" column="text_value"/>
+		<result property="createTime" column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="userId" column="user_id"/>
+		<association property="label" column="label_id" select="com.cnuip.pmes2.repository.core.LabelMapper.selectSimpleByPrimaryKey"></association>
+	</resultMap>
+
+	<insert id="replaceLabels" parameterType="com.cnuip.pmes2.domain.core.InstanceLabel">
+		REPLACE INTO p_instance_label
+		(instance_id,instance_type,label_id,str_value,text_value)
+		VALUES
+		<foreach collection="labels" item="l" open="" close="" separator=",">
+		(#{l.instanceId},#{l.instanceType},#{l.labelId},#{l.strValue},#{l.textValue})
+		</foreach>
+	</insert>
+
+	<update id="updateLabels" parameterType="com.cnuip.pmes2.domain.core.InstanceLabel">
+		UPDATE p_instance_label
+		<set>
+			<if test="strValue!=null">str_value = #{strValue},</if>
+			<if test="textValue!=null">text_value = #{textValue}</if>
+		</set>
+		WHERE instance_id = #{instanceId} AND instance_type = #{instanceType} AND label_id = #{labelId}
+	</update>
+
+	<select id="findByInstanceAndLabelIds" resultMap="baseMap">
+		SELECT id,instance_id,instance_type,label_id,str_value,text_value,create_time,update_time
+		FROM p_instance_label
+		WHERE instance_id = #{instanceId} AND instance_type = #{instanceType}
+		<if test="labelIds != null and labelIds.size()>0" >
+		AND label_id IN
+			<foreach collection="labelIds" item="l" open="(" close=")" separator=",">
+				#{l}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="findByInstanceId" resultMap="baseMap">
+		SELECT id,instance_id,instance_type,label_id,str_value,text_value,create_time,update_time
+		FROM p_instance_label
+		WHERE instance_id = #{instanceId} AND instance_type = 1
+	</select>
+
+	<resultMap id="taskOrderLabelMapper" type="com.cnuip.pmes2.domain.core.TaskOrderLabel">
+		<id property="id" column="id"/>
+		<result property="labelId" column="label_id"/>
+		<result property="strValue" column="str_value"/>
+		<result property="textValue" column="text_value"/>
+		<result property="createTime" column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="userId" column="user_id"/>
+		<result property="valueSource" column="value_source"/>
+		<association property="label" column="label_id" select="com.cnuip.pmes2.repository.core.LabelMapper.selectSimpleByPrimaryKey"></association>
+	</resultMap>
+
+	<select id="findAllPatentLabels" resultMap="taskOrderLabelMapper">
+		SELECT id,label_id,str_value,text_value,create_time,update_time, 1 AS value_source
+		FROM p_instance_label
+		WHERE instance_id = #{instanceId} AND instance_type = 1
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="baseMap">
+		SELECT id,instance_id,instance_type,label_id,str_value,text_value,create_time,update_time
+		FROM p_instance_label
+		WHERE id = #{id}
+	</select>
+
+    <select id="findLatestProcessLabels" resultMap="baseMap">
+		SELECT id,instance_id,instance_type,label_id,str_value,text_value,create_time,update_time
+		FROM p_instance_label
+		WHERE instance_id = #{patentId}
+		AND instance_type = 1
+		AND label_id IN (
+			SELECT label_id FROM p_process_task_label
+			WHERE labelset_id = (
+				SELECT labelset_id FROM p_process WHERE type = #{processType}
+			)
+		)
+    </select>
+
+</mapper>

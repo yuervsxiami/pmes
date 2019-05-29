@@ -1,0 +1,8 @@
+<!-- checkbox -->
+<div class="{{labelDirection=='H'? 'col-sm-10' : 'form-control'}}">
+    <div style="display: inline; margin-right: 10px;" ng-repeat="meta in meta.values">
+        <label>
+            <input type="checkbox" ng-model="meta.selected"> {{meta.name}}
+        </label>
+    </div>
+</div>

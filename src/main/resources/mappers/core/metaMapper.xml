@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnuip.pmes2.repository.core.MetaMapper">
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Meta" id="metaMap">
+		<id property="id" column="id"/>
+		<result property="key" column="key"/>
+		<result property="name" column="name"/>
+		<result property="state" column="state"/>
+		<result property="type" column="type"/>
+		<result property="valueType" column="value_type"/>
+		<result property="createTime" column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="userId" column="user_id"/>
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+		<collection property="values" column="key" select="selectMetaValue"></collection>
+	</resultMap>
+
+	<resultMap type="com.cnuip.pmes2.domain.core.Meta" id="metaMap2">
+		<id property="id" column="id"/>
+		<result property="key" column="key"/>
+		<result property="name" column="name"/>
+		<result property="state" column="state"/>
+		<result property="type" column="type"/>
+		<result property="valueType" column="value_type"/>
+		<result property="createTime" column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		<result property="userId" column="user_id"/>
+	</resultMap>
+	
+	<resultMap type="com.cnuip.pmes2.domain.core.MetaValue" id="metaValueMap">
+		<id property="id" column="id"/>
+		<result property="metaKey" column="meta_key"/>
+		<result property="name" column="name"/>
+		<result property="value" column="value"/>
+		<result property="displayType" column="display_type"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="userId" column="user_id"/>
+		<association property="user" column="user_id" select="com.cnuip.pmes2.repository.core.UserMapper.selectSimpleUserByPrimaryKey"></association>
+	</resultMap>
+	
+	<select id="selectByKey" parameterType="string" resultMap="metaMap">
+		SELECT id,`key`,name,state,type,value_type,create_time,update_time,user_id
+		FROM p_meta
+		WHERE `key` = #{key}
+	</select>
+	
+	<select id="selectByPrimaryKey" parameterType="long" resultMap="metaMap">
+		SELECT id,`key`,name,state,type,value_type,create_time,update_time,user_id
+		FROM p_meta
+		WHERE id = #{id}
+	</select>
+	
+	<select id="selectAll" resultMap="metaMap2">
+		SELECT id,`key`,name,state,type,value_type,create_time,update_time,user_id
+		FROM p_meta
+	</select>
+	
+	<select id="selectByType" parameterType="int" resultMap="metaMap">
+		SELECT id,`key`,name,state,type,value_type,create_time,update_time,user_id
+		FROM p_meta
+		WHERE type = #{type}
+	</select>
+	
+	<select id="selectMetaValue" parameterType="string" resultMap="metaValueMap">
+		SELECT id,meta_key,name,value,display_type,create_time,update_time,user_id
+		FROM p_meta_value
+		WHERE meta_key = #{key}
+	</select>
+	
+	<select id="selectValueByPrimaryKey" parameterType="long" resultMap="metaValueMap">
+		SELECT id,meta_key,name,value,display_type,create_time,update_time,user_id
+		FROM p_meta_value
+		WHERE id = #{id}
+	</select>
+	
+	<insert id="addMeta" parameterType="com.cnuip.pmes2.domain.core.Meta" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_meta
+		(`key`,name,state,type,value_type,user_id)
+		VALUES
+		(#{key},#{name},0,#{type},#{valueType},#{userId})
+	</insert>
+	
+	<insert id="addMetaValue" parameterType="com.cnuip.pmes2.domain.core.MetaValue" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_meta_value
+		(meta_key,name,value,display_type,user_id)
+		VALUES
+		(#{metaKey},#{name},#{value},#{displayType},#{userId})
+	</insert>
+	
+	<insert id="addMetaValues" parameterType="com.cnuip.pmes2.domain.core.MetaValue" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO p_meta_value
+		(meta_key,name,value,display_type,user_id)
+		VALUES
+		<foreach collection="list" separator="," item="v">
+		(#{v.metaKey},#{v.name},#{v.value},#{v.displayType},#{v.userId})
+		</foreach>
+	</insert>
+	
+	<update id="updateMeta" parameterType="com.cnuip.pmes2.domain.core.Meta">
+		UPDATE p_meta
+		<set>
+			<if test="name!=null">name=#{name},</if>
+			<if test="type!=null">type=#{type},</if>
+			<if test="userId!=null">user_id=#{userId},</if>
+			<if test="valueType!=null">value_type=#{valueType},</if>
+			</set>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateMetaValue" parameterType="com.cnuip.pmes2.domain.core.MetaValue">
+		UPDATE p_meta_value
+		<set>
+			<if test="name!=null">name=#{name},</if>
+			<if test="value!=null">value=#{value},</if>
+			<if test="displayType!=null">display_type=#{displayType},</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="changeMetaState">
+		UPDATE p_meta
+		SET state = #{state}
+		WHERE `key` = #{key}
+	</update>
+	
+	<delete id="deleteMetaValue" parameterType="long">
+		DELETE FROM p_meta_value WHERE id = #{id}
+	</delete>
+	
+	<select id="checkKeyExist" parameterType="string" resultType="int">
+		SELECT IFNULL(count(*),0) FROM p_meta WHERE `key` = #{key} 
+	</select>
+	
+	<select id="search" parameterType="com.cnuip.pmes2.controller.api.request.MetaSearchCondition" resultMap="metaMap">
+		SELECT m.id,m.key,m.name,m.state,m.type,m.value_type,m.create_time,m.update_time,m.user_id
+		FROM p_meta AS m
+		LEFT JOIN p_user AS u ON m.user_id = u.id
+		<where>
+			<if test="condition.type!=null">m.type = #{condition.type}</if>
+			<if test="condition.name!=null">AND m.name like CONCAT('%',#{condition.name},'%')</if>
+			<if test="condition.state!=null">AND m.state = #{condition.state}</if>
+			<if test="condition.fromTime!=null">AND m.update_time &gt;= #{condition.fromTime}</if>
+			<if test="condition.toTime!=null">AND m.update_time &lt;= #{condition.toTime}</if>
+			<if test="condition.username!=null">AND u.name like CONCAT('%',#{condition.username},'%')</if>
+		</where>
+		ORDER BY m.update_time DESC
+	</select>
+	
+</mapper>
